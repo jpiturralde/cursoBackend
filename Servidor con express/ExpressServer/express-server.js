@@ -11,6 +11,11 @@ const server = app.listen(PORT, () => {
 
 server.on("error", error => console.log(`Error en servidor ${error}`))
 
+app.get('/', (req, res) => {
+    console.log(`Peticion recibida en puerto ${server.address().port} para ruta ${req.path}`)
+    Controller.processRoot(res)
+})
+
 app.get('/productos', (req, res) => {
     console.log(`Peticion recibida en puerto ${server.address().port} para ruta ${req.path}`)
     Controller.processProducts(res, DB)
