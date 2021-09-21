@@ -14,7 +14,8 @@ Proyecto
 - `public/*.js` Archivos Javascript necesarios para la ejecución
 - `db/productos.txt` Archivo utilizado como repositorio de información de productos.
 
+[Proyecto Glitch](https://express-server-23470.glitch.me/)
 
-[Proyecto Glitch](https://express-server-23470.glitch.me)
+[Repo GitHub](https://github.com/jpiturralde/cursoBackend.git)
 
 Autor: jpiturralde@gmail.com (U610166)
