@@ -1,6 +1,4 @@
-const Contenedor = require('../libs/Contenedor.js')
-const DB_PATH = './db/productos.txt'
-
+const content = []
 const contenedor = new Contenedor(DB_PATH)
 
 /**
@@ -8,7 +6,7 @@ const contenedor = new Contenedor(DB_PATH)
  * @return {Array[Object]} Colección de productos existentes. 
  */
 async function get() {
-    return contenedor.getAll()
+    return content
 }
 
 /**
@@ -17,7 +15,7 @@ async function get() {
  * @return {Object} producto asociado al id o null si no existe.
  */
 async function getById(id) {
-    return await contenedor.getById(id)
+    //TODO
 }
 
 /**
@@ -26,7 +24,7 @@ async function getById(id) {
  * @return {Number} id del producto
  */
 async function post(product) {
-    return await contenedor.save(product)
+    //TODO
 }
 
 /**
@@ -34,8 +32,8 @@ async function post(product) {
  * @param {Number} id del producto a actualizar
  * @return {Object} producto con nueva información.
  */
- async function put(id, product) {
-    return await contenedor.update(id, product)
+async function put(id, product) {
+    //TODO
 }
 
 /**
@@ -44,7 +42,7 @@ async function post(product) {
  * @return {void}
  */
 async function remove(id) {
-    await contenedor.deleteById(id)
+    //TODO
 }
 
 module.exports = {get, getById, post, put, remove}

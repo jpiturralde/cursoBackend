@@ -66,6 +66,23 @@ class Contenedor {
     }
 
     /**
+     * Recibe id de un objeto, lo actualiza en el archivo, devuelve true si pudo actualizar el objeto.
+     * @param {Number} id del objeto
+     * @param {Object} Recibe un objeto, lo guarda en el archivo 
+     * @return {Boolean} Devuelve true si pudo actualizar el objeto
+     */
+     async update(id, object) {
+        const content = await this.#readStorage()
+        const index = content.findIndex(x => x.id === id)
+        if (index == -1) {
+            return false
+        }
+        content[index].value = object
+        await this.#writeStorage(content)
+        return true
+    }
+
+    /**
      * Recibe un id y devuelve el objeto con ese id, o null si no está
      * @param {Number} id del objeto
      * @return {Object} objeto asociado al id o null si no está
