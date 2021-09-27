@@ -2,7 +2,7 @@
   "name": "APIRestful",
   "version": "1.0.0",
   "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
-  "main": "Contenedor.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node .\\server.js",
     "dev": "nodemon server.js"
