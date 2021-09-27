@@ -1,6 +1,6 @@
 const DB = require('./products-inMemory-db.js')
 const { Router } = require('express')
-const { idValidatorRouter } = require('../common/logger.js')
+const { idValidator } = require('../common/common.js')
 
 const productsRouter = new Router()
 
@@ -9,7 +9,7 @@ productsRouter.get('/', (req, res) => {
 })
 
 productsRouter.get('/:id', 
-    idValidatorRouter, 
+    idValidator, 
     async (req, res, next) => {
         const product = DB.getById(req.params.id)
         if (!product) {
@@ -26,7 +26,7 @@ productsRouter.post('/', (req, res) => {
 })
 
 productsRouter.put('/:id', 
-    idValidatorRouter, 
+    idValidator, 
     (req, res) => {
         const response = DB.put(parseInt(req.params.id), req.body)
         if (!response) {
@@ -37,7 +37,7 @@ productsRouter.put('/:id',
 )
 
 productsRouter.delete('/:id', 
-    idValidatorRouter, 
+    idValidator, 
     (req, res) => {
         DB.remove(parseInt(req.params.id))
         res.json()

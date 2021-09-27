@@ -1,4 +1,4 @@
-const loggerRouter = (req, res, next) => {
+const logger = (req, res, next) => {
     const date = new Date()
     console.log(`${date.toLocaleString()} ${req.method} ${req.path}`)
     next();
@@ -7,7 +7,7 @@ const loggerRouter = (req, res, next) => {
 const ERR_400_INVALID_ID = { error: 'El parámetro ingresado no es un número' }
 const ERROR = { error: 'MESSAGE'}
 
-const idValidatorRouter = (req, res, next) => {
+const idValidator = (req, res, next) => {
     const num = parseInt(req.params.id)
 
     if (isNaN(num)) {
@@ -17,9 +17,8 @@ const idValidatorRouter = (req, res, next) => {
 }
 
 const errorHandler = (err, req, res, next) => {
-    console.log('errorHandler ' + err.httpStatusCode)
-    console.error(err.stack);
-    if (!err.httpStatusCode) {
+   if (!err.httpStatusCode) {
+        console.error(err.stack);
         res.status(500).send('Algo anduvo mal :(');
     }
     ERROR.error = err.message
@@ -27,4 +26,4 @@ const errorHandler = (err, req, res, next) => {
   }
   
 
-module.exports = { loggerRouter, idValidatorRouter, errorHandler }
+module.exports = { logger, idValidator, errorHandler }

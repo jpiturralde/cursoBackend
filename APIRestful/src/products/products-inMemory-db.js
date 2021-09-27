@@ -61,12 +61,9 @@ function put(id, product) {
  */
 function remove(id) {
     const index = content.findIndex(x => x.id === id)
-    console.log('remove = ' + index)
-    console.log(content)
     if (index > -1) {
         content.splice(index, 1)
     }
-    console.log(content)
 }
 
 module.exports = {get, getById, post, put, remove}

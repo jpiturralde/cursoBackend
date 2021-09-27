@@ -1,13 +1,13 @@
 const express = require('express')
-const { loggerRouter } = require("./common/logger")
-const { errorHandler } = require("./common/logger")
+const { logger } = require("./common/common")
+const { errorHandler } = require("./common/common")
 const { productsRouter } = require("./products/router")
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'));
-app.use(loggerRouter)
+app.use(logger)
 
 /* ------------------------------------------------------ */
 /* Cargo los routers */
