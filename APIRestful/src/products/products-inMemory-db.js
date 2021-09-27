@@ -1,11 +1,19 @@
 const content = []
-const contenedor = new Contenedor(DB_PATH)
+let id = 1
+
+function calculateId(content) {
+    const ids = content.map(function (element) {
+        return element.id
+    })
+    const max = ids.reduce((previous, current) => current > previous ? current : previous) 
+    return max
+}
 
 /**
  * Retorna listado de productos.
  * @return {Array[Object]} Colección de productos existentes. 
  */
-async function get() {
+function get() {
     return content
 }
 
@@ -14,8 +22,12 @@ async function get() {
  * @param {Number} id del producto
  * @return {Object} producto asociado al id o null si no existe.
  */
-async function getById(id) {
-    //TODO
+function getById(id) {
+    const result = content.filter(x => x.id==id) 
+    if (result.length > 0) {
+        return result[0].value
+    }
+    return null
 }
 
 /**
@@ -23,8 +35,9 @@ async function getById(id) {
  * @param {Object} producto a crear.
  * @return {Number} id del producto
  */
-async function post(product) {
-    //TODO
+function post(product) {
+    content.push({id, value: product})
+    return id++
 }
 
 /**
@@ -32,8 +45,13 @@ async function post(product) {
  * @param {Number} id del producto a actualizar
  * @return {Object} producto con nueva información.
  */
-async function put(id, product) {
-    //TODO
+function put(id, product) {
+    const index = content.findIndex(x => x.id === id)
+    if (index == -1) {
+        return false
+    }
+    content[index].value = product
+    return true
 }
 
 /**
@@ -41,9 +59,14 @@ async function put(id, product) {
  * @param {Number} id del producto a eliminar
  * @return {void}
  */
-async function remove(id) {
-    //TODO
+function remove(id) {
+    const index = content.findIndex(x => x.id === id)
+    console.log('remove = ' + index)
+    console.log(content)
+    if (index > -1) {
+        content.splice(index, 1)
+    }
+    console.log(content)
 }
 
 module.exports = {get, getById, post, put, remove}
-// module.exports = {getProducts, getProduct, createProduct, updateProduct, deleteProduct}
