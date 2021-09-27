@@ -4,17 +4,8 @@ const logger = (req, res, next) => {
     next();
 }
 
-const ERR_400_INVALID_ID = { error: 'El parámetro ingresado no es un número' }
 const ERROR = { error: 'MESSAGE'}
 
-const idValidator = (req, res, next) => {
-    const num = parseInt(req.params.id)
-
-    if (isNaN(num)) {
-        return res.status(400).json(ERR_400_INVALID_ID)
-    }
-    next();
-}
 
 const errorHandler = (err, req, res, next) => {
    if (!err.httpStatusCode) {
@@ -26,4 +17,4 @@ const errorHandler = (err, req, res, next) => {
   }
   
 
-module.exports = { logger, idValidator, errorHandler }
+module.exports = { logger, errorHandler }
