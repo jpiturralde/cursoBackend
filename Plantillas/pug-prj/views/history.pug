@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container mt-3">
+        <div class="jumbotron">
+            <h1 style="color:blue;">Vista de Productos</h1>
+
+            <% if(thereAreProducts){ %>
+            <div class="table-responsive">
+                <table class="table table-dark">
+                    <tr style="color: yellow;">
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Foto</th>
+                    </tr>
+                    
+                    <% for (const product of products) {%>
+                    <tr>
+                        <td>
+                            <%=product.value.title%>
+                        </td>
+                        <td>
+                            <%=product.value.price%>
+                        </td>
+                        <td>
+                            <img src="<%=product.value.thumbnail%>" alt="<%=product.value.title%>">
+                        </td>
+                    </tr>
+                    <%};%>
+                </table>
+            </div>
+            <% } else{ %>
+            <h3 class="alert alert-danger">No se encontraron productos.</h3>
+            <% } %>
+            
+            <a href="http://localhost:8080">Ingresar Producto</a>
+        </div>
+    </div>
+</body>
+
+</html>
