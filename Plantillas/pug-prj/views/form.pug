@@ -8,6 +8,8 @@ html
     body
         div(class="container mt-3")
             div(class="jumbotron")
+                a(href='http://localhost:8080/productos') Vista de Productos
+                br
                 h1(style="color:blue;")='Ingrese Producto'
                 br
                 form(role='form' method='POST' action='/productos')
@@ -24,5 +26,4 @@ html
                             b Foto URL
                         input#thumbnail.form-control(type='text', name='thumbnail')
                     button.btn.btn-success.mt-3.mb-5() Enviar
-                a(href='http://localhost:8080/productos') Vista de Productos
                         
