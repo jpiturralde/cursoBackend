@@ -2,35 +2,32 @@ const express = require('express')
 const { Server: HttpServer } = require('http')
 const { Server: IOServer } = require('socket.io')
 const productsDB = require('./products-inMemory-db.js')
+const messagesDB = require('./messages-fs-db.js')
 
 const app = express()
 const http = new HttpServer(app)
 const io = new IOServer(http)
 
-const messages = [
-    { author: "Juan", text: "¡Hola! ¿Que tal?", ts: 1634218734271},
-    { author: "Pedro", text: "¡Muy bien! ¿Y vos?", ts: 1634219290446 },
-    { author: "Ana", text: "¡Genial!", ts: 1634219329945 }
-];
-
 app.use(express.static('public'))
 
-io.on('connection', socket => {
+io.on('connection', async socket => {
     console.log('Un cliente se ha conectado')
 
     /* Envio los mensajes al cliente que se conectó */
+    const messages  = await messagesDB.get() 
     socket.emit('messages', messages)
 
     /* Envio los productos al cliente que se conectó */
     socket.emit('products', productsDB.get())
     
-    socket.on('new-message',data => {
+    socket.on('new-message', async data => {
         data.ts = Date.now()
-        messages.push(data);
+        await messagesDB.post(data)
+        const messages  = await messagesDB.get() 
         io.sockets.emit('messages', messages);
     });
 
-    socket.on('new-product',data => {
+    socket.on('new-product', data => {
         productsDB.post(data)
         const products = productsDB.get()
         io.sockets.emit('products', products);
