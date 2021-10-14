@@ -21,7 +21,7 @@
             <h1 style="color:blue;">Ingrese Producto</h1>
             <br>
             
-            <form action="/productos" method="post">
+            <form onsubmit="return addProduct(this)">
                 <div class="form-group">
                     <label for="title"><b>Nombre</b></label>
                     <input id="title" class="form-control" type="text" name="title">
@@ -37,9 +37,9 @@
                     <input id="thumbnail" class="form-control" type="text" name="thumbnail">
                 </div>
             
-                <button class="btn btn-success mt-3 mb-5">Enviar</button>
+                <input type="submit" class="btn btn-success mt-3 mb-5" value="Enviar">
             </form>
-            <div id="productsList">Acá se tiene que mostrar productsList.hbs</div>
+            <div id="products">Acá se tiene que mostrar productsList.hbs</div>
         </div>
         <div class="jumbotron">
             <div id="messagesCenter">
