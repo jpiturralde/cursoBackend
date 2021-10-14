@@ -1,0 +1,8 @@
+<div>
+    {{#each messages}}
+        <strong style="color:blue">{{this.author}}</strong> 
+        <font style="color:brown">[{{timestampToLocaleString this.ts}}]</font>  
+        <em style="color:green">{{this.text}}</em>
+        <br>
+    {{/each}} 
+</div>

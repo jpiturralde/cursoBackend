@@ -22,6 +22,7 @@ io.on('connection', socket => {
     socket.emit('messages', messages)
 
     socket.on('new-message',data => {
+        data.ts = Date.now()
         messages.push(data);
         io.sockets.emit('messages', messages);
     });
