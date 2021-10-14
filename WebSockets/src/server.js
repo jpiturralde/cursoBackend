@@ -7,9 +7,9 @@ const http = new HttpServer(app)
 const io = new IOServer(http)
 
 const messages = [
-    { author: "Juan", text: "¡Hola! ¿Que tal?" },
-    { author: "Pedro", text: "¡Muy bien! ¿Y vos?" },
-    { author: "Ana", text: "¡Genial!" }
+    { author: "Juan", text: "¡Hola! ¿Que tal?", ts: 1634218734271},
+    { author: "Pedro", text: "¡Muy bien! ¿Y vos?", ts: 1634219290446 },
+    { author: "Ana", text: "¡Genial!", ts: 1634219329945 }
  ];
 
 

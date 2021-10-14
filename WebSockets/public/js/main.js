@@ -2,9 +2,12 @@ const socket = io.connect();
 
 function render(data) {
     const html = data.map((elem, index) => {
+        const date = new Date(elem.ts)
+        const dateStr = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`  
         return(`<div>
-            <strong>${elem.author}</strong>:
-            <em>${elem.text}</em> </div>`)
+            <strong style="color:blue">${elem.author}</strong> 
+            <font style="color:brown">${dateStr}</font>  
+             <em style="color:green">${elem.text}</em> </div>`)
     }).join(" ");
     document.getElementById('messages').innerHTML = html;
 }
