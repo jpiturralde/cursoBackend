@@ -1,0 +1,17 @@
+{
+  "name": "websockets",
+  "version": "1.0.0",
+  "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "jpiturralde@gmail.com (U610166)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.4",
+    "socket.io": "^4.2.0"
+  }
+}
