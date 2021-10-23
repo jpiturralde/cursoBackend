@@ -1,0 +1,25 @@
+import DefaultController from "./DefaultController.js"
+
+export default class ProductsController extends DefaultController {
+    #dependencies
+
+    constructor(dependencies) {
+        super(dependencies)
+        this.#dependencies = dependencies
+    }
+
+    put = async (req, res) => {
+        const response = this.#dependencies.model.put(parseInt(req.params.id), req.body)
+        if (!response) {
+            res.status(204).json()
+        }
+        res.json(req.body)
+    }
+    
+    initialize() {
+        const router = super.initialize()
+        router.put('/:id', [this.idValidator, this.put])
+        return router
+    }
+ 
+}
