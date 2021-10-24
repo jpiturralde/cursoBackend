@@ -1,3 +1,4 @@
+import { Router } from 'express'
 import DefaultController from "./DefaultController.js"
 
 export default class CartController extends DefaultController {
@@ -21,7 +22,9 @@ export default class CartController extends DefaultController {
     }
 
     createRouter() {
-        const router = super.createRouter()
+        const router = new Router()
+        router.post('/', this.post)
+        router.delete('/:id', [this.idValidator, this.delete])
         router.get('/:id/productos', [this.idValidator, this.getItems])
         router.post('/:id/productos', [this.idValidator, this.addItem])
         router.delete('/:id/productos/:id_prod', [this.idValidator, this.deleteItem])
