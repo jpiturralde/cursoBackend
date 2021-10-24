@@ -20,8 +20,8 @@ export default class CartController extends DefaultController {
         res.json({msg: 'FALTA IMPLEMENTAR deleteItem!!!'})
     }
 
-    initialize() {
-        const router = super.initialize()
+    createRouter() {
+        const router = super.createRouter()
         router.get('/:id/productos', [this.idValidator, this.getItems])
         router.post('/:id/productos', [this.idValidator, this.addItem])
         router.delete('/:id/productos/:id_prod', [this.idValidator, this.deleteItem])

@@ -16,8 +16,8 @@ export default class ProductsController extends DefaultController {
         res.json(req.body)
     }
     
-    initialize() {
-        const router = super.initialize()
+    createRouter() {
+        const router = super.createRouter()
         router.put('/:id', [this.idValidator, this.put])
         return router
     }

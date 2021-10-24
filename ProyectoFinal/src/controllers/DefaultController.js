@@ -49,7 +49,7 @@ export default class DefaultController {
         res.json()
     }
 
-    initialize() {
+    createRouter() {
         const router = new Router()
         router.get('/', this.getAll)
         router.post('/', this.post)
@@ -60,7 +60,7 @@ export default class DefaultController {
 
     build() {
         if (!this.#router) {
-            this.#router = this.initialize()
+            this.#router = this.createRouter()
         }
         return this.#router
     }
