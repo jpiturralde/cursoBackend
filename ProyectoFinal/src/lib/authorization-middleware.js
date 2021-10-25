@@ -1,10 +1,16 @@
 export const authorization = (scopes = []) => {
     return (req, res, next) => {
         if (isSecured(scopes, req) && !isAuthorized(req)) {
-            console.log(req.headers['authorization'])
-            return res.status(401).json({msg: 'Access denied'})
+            return res.status(401).json(ACCESS_DENIED(req))
         }
         next();
+    }
+}
+
+const ACCESS_DENIED = (req) => { 
+    return {
+        error : -1, 
+        descripcion: `${req.method} ${req.path} acceso denegado.` 
     }
 }
 
