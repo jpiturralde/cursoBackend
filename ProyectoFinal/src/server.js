@@ -1,5 +1,5 @@
 import express from 'express';
-import { logger, errorHandler } from "./lib/index.js";
+import { logger, errorHandler, authorization} from "./lib/index.js";
 import {  CartController, ProductsController } from "./controllers/index.js"
 import {  productsModel, cartModel } from "./models/index.js"
 
@@ -8,6 +8,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 // app.use(express.static('public'));
 app.use(logger)
+app.use(authorization(
+    [{
+        path:'/api/productos', 
+        methods: ['POST', 'PUT', 'DELETE']
+    }]
+))
 
 /* ------------------------------------------------------ */
 /* Cargo los routers */
