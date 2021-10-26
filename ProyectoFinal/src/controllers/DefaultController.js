@@ -19,11 +19,11 @@ export default class DefaultController {
     }
 
     getAll = async (req, res) => {
-        res.json(this.#dependencies.model.get())
+        res.json(await this.#dependencies.model.getAll())
     }
 
     getById = async (req, res, next) => {
-        const data = this.#dependencies.model.getById(req.params.id)
+        const data = await this.#dependencies.model.getById(req.params.id)
         if (!data) {
             const error = new Error('No encontrado')
             error.httpStatusCode = 404
@@ -33,7 +33,7 @@ export default class DefaultController {
     }
 
     post = async (req, res) => {
-        res.status(201).json(this.#dependencies.model.post(req.body))
+        res.status(201).json(await this.#dependencies.model.post(req.body))
     }
 
     put = async (req, res) => {
@@ -45,7 +45,7 @@ export default class DefaultController {
     }
     
     delete = async (req, res) => {
-        this.#dependencies.model.remove(parseInt(req.params.id))
+        this.#dependencies.model.deleteById(parseInt(req.params.id))
         res.json()
     }
 

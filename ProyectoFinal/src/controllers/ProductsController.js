@@ -8,15 +8,7 @@ export default class ProductsController extends DefaultController {
         super(dependencies)
         this.#dependencies = dependencies
     }
-
-    put = async (req, res) => {
-        const response = this.#dependencies.model.put(parseInt(req.params.id), req.body)
-        if (!response) {
-            res.status(204).json()
-        }
-        res.json(req.body)
-    }
-    
+  
     createRouter() {
         const router = new Router()
         router.get('/', this.getAll)

@@ -1,7 +1,7 @@
 import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js";
 import {  CartController, ProductsController } from "./controllers/index.js"
-import {  productsModel, cartModel } from "./models/index.js"
+import { DummyRepo, FileSystemRepo } from "./models/index.js"
 
 const app = express()
 app.use(express.json())
@@ -17,8 +17,8 @@ app.use(authorization(
 
 /* ------------------------------------------------------ */
 /* Cargo los routers */
-app.use('/api/productos', (new ProductsController({model: productsModel})).build())
-app.use('/api/carrito', (new CartController({model: cartModel})).build()) 
+app.use('/api/productos', (new ProductsController({model: new FileSystemRepo('./db/products.txt')})).build())
+app.use('/api/carrito', (new CartController({model: new DummyRepo('CART')})).build()) 
 
 app.use(unkownRoute);
 app.use(errorHandler)
