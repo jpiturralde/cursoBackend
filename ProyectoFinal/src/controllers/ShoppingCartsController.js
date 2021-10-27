@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import DefaultController from "./DefaultController.js"
 
-export default class CartController extends DefaultController {
+export default class ShoppingCartsController extends DefaultController {
     #dependencies
 
     constructor(dependencies) {

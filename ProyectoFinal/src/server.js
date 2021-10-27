@@ -1,6 +1,6 @@
 import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
-import { CartController, ProductsController } from "./controllers/index.js"
+import { ProductsController, ShoppingCartsController } from "./controllers/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
 
 const app = express()
@@ -23,7 +23,7 @@ app.use('/api/productos', (new ProductsController({model: new Products('./db/pro
 //app.use('/api/productos', (new ProductsController({model: new Repository()})).build())
 // app.use('/api/productos', (new ProductsController({model: Productos()})).build())
 
-app.use('/api/carrito', (new CartController({model: new ShoppingCarts('./db/carts.txt')})).build()) 
+app.use('/api/carrito', (new ShoppingCartsController({model: new ShoppingCarts('./db/carts.txt')})).build()) 
 
 app.use(unkownRoute)
 app.use(errorHandler)

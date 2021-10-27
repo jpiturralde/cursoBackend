@@ -1,4 +1,4 @@
-import CartController from "./CartController.js"
+import ShoppingCartsController from "./ShoppingCartsController.js"
 import ProductsController from "./ProductsController.js"
 
-export { ProductsController, CartController }
+export { ProductsController, ShoppingCartsController }
