@@ -27,6 +27,18 @@ export default class Repository {
 
     static getPayload(data) { return data.payload }
 
+    schemaValidations(data) {
+        return []
+    }
+
+    schemaErrors(data) {
+        const errors = schemaValidations(data)
+
+        if (errors) {
+            throw new Error(errors)
+        }
+    }
+
     constructor(container) {
         if (container) {
             this.#container = container

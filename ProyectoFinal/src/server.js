@@ -1,5 +1,5 @@
 import express from 'express';
-import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js";
+import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { CartController, ProductsController } from "./controllers/index.js"
 import { Products, Carrito } from "./models/index.js"
 
@@ -25,7 +25,7 @@ app.use('/api/productos', (new ProductsController({model: new Products('./db/pro
 
 app.use('/api/carrito', (new CartController({model: Carrito('./db/carts.txt')})).build()) 
 
-app.use(unkownRoute);
+app.use(unkownRoute)
 app.use(errorHandler)
 
 /* ------------------------------------------------------ */

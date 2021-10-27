@@ -1,16 +1,11 @@
+import { ACCESS_DENIED_ERROR_MSG } from "./index.js"
+
 export const authorization = (scopes = []) => {
     return (req, res, next) => {
         if (isSecured(scopes, req) && !isAuthorized(req)) {
-            return res.status(401).json(ACCESS_DENIED(req))
+            return res.status(401).json(ACCESS_DENIED_ERROR_MSG(req))
         }
         next();
-    }
-}
-
-const ACCESS_DENIED = (req) => { 
-    return {
-        error : -1, 
-        descripcion: `${req.method} ${req.path} acceso denegado.` 
     }
 }
 
