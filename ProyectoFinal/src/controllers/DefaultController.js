@@ -37,11 +37,11 @@ export default class DefaultController {
     }
 
     put = async (req, res) => {
-        const response = this.#dependencies.model.put(parseInt(req.params.id), req.body)
+        const response = await this.#dependencies.model.put(parseInt(req.params.id), req.body)
         if (!response) {
             res.status(204).json()
         }
-        res.json(req.body)
+        res.json(response)
     }
     
     delete = async (req, res) => {
