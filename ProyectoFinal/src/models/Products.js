@@ -32,14 +32,6 @@ export default class Products extends Repository {
         return errors
     }
 
-    schemaErrors(data) {
-        const errors = schemaValidations(data)
-
-        if (errors) {
-            throw new Error(errors)
-        }
-    }
-
     async post(data) { 
         this.schemaErrors(data)
 
