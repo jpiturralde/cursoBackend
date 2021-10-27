@@ -59,7 +59,13 @@ export default class FileSystemContainer {
         }
     }
 
-    readSync() { return JSON.parse(fs.readFileSync(this.#filePath, encoding))  }
+    readSync() { 
+        try {
+            return JSON.parse(fs.readFileSync(this.#filePath, encoding))
+        } catch (e) {
+            return []
+        }
+    }
 
     async clean() {
         try {
