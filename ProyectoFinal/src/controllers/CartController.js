@@ -24,6 +24,7 @@ export default class CartController extends DefaultController {
     createRouter() {
         const router = new Router()
         router.post('/', [this.modelValidator(this.#dependencies.model), this.post])
+        router.get('/:id', [this.idValidator, this.getById])
         router.delete('/:id', [this.idValidator, this.delete])
         router.get('/:id/productos', [this.idValidator, this.getItems])
         router.post('/:id/productos', [this.idValidator, this.addItem])
