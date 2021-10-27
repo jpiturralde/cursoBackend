@@ -1,7 +1,13 @@
 import DummyRepo from "./DummyRepo.js"
-import Container from "./Container.js"
 import Repository from "./Repository.js"
-import FileSystemContainer from "./FileSystemContainer.js"
+import Products from "./Products.js"
 
-export { FileSystemContainer, Container, Repository, DummyRepo }
+const Carrito = (filePath) => {
+    if (filePath) {
+        return new DummyRepo('CART')
+    }
+    return new Repository()
+}
+
+export { Products, Carrito }
 

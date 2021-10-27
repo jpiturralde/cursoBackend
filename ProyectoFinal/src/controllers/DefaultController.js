@@ -33,15 +33,24 @@ export default class DefaultController {
     }
 
     post = async (req, res) => {
-        res.status(201).json(await this.#dependencies.model.post(req.body))
+        try {
+            const response = await this.#dependencies.model.post(req.body)
+            res.status(201).json(response)
+        } catch (error) {
+            res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
+        }
     }
 
     put = async (req, res) => {
-        const response = await this.#dependencies.model.put(parseInt(req.params.id), req.body)
-        if (!response) {
-            res.status(204).json()
+        try {
+            const response = await this.#dependencies.model.put(parseInt(req.params.id), req.body)
+            if (!response) {
+                res.status(204).json()
+            }
+            res.json(response)
+        } catch (error) {
+            res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
         }
-        res.json(response)
     }
     
     delete = async (req, res) => {

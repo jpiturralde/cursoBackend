@@ -10,7 +10,7 @@ export default class Repository {
                 return element.id
             })
             const max = ids.reduce((previous, current) => current > previous ? current : previous) 
-            return max
+            return max+1
         }
         return 1
     }
