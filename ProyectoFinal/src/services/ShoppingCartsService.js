@@ -12,7 +12,6 @@ export default class ShoppingCartsService {
     async #find(id) {
         const shoppingCart = await this.#db['shoppingCarts'].getById(id)
         if (!shoppingCart) {
-//            throw Error("Shopping Cart not found")
             throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Shopping Cart ${id} no encontrado.`)))
         }
         return shoppingCart
@@ -23,7 +22,6 @@ export default class ShoppingCartsService {
     }
 
     async addItem(id, item) {
-        //TODO Validar si el producto existe en la colección de productos
         const shoppingCart = await this.#find(id)
         const index = shoppingCart.items.findIndex(x => x.productId == item.productId)
         let result = item
