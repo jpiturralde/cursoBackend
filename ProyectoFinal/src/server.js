@@ -1,11 +1,11 @@
 import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
-import { ProductsController, ShoppingCartsController } from "./controllers/index.js"
+import { ShoppingCartsController, ProductsController, DefaultController } from "./controllers/index.js"
 import { ShoppingCartsService } from "./services/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
 
 const productsModel = new Products('./db/products.txt')
-const productsController = new ProductsController({model: productsModel})
+const productsController = new DefaultController({model: productsModel})
 const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
 const shoppingCartsService = new ShoppingCartsService(shoppingCartsModel, productsModel)
 const shoppingCartsController = new ShoppingCartsController({model: shoppingCartsModel, service: shoppingCartsService})

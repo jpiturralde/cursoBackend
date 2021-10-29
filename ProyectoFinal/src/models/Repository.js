@@ -32,9 +32,9 @@ export default class Repository {
     }
 
     schemaErrors(data) {
-        const errors = schemaValidations(data)
+        const errors = this.schemaValidations(data)
 
-        if (errors) {
+        if (errors.length > 0) {
             throw new Error(errors)
         }
     }

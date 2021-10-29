@@ -9,13 +9,19 @@ export default class DefaultController {
         this.#dependencies = dependencies
     }
 
-    idValidator = (req, res, next) => {
-        const num = parseInt(req.params.id)
-    
-        if (isNaN(num)) {
-            return res.status(400).json(INVALID_ENTITY_ERROR_MSG('El parámetro ingresado no es numérico.'))
+    idValidator (idKey)  {
+        return (req, res, next) => {
+            let paramKey = idKey 
+            if (!paramKey) {
+                paramKey = 'id'
+            }
+            const num = parseInt(req.params[paramKey])
+        
+            if (isNaN(num)) {
+                return res.status(400).json(INVALID_ENTITY_ERROR_MSG('El parámetro ingresado no es numérico.'))
+            }
+            next();
         }
-        next();
     }
 
     modelValidator (model) {
@@ -43,7 +49,12 @@ export default class DefaultController {
     }
 
     post = async (req, res) => {
-        res.status(201).json(await this.#dependencies.model.post(req.body))
+        try {
+            res.status(201).json(await this.#dependencies.model.post(req.body))
+        } catch (error) {
+            res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
+        }
+        
     }
 
     put = async (req, res) => {
@@ -63,13 +74,25 @@ export default class DefaultController {
         res.json()
     }
 
+    static defaultProcessor = (controllerInstance, processorName) => {
+        const processors = {
+            'getAll': [controllerInstance.getAll],
+            'post': [controllerInstance.modelValidator(controllerInstance.#dependencies.model), controllerInstance.post],
+            'getById': [controllerInstance.idValidator(), controllerInstance.getById],
+            'put': [controllerInstance.idValidator(), controllerInstance.modelValidator(controllerInstance.#dependencies.model), controllerInstance.put], 
+            'delete': [controllerInstance.idValidator(), controllerInstance.delete]
+        }
+        const processor = processors[processorName]
+        return processor
+    }
+
     createRouter() {
         const router = new Router()
-        router.get('/', this.getAll)
-        router.post('/', [this.modelValidator(this.#dependencies.model), this.post])
-        router.get('/:id', [this.idValidator, this.getById])
-        router.put('/:id', [this.idValidator, this.modelValidator(this.#dependencies.model), this.put])
-        router.delete('/:id', [this.idValidator, this.delete])
+        router.get('/', DefaultController.defaultProcessor(this, 'getAll'))
+        router.post('/', DefaultController.defaultProcessor(this, 'post'))
+        router.get('/:id', DefaultController.defaultProcessor(this, 'getById'))
+        router.put('/:id', DefaultController.defaultProcessor(this, 'put'))
+        router.delete('/:id', DefaultController.defaultProcessor(this, 'delete'))
         return router
     }
 

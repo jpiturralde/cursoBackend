@@ -10,7 +10,6 @@ export default class ShoppingCartsController extends DefaultController {
     }
 
     getItems = async (req, res) => {
-        // res.json(await this.#dependencies.service.getItems(req.params.id))
         this.#dependencies.service.getItems(req.params.id)
             .then(items => {
                 res.status(201).json(items)
@@ -22,7 +21,6 @@ export default class ShoppingCartsController extends DefaultController {
     }
     
     addItem = async (req, res) => {
-        // res.status(201).json(await this.#dependencies.service.addItem(req.params.id, req.body))
         this.#dependencies.service.addItem(req.params.id, req.body)
             .then(result => {
                 res.status(201).json(result)
@@ -44,12 +42,12 @@ export default class ShoppingCartsController extends DefaultController {
 
     createRouter() {
         const router = new Router()
-        router.post('/', [this.modelValidator(this.#dependencies.model), this.post])
-        router.get('/:id', [this.idValidator, this.getById])
-        router.delete('/:id', [this.idValidator, this.delete])
-        router.get('/:id/productos', [this.idValidator, this.getItems])
-        router.post('/:id/productos', [this.idValidator, this.addItem])
-        router.delete('/:id/productos/:productId', [this.idValidator, this.deleteItem])
+        router.post('/', DefaultController.defaultProcessor(this, 'post'))
+        router.get('/:id', DefaultController.defaultProcessor(this, 'getById'))
+        router.delete('/:id', DefaultController.defaultProcessor(this, 'delete'))
+        router.get('/:id/productos', [this.idValidator(), this.getItems])
+        router.post('/:id/productos', [this.idValidator(), this.addItem])
+        router.delete('/:id/productos/:productId', [this.idValidator(), this.idValidator('productId'), this.deleteItem])
         return router
     }
  
