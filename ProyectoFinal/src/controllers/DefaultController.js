@@ -4,9 +4,11 @@ import { INVALID_ENTITY_ERROR_MSG } from "../lib/index.js"
 export default class DefaultController {
     #dependencies
     #router
+    #model
 
     constructor(dependencies) {
         this.#dependencies = dependencies
+        this.#model = this.#dependencies.db[this.#dependencies.entity]
     }
 
     idValidator (idKey)  {
@@ -34,12 +36,23 @@ export default class DefaultController {
         }
     } 
 
+    // getAll = async (req, res) => {
+    //     res.json(await this.#dependencies.model.getAll())
+    // }
+
+    // getAll(entity) {
+    //     console.log('DefaultController.getAll ', entity)
+    //     return async (req, res) => {
+    //         res.json(await this.#dependencies.db[entity].getAll())
+    //     }
+    // }
+
     getAll = async (req, res) => {
-        res.json(await this.#dependencies.model.getAll())
+        res.json(await this.#model.getAll())
     }
 
     getById = async (req, res, next) => {
-        const data = await this.#dependencies.model.getById(req.params.id)
+        const data = await this.#model.getById(req.params.id)
         if (!data) {
             const error = new Error('No encontrado')
             error.httpStatusCode = 404
@@ -50,7 +63,7 @@ export default class DefaultController {
 
     post = async (req, res) => {
         try {
-            res.status(201).json(await this.#dependencies.model.post(req.body))
+            res.status(201).json(await this.#model.post(req.body))
         } catch (error) {
             res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
         }
@@ -59,7 +72,7 @@ export default class DefaultController {
 
     put = async (req, res) => {
         try {
-            const response = await this.#dependencies.model.put(parseInt(req.params.id), req.body)
+            const response = await this.#model.put(parseInt(req.params.id), req.body)
             if (!response) {
                 res.status(204).json()
             }
@@ -70,16 +83,16 @@ export default class DefaultController {
     }
     
     delete = async (req, res) => {
-        this.#dependencies.model.deleteById(parseInt(req.params.id))
+        this.#model.deleteById(parseInt(req.params.id))
         res.json()
     }
 
     static defaultProcessor = (controllerInstance, processorName) => {
         const processors = {
             'getAll': [controllerInstance.getAll],
-            'post': [controllerInstance.modelValidator(controllerInstance.#dependencies.model), controllerInstance.post],
+            'post': [controllerInstance.modelValidator(controllerInstance.#model), controllerInstance.post],
             'getById': [controllerInstance.idValidator(), controllerInstance.getById],
-            'put': [controllerInstance.idValidator(), controllerInstance.modelValidator(controllerInstance.#dependencies.model), controllerInstance.put], 
+            'put': [controllerInstance.idValidator(), controllerInstance.modelValidator(controllerInstance.#model), controllerInstance.put], 
             'delete': [controllerInstance.idValidator(), controllerInstance.delete]
         }
         const processor = processors[processorName]

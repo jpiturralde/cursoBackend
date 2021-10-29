@@ -5,10 +5,14 @@ import { ShoppingCartsService } from "./services/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
 
 const productsModel = new Products('./db/products.txt')
-const productsController = new DefaultController({model: productsModel})
 const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
-const shoppingCartsService = new ShoppingCartsService(shoppingCartsModel, productsModel)
-const shoppingCartsController = new ShoppingCartsController({model: shoppingCartsModel, service: shoppingCartsService})
+const db = {
+    'products': productsModel,
+    'shoppingCarts': shoppingCartsModel
+}
+const productsController = new DefaultController({db, entity: 'products' })
+const shoppingCartsService = new ShoppingCartsService(db)
+const shoppingCartsController = new ShoppingCartsController({model: shoppingCartsModel, service: shoppingCartsService, db, entity: 'shoppingCarts'})
 
 const app = express()
 app.use(express.json())

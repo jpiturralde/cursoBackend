@@ -29,3 +29,10 @@ export const INVALID_ENTITY_ERROR_MSG = (errors) => {
       descripcion: errors
   } 
 }
+
+export const ENTITY_NOT_FOUND_ERROR_MSG = (msg) => { 
+  return  {
+      error : -4, 
+      descripcion: msg
+  } 
+}

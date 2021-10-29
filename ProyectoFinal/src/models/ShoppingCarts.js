@@ -15,30 +15,40 @@ export default class ShoppingCarts extends Repository {
         }
     }
 
-    schemaValidations(data) {
+    validateItem(item) {
         const errors = []
-        if (data.items) {
-            //validar items
+        if (!item.productId) {
+            errors.push('ShoppingCartItem: Falta campo productId')
         }
-        // if (!data.name) {
-        //     errors.push('Producto: Falta campo name')
-        // }
-        // if (!data.code) {
-        //     errors.push('Producto: Falta campo code')
-        // }
-        // if (isNaN(parseInt(data.price)) || data.price < 0) {
-        //     errors.push('Producto: Campo price inválido')
-        // }
-        // if (isNaN(parseInt(data.stock)) || data.stock < 0) {
-        //     errors.push('Producto: Campo stock inválido')
-        // }
+        else if (isNaN(parseInt(item.productId))) {
+            errors.push('ShoppingCartItem: Campo productId invalido.')
+        }
+        if (!item.quantity) {
+            errors.push('ShoppingCartItem: Falta campo quantity')
+        }
+        else if (isNaN(parseInt(item.quantity))) {
+            errors.push('ShoppingCartItem: Campo quantity invalido.')
+        }
+        return errors
+    }
+
+    schemaValidations(data) {
+        let errors = []
+
+        if (data.items) {
+            if (!Array.isArray(data.items)) {
+                errors.push('ShoppingCart: Campo items debe ser una colección.')
+            }
+            else {
+                errors = data.items.flatMap(x => this.validateItem(x))
+            }
+        }
         return errors
     }
 
     async post(data) { 
-        // this.schemaErrors(data)
-        
-        console.log("post(data) ")
+        this.schemaErrors(data)
+
         const items = { items: [] }
 
         if (!data.items) {
@@ -49,7 +59,7 @@ export default class ShoppingCarts extends Repository {
     }
 
     put(id, data) { 
-        // this.schemaErrors(data)
+        this.schemaErrors(data)
 
         return super.put(id, data)
     }

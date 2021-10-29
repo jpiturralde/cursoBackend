@@ -36,7 +36,7 @@ export default class Products extends Repository {
         this.schemaErrors(data)
 
         const content = await super.getAll()
-        const exists = content.filter(x => x.title == data.title)
+        const exists = content.filter(x => x.code == data.code)
         if (exists.length > 0) {
             return exists[0]
         }
