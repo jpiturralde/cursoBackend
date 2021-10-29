@@ -36,17 +36,6 @@ export default class DefaultController {
         }
     } 
 
-    // getAll = async (req, res) => {
-    //     res.json(await this.#dependencies.model.getAll())
-    // }
-
-    // getAll(entity) {
-    //     console.log('DefaultController.getAll ', entity)
-    //     return async (req, res) => {
-    //         res.json(await this.#dependencies.db[entity].getAll())
-    //     }
-    // }
-
     getAll = async (req, res) => {
         res.json(await this.#model.getAll())
     }
