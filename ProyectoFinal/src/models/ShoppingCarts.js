@@ -35,20 +35,21 @@ export default class ShoppingCarts extends Repository {
         return errors
     }
 
-    // async post(data) { 
-    //     this.schemaErrors(data)
+    async post(data) { 
+        // this.schemaErrors(data)
+        
+        console.log("post(data) ")
+        const items = { items: [] }
 
-    //     const content = await super.getAll()
-    //     const exists = content.filter(x => x.title == data.title)
-    //     if (exists.length > 0) {
-    //         return exists[0]
-    //     }
+        if (!data.items) {
+            return super.post(items)
+        }
 
-    //     return super.post(data)
-    // }
+        return super.post(data)
+    }
 
     put(id, data) { 
-        this.schemaErrors(data)
+        // this.schemaErrors(data)
 
         return super.put(id, data)
     }

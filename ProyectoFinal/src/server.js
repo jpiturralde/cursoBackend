@@ -1,7 +1,14 @@
 import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { ProductsController, ShoppingCartsController } from "./controllers/index.js"
+import { ShoppingCartsService } from "./services/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
+
+const productsModel = new Products('./db/products.txt')
+const productsController = new ProductsController({model: productsModel})
+const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
+const shoppingCartsService = new ShoppingCartsService(shoppingCartsModel, productsModel)
+const shoppingCartsController = new ShoppingCartsController({model: shoppingCartsModel, service: shoppingCartsService})
 
 const app = express()
 app.use(express.json())
@@ -18,12 +25,13 @@ app.use(authorization(
 /* ------------------------------------------------------ */
 /* Cargo los routers */
 //app.use('/api/productos', (new ProductsController({model: Productos(new FileSystemContainer('./db/products.txt'))})).build())
-app.use('/api/productos', (new ProductsController({model: new Products('./db/products.txt')})).build())
+app.use('/api/productos', productsController.build())
 //Repo en memoria
-//app.use('/api/productos', (new ProductsController({model: new Repository()})).build())
 // app.use('/api/productos', (new ProductsController({model: Productos()})).build())
 
-app.use('/api/carrito', (new ShoppingCartsController({model: new ShoppingCarts('./db/carts.txt')})).build()) 
+app.use('/api/carrito', shoppingCartsController.build()) 
+//Repo en memoria
+// app.use('/api/carrito', (new ShoppingCartsController({model: ShoppingCarts()})).build())
 
 app.use(unkownRoute)
 app.use(errorHandler)
