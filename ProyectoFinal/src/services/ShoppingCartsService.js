@@ -18,7 +18,8 @@ export default class ShoppingCartsService {
     }
 
     async getItems(id) {
-        return await this.#find(id)
+        const shooppingCart = await this.#find(id)
+        return shooppingCart.items
     }
 
     async addItem(id, item) {
