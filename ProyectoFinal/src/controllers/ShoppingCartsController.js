@@ -52,7 +52,7 @@ export default class ShoppingCartsController extends DefaultController {
                 res.status(201).json(result)
             }).catch(error => {
                 console.error(error.message)
-                res.status(404).json(error.message)
+                res.status(404).json(JSON.parse(error.message))
             })
     }
 

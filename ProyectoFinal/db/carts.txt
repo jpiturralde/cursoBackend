@@ -1,10 +1,23 @@
 [
   {
-    "id": 7,
+    "id": 17,
     "payload": {
-      "id": "7",
-      "timestamp": 1635464266737,
+      "id": "17",
+      "timestamp": 1635552893957,
       "items": []
+    }
+  },
+  {
+    "id": 18,
+    "payload": {
+      "id": 18,
+      "timestamp": 1635552940920,
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 1
+        }
+      ]
     }
   }
 ]
