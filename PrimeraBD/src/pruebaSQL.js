@@ -1,7 +1,15 @@
 import ClienteSql from './sql.js'
 import { options } from '../options/mariaDB.js'
+import { RepositoryDB } from "./persistence/index.js";
 
-const sql = new ClienteSql(options)
+const db = new RepositoryDB('messages', options)
+
+async function exec() {
+    const msg = { ts: Date.now(), msg: 'HOLA'}
+    console.log('EXEC ID = ', await db.post([msg]))
+}
+
+// const sql = new ClienteSql(options)
 // sql.crearTabla()
 //   .then(() => {
 //     console.log("1) tabla creada")
@@ -59,11 +67,11 @@ const sql = new ClienteSql(options)
 
 
 
-const art = { nombre: 'UNO', codigo: 'UNO-12', precio: 23.60, stock: 0 }
-const articulos = [
-      { nombre: 'DOS', codigo: 'FG-44', precio: 42.70, stock: 34 },
-      { nombre: 'TRES', codigo: 'CR-77', precio: 67.90, stock: 24 }
-    ]
+// const art = { nombre: 'UNO', codigo: 'UNO-12', precio: 23.60, stock: 0 }
+// const articulos = [
+//       { nombre: 'DOS', codigo: 'FG-44', precio: 42.70, stock: 34 },
+//       { nombre: 'TRES', codigo: 'CR-77', precio: 67.90, stock: 24 }
+//     ]
 
 // sql.insertarArticulo(art)
 //     .then( (id) => {
@@ -75,10 +83,10 @@ const articulos = [
 //     console.log('INSERTA ID=', ids)    
 // })
 
-async function exec() {
-    // console.log('EXEC ID = ', await sql.insertarArticulos1x1(articulos))
-    // console.log('EXEC = ', await sql.insertarArticulo(art))
-    console.log('EXEC ID = ', await sql.insertarArticulos1x1([art]))
-}
+// async function exec() {
+//     // console.log('EXEC ID = ', await sql.insertarArticulos1x1(articulos))
+//     console.log('EXEC = ', await sql.insertarArticulo(art))
+//     console.log('EXEC ID = ', await sql.insertarArticulos1x1([art]))
+// }
 
 exec()
