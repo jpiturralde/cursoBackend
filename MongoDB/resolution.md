@@ -97,9 +97,17 @@ db.productos.insertMany([
 2. Definir las claves de los documentos en relación a los campos de las tablas de esa base. En el caso de los productos, poner valores al campo precio entre los 100 y 5000 pesos(eligiendo valores intermedios, ej: 120, 580, 900, 1280, 1700, 2300, 2860, 3350, 4320, 4990).
 
 3. Listar todos los documentos en cada colección.
-
+>**Resolución**
+````
+db.mensajes.find()
+db.productos.find()
+````
 4. Mostrar la cantidad de documentos almacenados en cada una de ellas.
-
+>**Resolución**
+````
+db.mensajes.countDocuments({})
+db.productos.countDocuments({})
+````
   
 
 5. Realizar un CRUD sobre la colección de productos:
