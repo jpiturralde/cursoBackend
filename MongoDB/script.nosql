@@ -1,0 +1,228 @@
+--Inicio MongoDB Server
+mongod --dbpath C:\Users\u610166\Documents\cursoBackend\cursoBakend\MongoDB\ecommerce 
+
+--Crear una base de datos llamada ecommerce qeu contenga dos colecciones: mensajes y productos
+> use ecommerce
+switched to db ecommerce
+> db
+ecommerce
+
+> db.createCollection('mensajes')
+{ "ok" : 1 }
+> db.createCollection('productos')
+{ "ok" : 1 }
+> show collections
+mensajes
+productos
+
+--Agregar 10 documentos con valores distintos a las colecciones mensajes y productos.
+db.mensajes.insertMany([
+{id: 1, ts: Date.now(), author: 'author1@gmail.com', msg:'mensaje1'},
+{id: 2, ts: Date.now(), author: 'author2@gmail.com', msg:'mensaje2'},
+{id: 3, ts: Date.now(), author: 'author3@gmail.com', msg:'mensaje3'},
+{id: 4, ts: Date.now(), author: 'author4@gmail.com', msg:'mensaje4'},
+{id: 5, ts: Date.now(), author: 'author5@gmail.com', msg:'mensaje5'},
+{id: 6, ts: Date.now(), author: 'author6@gmail.com', msg:'mensaje6'},
+{id: 7, ts: Date.now(), author: 'author7@gmail.com', msg:'mensaje7'},
+{id: 8, ts: Date.now(), author: 'author8@gmail.com', msg:'mensaje8'},
+{id: 9, ts: Date.now(), author: 'author9@gmail.com', msg:'mensaje9'},
+{id: 10, ts: Date.now(), author: 'author10@gmail.com', msg:'mensaje10'}
+])
+
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6185ac575b698074e5434dcd"),
+                ObjectId("6185ac575b698074e5434dce"),
+                ObjectId("6185ac575b698074e5434dcf"),
+                ObjectId("6185ac575b698074e5434dd0"),
+                ObjectId("6185ac575b698074e5434dd1"),
+                ObjectId("6185ac575b698074e5434dd2"),
+                ObjectId("6185ac575b698074e5434dd3"),
+                ObjectId("6185ac575b698074e5434dd4"),
+                ObjectId("6185ac575b698074e5434dd5"),
+                ObjectId("6185ac575b698074e5434dd6")
+        ]
+}
+
+db.productos.insertMany([
+{id: 1, title: 'Articulo1', price: 120, thumbnail: 'http://foto.del.articulo1.com'},
+{id: 2, title: 'Articulo2', price: 580, thumbnail: 'http://foto.del.articulo2.com'},
+{id: 3, title: 'Articulo3', price: 900, thumbnail: 'http://foto.del.articulo3.com'},
+{id: 4, title: 'Articulo4', price: 1280, thumbnail: 'http://foto.del.articulo4.com'},
+{id: 5, title: 'Articulo5', price: 1700, thumbnail: 'http://foto.del.articulo5.com'},
+{id: 6, title: 'Articulo6', price: 2300, thumbnail: 'http://foto.del.articulo6.com'},
+{id: 7, title: 'Articulo7', price: 2860, thumbnail: 'http://foto.del.articulo7.com'},
+{id: 8, title: 'Articulo8', price: 3350, thumbnail: 'http://foto.del.articulo8.com'},
+{id: 9, title: 'Articulo9', price: 4320, thumbnail: 'http://foto.del.articulo9.com'},
+{id: 10, title: 'Articulo10', price: 4990, thumbnail: 'http://foto.del.articulo10.com'}
+])
+
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6185ac745b698074e5434dd7"),
+                ObjectId("6185ac745b698074e5434dd8"),
+                ObjectId("6185ac745b698074e5434dd9"),
+                ObjectId("6185ac745b698074e5434dda"),
+                ObjectId("6185ac745b698074e5434ddb"),
+                ObjectId("6185ac745b698074e5434ddc"),
+                ObjectId("6185ac745b698074e5434ddd"),
+                ObjectId("6185ac745b698074e5434dde"),
+                ObjectId("6185ac745b698074e5434ddf"),
+                ObjectId("6185ac745b698074e5434de0")
+        ]
+}
+
+
+-- 3. Listar todos los documentos en cada colección.
+> db.mensajes.find()
+{ "_id" : ObjectId("6185ac575b698074e5434dcd"), "id" : 1, "ts" : 1636150359200, "author" : "author1@gmail.com", "msg" : "mensaje1" }
+{ "_id" : ObjectId("6185ac575b698074e5434dce"), "id" : 2, "ts" : 1636150359200, "author" : "author2@gmail.com", "msg" : "mensaje2" }
+{ "_id" : ObjectId("6185ac575b698074e5434dcf"), "id" : 3, "ts" : 1636150359200, "author" : "author3@gmail.com", "msg" : "mensaje3" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd0"), "id" : 4, "ts" : 1636150359200, "author" : "author4@gmail.com", "msg" : "mensaje4" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd1"), "id" : 5, "ts" : 1636150359200, "author" : "author5@gmail.com", "msg" : "mensaje5" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd2"), "id" : 6, "ts" : 1636150359200, "author" : "author6@gmail.com", "msg" : "mensaje6" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd3"), "id" : 7, "ts" : 1636150359200, "author" : "author7@gmail.com", "msg" : "mensaje7" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd4"), "id" : 8, "ts" : 1636150359200, "author" : "author8@gmail.com", "msg" : "mensaje8" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd5"), "id" : 9, "ts" : 1636150359200, "author" : "author9@gmail.com", "msg" : "mensaje9" }
+{ "_id" : ObjectId("6185ac575b698074e5434dd6"), "id" : 10, "ts" : 1636150359200, "author" : "author10@gmail.com", "msg" : "mensaje10" }
+> db.productos.find()
+{ "_id" : ObjectId("6185ac745b698074e5434dd7"), "id" : 1, "title" : "Articulo1", "price" : 120, "thumbnail" : "http://foto.del.articulo1.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dd8"), "id" : 2, "title" : "Articulo2", "price" : 580, "thumbnail" : "http://foto.del.articulo2.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dd9"), "id" : 3, "title" : "Articulo3", "price" : 900, "thumbnail" : "http://foto.del.articulo3.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dda"), "id" : 4, "title" : "Articulo4", "price" : 1280, "thumbnail" : "http://foto.del.articulo4.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddb"), "id" : 5, "title" : "Articulo5", "price" : 1700, "thumbnail" : "http://foto.del.articulo5.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddc"), "id" : 6, "title" : "Articulo6", "price" : 2300, "thumbnail" : "http://foto.del.articulo6.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddd"), "id" : 7, "title" : "Articulo7", "price" : 2860, "thumbnail" : "http://foto.del.articulo7.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dde"), "id" : 8, "title" : "Articulo8", "price" : 3350, "thumbnail" : "http://foto.del.articulo8.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddf"), "id" : 9, "title" : "Articulo9", "price" : 4320, "thumbnail" : "http://foto.del.articulo9.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434de0"), "id" : 10, "title" : "Articulo10", "price" : 4990, "thumbnail" : "http://foto.del.articulo10.com" }
+
+
+--4.  Mostrar la cantidad de documentos almacenados en cada una de ellas.
+> db.mensajes.countDocuments({})
+10
+> db.productos.countDocuments({})
+10
+
+
+--5.  Realizar un CRUD sobre la colección de productos:
+--	 a. Agregar un producto más en la colección de productos.
+db.productos.insertOne({id: 11, title: 'Articulo10', price: 4900, thumbnail: 'http://foto.del.articulo11.com'})
+
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("6185adcc5b698074e5434de1")
+}
+
+--	 b. Realizar una consulta por nombre de producto específico:
+--	 1. Listar los productos con precio menor a 1000 pesos.
+> db.productos.find({price: {$lt:1000}})
+{ "_id" : ObjectId("6185ac745b698074e5434dd7"), "id" : 1, "title" : "Articulo1", "price" : 120, "thumbnail" : "http://foto.del.articulo1.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dd8"), "id" : 2, "title" : "Articulo2", "price" : 580, "thumbnail" : "http://foto.del.articulo2.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434dd9"), "id" : 3, "title" : "Articulo3", "price" : 900, "thumbnail" : "http://foto.del.articulo3.com" }
+>
+--	 2. Listar los productos con precio entre los 1000 a 3000 pesos.
+> db.productos.find({$and: [ {price: {$gte:1000}}, {price: {$lte:3000}}] })
+{ "_id" : ObjectId("6185ac745b698074e5434dda"), "id" : 4, "title" : "Articulo4", "price" : 1280, "thumbnail" : "http://foto.del.articulo4.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddb"), "id" : 5, "title" : "Articulo5", "price" : 1700, "thumbnail" : "http://foto.del.articulo5.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddc"), "id" : 6, "title" : "Articulo6", "price" : 2300, "thumbnail" : "http://foto.del.articulo6.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddd"), "id" : 7, "title" : "Articulo7", "price" : 2860, "thumbnail" : "http://foto.del.articulo7.com" }
+>
+--	 3. Listar los productos con precio mayor a 3000 pesos.
+> db.productos.find({price: {$gt:3000}})
+{ "_id" : ObjectId("6185ac745b698074e5434dde"), "id" : 8, "title" : "Articulo8", "price" : 3350, "thumbnail" : "http://foto.del.articulo8.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434ddf"), "id" : 9, "title" : "Articulo9", "price" : 4320, "thumbnail" : "http://foto.del.articulo9.com" }
+{ "_id" : ObjectId("6185ac745b698074e5434de0"), "id" : 10, "title" : "Articulo10", "price" : 4990, "thumbnail" : "http://foto.del.articulo10.com" }
+{ "_id" : ObjectId("6185adcc5b698074e5434de1"), "id" : 11, "title" : "Articulo10", "price" : 4900, "thumbnail" : "http://foto.del.articulo11.com" }
+>
+--	 4. Realizar una consulta que traiga sólo el nombre del tercer producto más barato.
+> db.productos.find({},{"title":1}).skip(2).limit(1).sort({price:-1})
+{ "_id" : ObjectId("6185ac745b698074e5434ddf"), "title" : "Articulo9" }
+
+--c. Hacer una actualización sobre todos los productos, agregando el campo stock a todos ellos con un valor de 100.
+> db.productos.updateMany({}, {$set: {stock: 100}})
+{ "acknowledged" : true, "matchedCount" : 11, "modifiedCount" : 11 }
+>
+
+--d. Cambiar el stock a cero de los productos con precios mayores a 4000 pesos.
+> db.productos.updateMany({price: {$gt:4000}}, {$set: {stock: 0}})
+{ "acknowledged" : true, "matchedCount" : 3, "modifiedCount" : 3 }
+
+
+--e. Borrar los productos con precio menor a 1000 pesos.
+> db.productos.deleteMany({price: {$gt:1000}})
+{ "acknowledged" : true, "deletedCount" : 8 }
+
+--6. Crear un usuario 'pepe' clave: 'asd456' que sólo pueda leer la base de datos ecommerce. Verificar que pepe no pueda cambiar la información.
+> use admin
+switched to db admin
+
+
+> db.createUser(
+...   {
+...     user: "pepe",
+...     pwd: "asd456",
+...     roles: [
+...        { role: "read", db: "ecommerce" }
+...     ]
+...   }
+... )
+Successfully added user: {
+        "user" : "pepe",
+        "roles" : [
+                {
+                        "role" : "read",
+                        "db" : "ecommerce"
+                }
+        ]
+}
+
+
+mongod --auth --dbpath C:\Users\u610166\Documents\cursoBackend\cursoBakend\MongoDB\ecommerce 
+
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongo -u pepe -p asd456
+MongoDB shell version v5.0.3
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("af4f877f-6224-40d2-a9bd-29dd7ba9229a") }
+MongoDB server version: 5.0.3
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+> db
+test
+> use ecommerce
+switched to db ecommerce
+> db.productos.find()
+{ "_id" : ObjectId("6185ac745b698074e5434dd7"), "id" : 1, "title" : "Articulo1", "price" : 120, "thumbnail" : "http://foto.del.articulo1.com", "stock" : 100 }
+{ "_id" : ObjectId("6185ac745b698074e5434dd8"), "id" : 2, "title" : "Articulo2", "price" : 580, "thumbnail" : "http://foto.del.articulo2.com", "stock" : 100 }
+{ "_id" : ObjectId("6185ac745b698074e5434dd9"), "id" : 3, "title" : "Articulo3", "price" : 900, "thumbnail" : "http://foto.del.articulo3.com", "stock" : 100 }
+>
+
+
+> db.productos.insertOne({id: 12, title: 'Articulo12', price: 4000, thumbnail: 'http://foto.del.articulo12.com'})
+uncaught exception: WriteCommandError({
+        "ok" : 0,
+        "errmsg" : "not authorized on ecommerce to execute command { insert: \"productos\", ordered: true, lsid: { id: UUID(\"af4f877f-6224-40d2-a9bd-29dd7ba9229a\") }, $db: \"ecommerce\" }",
+        "code" : 13,
+        "codeName" : "Unauthorized"
+}) :
+WriteCommandError({
+        "ok" : 0,
+        "errmsg" : "not authorized on ecommerce to execute command { insert: \"productos\", ordered: true, lsid: { id: UUID(\"af4f877f-6224-40d2-a9bd-29dd7ba9229a\") }, $db: \"ecommerce\" }",
+        "code" : 13,
+        "codeName" : "Unauthorized"
+})
+WriteCommandError@src/mongo/shell/bulk_api.js:421:48
+executeBatch@src/mongo/shell/bulk_api.js:936:23
+Bulk/this.execute@src/mongo/shell/bulk_api.js:1182:21
+DBCollection.prototype.insertOne@src/mongo/shell/crud_api.js:264:9
+@(shell):1:1
+>
