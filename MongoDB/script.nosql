@@ -109,7 +109,7 @@ db.productos.insertMany([
 
 --5.  Realizar un CRUD sobre la colección de productos:
 --	 a. Agregar un producto más en la colección de productos.
-db.productos.insertOne({id: 11, title: 'Articulo10', price: 4900, thumbnail: 'http://foto.del.articulo11.com'})
+db.productos.insertOne({id: 11, title: 'Articulo11', price: 4900, thumbnail: 'http://foto.del.articulo11.com'})
 
 {
         "acknowledged" : true,
