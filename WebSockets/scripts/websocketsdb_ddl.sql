@@ -9,10 +9,12 @@ GRANT ALL PRIVILEGES ON websocketsdb.* TO coderhouse@localhost identified by 'co
 
 FLUSH PRIVILEGES;
 
-CREATE TABLE products(
+DROP TABLE messages;
+
+CREATE TABLE messages(
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    title VARCHAR(50) NOT NULL,
-    price DECIMAL(13,2) NOT NULL,
-    thumbnail VARCHAR(250) NOT NULL,
+    ts BIGINT UNSIGNED NOT NULL,
+    author VARCHAR(50) NOT NULL,
+    msg VARCHAR(250),
     primary key(id)
-);
+); 
