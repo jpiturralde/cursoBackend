@@ -118,15 +118,30 @@ a. Agregar un producto más en la colección de productos.
 db.productos.insertOne({id: 11, title: 'Articulo11', price: 4900, thumbnail: 'http://foto.del.articulo11.com'})
 ````
 b. Realizar una consulta por nombre de producto específico:
-
+>**Resolución**
+````
+db.productos.find({title: 'Articulo3'})
+````
 1. Listar los productos con precio menor a 1000 pesos.
-
+>**Resolución**
+````
+db.productos.find({price: {$lt:1000}})
+````
 2. Listar los productos con precio entre los 1000 a 3000 pesos.
-
+>**Resolución**
+````
+productos.find({$and: [ {price: {$gte:1000}}, {price: {$lte:3000}}] })
+````
 3. Listar los productos con precio mayor a 3000 pesos.
-
+>**Resolución**
+````
+db.productos.find({price: {$gt:3000}})
+````
 4. Realizar una consulta que traiga sólo el nombre del tercer producto más barato.
-
+>**Resolución**
+````
+db.productos.find({},{"title":1}).skip(2).limit(1).sort({price:-1})
+````
   
 
 c. Hacer una actualización sobre todos los productos, agregando el campo stock a todos ellos con un valor de 100.
