@@ -181,6 +181,32 @@ db.createUser(
 ````
 mongod --auth --dbpath /PATH/ecommerce 
 ````
+2. Ingresar coon usuario pepe
+````
+mongo -u pepe -p asd456
+````
+3. Usar base ecommerce
+````
+use ecommerce
+````
+4. Validar permisos de lectura
+````
+db.productos.find()
+````
+5. Validar restricción para escritura
+````
+db.productos.insertOne({id: 12, title: 'Articulo12', price: 4000, thumbnail: 'http://foto.del.articulo12.com'})
+````
+>>Salida esperada:
+````
+uncaught exception: WriteCommandError({
+        "ok" : 0,
+        "errmsg" : "not authorized on ecommerce to execute command { insert: \"productos\", ordered: true, lsid: { id: UUID(\"af4f877f-6224-40d2-a9bd-29dd7ba9229a\") }, $db: \"ecommerce\" }",
+        "code" : 13,
+        "codeName" : "Unauthorized"
+}) :
+
+````
 
 #
 
