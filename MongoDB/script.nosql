@@ -117,6 +117,9 @@ db.productos.insertOne({id: 11, title: 'Articulo11', price: 4900, thumbnail: 'ht
 }
 
 --	 b. Realizar una consulta por nombre de producto específico:
+> db.productos.find({title: 'Articulo3'})
+{ "_id" : ObjectId("6185ac745b698074e5434dd9"), "id" : 3, "title" : "Articulo3", "price" : 900, "thubnail" : "http://foto.del.articulo3.com", "stock" : 100 }
+
 --	 1. Listar los productos con precio menor a 1000 pesos.
 > db.productos.find({price: {$lt:1000}})
 { "_id" : ObjectId("6185ac745b698074e5434dd7"), "id" : 1, "title" : "Articulo1", "price" : 120, "thumbnail" : "http://foto.del.articulo1.com" }
