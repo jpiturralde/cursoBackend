@@ -113,7 +113,10 @@ db.productos.countDocuments({})
 5. Realizar un CRUD sobre la colección de productos:
 
 a. Agregar un producto más en la colección de productos.
-
+>**Resolución**
+````
+db.productos.insertOne({id: 11, title: 'Articulo11', price: 4900, thumbnail: 'http://foto.del.articulo11.com'})
+````
 b. Realizar una consulta por nombre de producto específico:
 
 1. Listar los productos con precio menor a 1000 pesos.
