@@ -176,7 +176,11 @@ db.createUser(
    }
 )
 ````
-
+>**Validación**
+1. Levantar servidor con --auth
+````
+mongod --auth --dbpath /PATH/ecommerce 
+````
 
 #
 
