@@ -3,9 +3,12 @@ import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { ShoppingCartsController, DefaultController } from "./controllers/index.js"
 import { ShoppingCartsService } from "./services/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
+import ProductsDao from "./daos/ProductsDao.js"
+import RepositoryFactory from "./persistence/RepositoyFactory.js"
 
+const productsModel = new ProductsDao(await RepositoryFactory.createRepository('FS', './db/products.txt'))
 //Persistencia en archivos
-const productsModel = new Products('./db/products.txt')
+// const productsModel = new Products('./db/products.txt')
 const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
 //Persistencia en memoria
 // const productsModel = new Products()
