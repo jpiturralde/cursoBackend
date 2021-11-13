@@ -1,0 +1,10 @@
+{
+    "ProductsRepository": {
+        "type": "FS", 
+        "connectionString": "./db/products.txt"
+    }, 
+    "ShoppingCartsRepository": {
+        "type": "FS", 
+        "connectionString": "./db/carts.txt"
+    }
+}

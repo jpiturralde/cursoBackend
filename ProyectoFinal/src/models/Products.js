@@ -45,6 +45,7 @@ export default class Products extends Repository {
     }
 
     put(id, data) { 
+        console.log('Products.put id=', id)
         this.schemaErrors(data)
 
         return super.put(id, data)

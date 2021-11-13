@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { ShoppingCartsController, DefaultController } from "./controllers/index.js"
@@ -6,20 +7,23 @@ import { Products, ShoppingCarts } from "./models/index.js"
 import ProductsDao from "./daos/ProductsDao.js"
 import RepositoryFactory from "./persistence/RepositoyFactory.js"
 
-const productsModel = new ProductsDao(await RepositoryFactory.createRepository('FS', './db/products.txt'))
+RepositoryFactory.initialize(process.argv.slice(2)[0])
+
+const productsModel = new ProductsDao(await RepositoryFactory.createProductsRepository())
+//const productsModel = new ProductsDao(await RepositoryFactory.createRepository())
+//const productsModel = new ProductsDao(await RepositoryFactory.createRepository({type: 'FS', connectionString: './db/products.txt'}))
 //Persistencia en archivos
-// const productsModel = new Products('./db/products.txt')
 const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
 //Persistencia en memoria
-// const productsModel = new Products()
 // const shoppingCartsModel = new ShoppingCarts()
+
 const db = {
     'products': productsModel,
     'shoppingCarts': shoppingCartsModel
 }
 const productsController = new DefaultController({ entity: 'products', db })
 const shoppingCartsService = new ShoppingCartsService(db)
-const shoppingCartsController = new ShoppingCartsController({entity: 'shoppingCarts', db, service: shoppingCartsService })
+const shoppingCartsController = new ShoppingCartsController({entity: 'shoppingCarts', db, service: shoppingCartsService})
 
 const app = express()
 app.use(express.json())

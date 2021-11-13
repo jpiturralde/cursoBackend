@@ -14,6 +14,7 @@ export default class ProductsDao {
     }
 
     schemaValidations(data) {
+        console.log('ProductsDao.schemaValidations ', data)
         const errors = []
         if (!data.name) {
             errors.push('Producto: Falta campo name')
@@ -42,17 +43,17 @@ export default class ProductsDao {
         return this.#repo.post(data)
     }
 
-    put(id, data) { 
+    async put(id, data) {
         this.schemaErrors(data)
 
-        return this.#repo.put(id, data)
+        const response = await this.#repo.put(id, data)
+        
+        return response
     }
 
     async getAll() { return this.#repo.getAll() }
 
     async getById(id) { return this.#repo.getById(id) }
-    
-    async put(id, data) { return this.#repo.put(id, data) }
 
     async deleteAll()  { return this.#repo.deleteAll() }
 

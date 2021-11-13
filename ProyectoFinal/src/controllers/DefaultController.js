@@ -65,7 +65,9 @@ export default class DefaultController {
             if (!response) {
                 res.status(204).json()
             }
-            res.json(response)
+            else {
+                res.json(response)
+            }
         } catch (error) {
             res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
         }

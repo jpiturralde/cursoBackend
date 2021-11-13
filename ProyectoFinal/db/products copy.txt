@@ -6,7 +6,7 @@
       "timestamp": 1635552297588,
       "name": "Escuadra",
       "code": "CODEscuadra",
-      "price": 100,
+      "price": 122.45,
       "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
       "stock": 0
     }
@@ -16,9 +16,9 @@
     "payload": {
       "id": 2,
       "timestamp": 1635552312932,
-      "name": "Escuadra",
-      "code": "CODEscuadra",
-      "price": 2000,
+      "name": "Globo",
+      "code": "CODGlobo",
+      "price": 122.45,
       "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
       "stock": 0
     }
