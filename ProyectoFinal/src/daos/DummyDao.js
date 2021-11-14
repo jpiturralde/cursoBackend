@@ -1,4 +1,4 @@
-export default class DefaultDao {
+export default class DummyDao {
 
     constructor(entity) {
         this.entity = entity

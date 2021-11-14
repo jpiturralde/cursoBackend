@@ -1,7 +1,10 @@
-export default class ShoppingCartsDao {
+import Dao from './Dao.js'
+
+export default class ShoppingCartsDao extends Dao {
     #repo
 
     constructor(repo) {
+        super(repo)
         this.#repo = repo
     }
 
@@ -50,26 +53,16 @@ export default class ShoppingCartsDao {
         const items = { items: [] }
 
         if (!data.items) {
-            return this.#repo.post(items)
+            return super.post(items)
         }
 
-        return this.#repo.post(data)
+        return super.post(data)
     }
 
     async put(id, data) { 
         this.schemaErrors(data)
 
-        return this.#repo.put(id, data)
+        return super.put(id, data)
     }
 
-    async getAll() { return this.#repo.getAll() }
-
-    async getById(id) { 
-        console.log('ShoppingCartsDao.getById ', id)
-        return this.#repo.getById(id) 
-    }
-
-    async deleteAll()  { return this.#repo.deleteAll() }
-
-    async deleteById(id)  { return this.#repo.deleteById(id) }
 }

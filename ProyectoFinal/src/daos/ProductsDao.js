@@ -1,7 +1,10 @@
-export default class ProductsDao {
+import Dao from './Dao.js'
+
+export default class ProductsDao extends Dao {
     #repo
 
     constructor(repo) {
+        super(repo)
         this.#repo = repo
     }
 
@@ -14,7 +17,6 @@ export default class ProductsDao {
     }
 
     schemaValidations(data) {
-        console.log('ProductsDao.schemaValidations ', data)
         const errors = []
         if (!data.name) {
             errors.push('Producto: Falta campo name')
@@ -40,22 +42,15 @@ export default class ProductsDao {
             return exists[0]
         }
 
-        return this.#repo.post(data)
+        return super.post(data)
     }
 
     async put(id, data) {
         this.schemaErrors(data)
 
-        const response = await this.#repo.put(id, data)
+        const response = await super.put(id, data)
         
         return response
     }
 
-    async getAll() { return this.#repo.getAll() }
-
-    async getById(id) { return this.#repo.getById(id) }
-
-    async deleteAll()  { return this.#repo.deleteAll() }
-
-    async deleteById(id)  { return this.#repo.deleteById(id) }
 }
