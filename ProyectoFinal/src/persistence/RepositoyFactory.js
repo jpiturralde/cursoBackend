@@ -51,7 +51,10 @@ export default class RepositoryFactory {
                 repo = new FSRepository.default(new FSContainer.default(config.connectionString))
                 break;
             case 'MongoDb':
-                throw Error('RepositoryFactory - FALTA IMPLEMENTAR MongoDb!!!!!!!')
+                const MongoDbRepository = await import('./MongoDbRepository.js')
+                repo = new MongoDbRepository.default(config.uri, config.db, config.collection)
+                repo.init()
+                break;
             case 'Firebase':
                 throw Error('RepositoryFactory - FALTA IMPLEMENTAR Firebase!!!!!!!')
             default: //InMemory

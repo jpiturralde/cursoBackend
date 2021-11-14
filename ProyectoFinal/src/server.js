@@ -10,13 +10,7 @@ import RepositoryFactory from "./persistence/RepositoyFactory.js"
 RepositoryFactory.initialize(process.argv.slice(2)[0])
 
 const productsModel = new ProductsDao(await RepositoryFactory.createProductsRepository())
-//const productsModel = new ProductsDao(await RepositoryFactory.createRepository())
-//const productsModel = new ProductsDao(await RepositoryFactory.createRepository({type: 'FS', connectionString: './db/products.txt'}))
-//Persistencia en archivos
-//const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
 const shoppingCartsModel = new ShoppingCartsDao(await RepositoryFactory.createShoppingCartsRepository())
-//Persistencia en memoria
-// const shoppingCartsModel = new ShoppingCarts()
 
 const db = {
     'products': productsModel,

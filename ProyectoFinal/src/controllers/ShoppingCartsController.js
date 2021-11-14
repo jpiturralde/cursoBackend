@@ -10,7 +10,6 @@ export default class ShoppingCartsController extends DefaultController {
         super(dependencies)
         this.#dependencies = dependencies
         this.#model = this.#dependencies.db[this.#dependencies.entity]
-        console.log('ShoppingCartsController ',  this.#model)
     }
 
     modelValidator (model) {
@@ -64,9 +63,9 @@ export default class ShoppingCartsController extends DefaultController {
         router.post('/', DefaultController.defaultProcessor(this, 'post'))
         router.get('/:id', DefaultController.defaultProcessor(this, 'getById'))
         router.delete('/:id', DefaultController.defaultProcessor(this, 'delete'))
-        router.get('/:id/productos', [this.idValidator(), this.getItems])
-        router.post('/:id/productos', [this.idValidator(), this.modelValidator(this.#model), this.addItem])
-        router.delete('/:id/productos/:productId', [this.idValidator(), this.idValidator('productId'), this.deleteItem])
+        router.get('/:id/productos', [this.getItems])
+        router.post('/:id/productos', [this.modelValidator(this.#model), this.addItem])
+        router.delete('/:id/productos/:productId', this.deleteItem)
         return router
     }
  

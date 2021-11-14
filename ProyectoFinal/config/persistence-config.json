@@ -1,10 +1,14 @@
 {
     "ProductsRepository": {
-        "type": "FS", 
-        "connectionString": "./db/products.txt"
+        "type": "MongoDb", 
+        "uri": "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false",
+        "db": "ecommerce",
+        "collection": "products"
     }, 
     "ShoppingCartsRepository": {
-        "type": "FS", 
-        "connectionString": "./db/carts.txt"
+        "type": "MongoDb", 
+        "uri": "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false",
+        "db": "ecommerce",
+        "collection": "shoppingCarts"
     }
 }

@@ -41,7 +41,7 @@ export default class DefaultController {
     }
 
     getById = async (req, res, next) => {
-        const data = await this.#model.getById(req.params.id)
+       const data = await this.#model.getById(req.params.id)
         if (!data) {
             const error = new Error('No encontrado')
             error.httpStatusCode = 404
@@ -61,7 +61,7 @@ export default class DefaultController {
 
     put = async (req, res) => {
         try {
-            const response = await this.#model.put(parseInt(req.params.id), req.body)
+            const response = await this.#model.put(req.params.id, req.body)
             if (!response) {
                 res.status(204).json()
             }
@@ -83,9 +83,9 @@ export default class DefaultController {
         const processors = {
             'getAll': [controllerInstance.getAll],
             'post': [controllerInstance.modelValidator(controllerInstance.#model), controllerInstance.post],
-            'getById': [controllerInstance.idValidator(), controllerInstance.getById],
-            'put': [controllerInstance.idValidator(), controllerInstance.modelValidator(controllerInstance.#model), controllerInstance.put], 
-            'delete': [controllerInstance.idValidator(), controllerInstance.delete]
+            'getById': [controllerInstance.getById],
+            'put': [controllerInstance.modelValidator(controllerInstance.#model), controllerInstance.put], 
+            'delete': [controllerInstance.delete]
         }
         const processor = processors[processorName]
         return processor

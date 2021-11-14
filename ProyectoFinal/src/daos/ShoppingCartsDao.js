@@ -11,9 +11,6 @@ export default class ShoppingCartsDao extends Dao {
         if (!item.productId) {
             errors.push('ShoppingCartItem: Falta campo productId')
         }
-        else if (isNaN(parseInt(item.productId))) {
-            errors.push('ShoppingCartItem: Campo productId invalido.')
-        }
         if (!item.quantity) {
             errors.push('ShoppingCartItem: Falta campo quantity')
         }
