@@ -4,7 +4,7 @@ import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { ShoppingCartsController, DefaultController } from "./controllers/index.js"
 import { ShoppingCartsService } from "./services/index.js"
 import { Products, ShoppingCarts } from "./models/index.js"
-import ProductsDao from "./daos/ProductsDao.js"
+import { ProductsDao, ShoppingCartsDao } from "./daos/index.js"
 import RepositoryFactory from "./persistence/RepositoyFactory.js"
 
 RepositoryFactory.initialize(process.argv.slice(2)[0])
@@ -13,7 +13,8 @@ const productsModel = new ProductsDao(await RepositoryFactory.createProductsRepo
 //const productsModel = new ProductsDao(await RepositoryFactory.createRepository())
 //const productsModel = new ProductsDao(await RepositoryFactory.createRepository({type: 'FS', connectionString: './db/products.txt'}))
 //Persistencia en archivos
-const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
+//const shoppingCartsModel = new ShoppingCarts('./db/carts.txt')
+const shoppingCartsModel = new ShoppingCartsDao(await RepositoryFactory.createShoppingCartsRepository())
 //Persistencia en memoria
 // const shoppingCartsModel = new ShoppingCarts()
 

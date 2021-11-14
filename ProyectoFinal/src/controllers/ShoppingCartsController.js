@@ -10,6 +10,7 @@ export default class ShoppingCartsController extends DefaultController {
         super(dependencies)
         this.#dependencies = dependencies
         this.#model = this.#dependencies.db[this.#dependencies.entity]
+        console.log('ShoppingCartsController ',  this.#model)
     }
 
     modelValidator (model) {
@@ -33,6 +34,7 @@ export default class ShoppingCartsController extends DefaultController {
             .then(items => {
                 res.status(201).json(items)
             }).catch(error => {
+                console.error(error)
                 res.status(404).json(JSON.parse(error.message))
             })
     }
@@ -42,6 +44,7 @@ export default class ShoppingCartsController extends DefaultController {
             .then(result => {
                 res.status(201).json(result)
             }).catch(error => {
+                console.error(error)
                 res.status(404).json(JSON.parse(error.message))
             })
     }

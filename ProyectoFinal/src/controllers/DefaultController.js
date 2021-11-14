@@ -54,9 +54,9 @@ export default class DefaultController {
         try {
             res.status(201).json(await this.#model.post(req.body))
         } catch (error) {
+            console.error(error)
             res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
         }
-        
     }
 
     put = async (req, res) => {
@@ -69,6 +69,7 @@ export default class DefaultController {
                 res.json(response)
             }
         } catch (error) {
+            console.error(error)
             res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
         }
     }

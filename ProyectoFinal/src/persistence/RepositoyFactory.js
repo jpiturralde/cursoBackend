@@ -30,11 +30,11 @@ export default class RepositoryFactory {
     }
 
     static async createProductsRepository() {
-        RepositoryFactory.createRepository(RepositoryFactory.#repoConfig.ProductsRepository)
+        return await RepositoryFactory.createRepository(RepositoryFactory.#repoConfig.ProductsRepository)
     }
 
     static async createShoppingCartsRepository() {
-        RepositoryFactory.createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository)
+        return await RepositoryFactory.createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository)
     }
 
     static async createRepository(config) {
