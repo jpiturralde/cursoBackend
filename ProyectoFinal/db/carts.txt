@@ -40,5 +40,26 @@
         }
       ]
     }
+  },
+  {
+    "id": 21,
+    "payload": {
+      "id": 21,
+      "timestamp": 1636909893244,
+      "items": []
+    }
+  },
+  {
+    "id": 22,
+    "payload": {
+      "id": 22,
+      "timestamp": 1636909923008,
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 1
+        }
+      ]
+    }
   }
 ]

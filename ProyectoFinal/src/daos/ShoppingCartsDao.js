@@ -1,11 +1,9 @@
 import Dao from './Dao.js'
 
 export default class ShoppingCartsDao extends Dao {
-    #repo
 
     constructor(repo) {
         super(repo)
-        this.#repo = repo
     }
 
     validateItem(item) {
