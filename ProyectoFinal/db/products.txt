@@ -58,5 +58,17 @@
       "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
       "stock": 0
     }
+  },
+  {
+    "id": 11,
+    "payload": {
+      "id": 11,
+      "timestamp": 1636911022806,
+      "name": "AAA",
+      "code": "COD004",
+      "price": 1000,
+      "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
+      "stock": 0
+    }
   }
 ]

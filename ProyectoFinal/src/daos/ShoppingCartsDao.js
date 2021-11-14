@@ -45,22 +45,23 @@ export default class ShoppingCartsDao extends Dao {
         return errors
     }
 
-    async post(data) { 
-        this.schemaErrors(data)
+    // async post(data) { 
+    //     this.schemaErrors(data)
 
-        const items = { items: [] }
+    //     const items = { items: [] }
 
-        if (!data.items) {
-            return super.post(items)
+    //     if (!data.items) {
+    //         return super.post(items)
+    //     }
+
+    //     return super.post(data)
+    // }
+
+    async post(data) {
+        if (!('items' in data)) {
+            data.items = []
         }
-
         return super.post(data)
-    }
-
-    async put(id, data) { 
-        this.schemaErrors(data)
-
-        return super.put(id, data)
     }
 
 }

@@ -42,15 +42,7 @@ export default class ProductsDao extends Dao {
             return exists[0]
         }
 
-        return super.post(data)
-    }
-
-    async put(id, data) {
-        this.schemaErrors(data)
-
-        const response = await super.put(id, data)
-        
-        return response
+        return this.#repo.post(data)
     }
 
 }

@@ -5,9 +5,29 @@ export default class Dao {
         this.#repo = repo
     }
 
-    async post(data) { return this.#repo.post(data) }
+    schemaValidations(data) {
+        return []
+    }
 
-    async put(id, data) { return this.#repo.put(id, data) }
+    schemaErrors(data) {
+        const errors = this.schemaValidations(data)
+
+        if (errors.length > 0) {
+            throw new Error(errors)
+        }
+    }
+
+    async post(data) { 
+        this.schemaErrors(data)
+        
+        return this.#repo.post(data) 
+    }
+
+    async put(id, data) { 
+        this.schemaErrors(data)
+
+        return this.#repo.put(id, data)
+    }
 
     async getAll() { return this.#repo.getAll() }
 
