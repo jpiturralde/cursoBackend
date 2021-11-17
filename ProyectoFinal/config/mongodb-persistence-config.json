@@ -1,7 +1,8 @@
 {
     "ProductsRepository": {
-        "type": "Firebase", 
-        "credential": "./config/cursobe-80baa-firebase-adminsdk-p4myf-dd7998e104.json",
+        "type": "MongoDb", 
+        "uri": "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false",
+        "db": "ecommerce",
         "collection": "products"
     }, 
     "ShoppingCartsRepository": {
