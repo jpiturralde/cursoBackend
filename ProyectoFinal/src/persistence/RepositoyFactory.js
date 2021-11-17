@@ -51,11 +51,13 @@ export default class RepositoryFactory {
                 repo = new FSRepository.default(new FSContainer.default(config.connectionString))
                 break;
             case 'MongoDb':
+                console.log('RepositoryFactory - Create MongoDbRepository.')
                 const MongoDbRepository = await import('./MongoDbRepository.js')
                 repo = new MongoDbRepository.default(config.uri, config.db, config.collection)
                 repo.init()
                 break;
             case 'Firebase':
+                console.log('RepositoryFactory - Create FirebaseRepository.')
                 const FirebaseRepository = await import('./FirebaseRepository.js')
                 repo = new FirebaseRepository.default(config.credential, config.collection)
                 break;
