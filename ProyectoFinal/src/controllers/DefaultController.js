@@ -75,7 +75,7 @@ export default class DefaultController {
     }
     
     delete = async (req, res) => {
-        this.#model.deleteById(parseInt(req.params.id))
+        this.#model.deleteById(req.params.id)
         res.json()
     }
 

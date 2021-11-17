@@ -2,6 +2,7 @@ import admin from "firebase-admin"
 import fs from 'fs'
 
 export default class FirebaseRepository {
+    static #dbs = new Map()
     #container
 
     static createPayload(id, object) {
@@ -23,7 +24,7 @@ export default class FirebaseRepository {
     static merge(currentVersion, newVersion) {
         const originalTimestamp = currentVersion.timestamp
         const merged = { ...currentVersion, ...newVersion }
-        merged.id = id
+        merged.id = currentVersion.id
         merged.timestamp = originalTimestamp
         return merged
     } 
@@ -31,14 +32,19 @@ export default class FirebaseRepository {
     static #asObj = doc => ({ id: doc.id, ...doc.data() })
 
     constructor(credential, collection) {
-        const serviceAccount = JSON.parse(fs.readFileSync(credential, 'utf8'))
+        console.log('FirebaseRepository', credential, collection)
+        let db = FirebaseRepository.#dbs.get(credential)
+        if (!db) {
+            const serviceAccount = JSON.parse(fs.readFileSync(credential, 'utf8'))
 
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
-        });
-
-        const db = admin.firestore();
-        this.#container = db.collection(collection)
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount)
+            });
+    
+            db = admin.firestore()
+            FirebaseRepository.#dbs.set(credential, db)
+        }
+        this.#container = db.collection(collection)        
     }
 
     async post(object) {

@@ -56,7 +56,9 @@ export default class RepositoryFactory {
                 repo.init()
                 break;
             case 'Firebase':
-                throw Error('RepositoryFactory - FALTA IMPLEMENTAR Firebase!!!!!!!')
+                const FirebaseRepository = await import('./FirebaseRepository.js')
+                repo = new FirebaseRepository.default(config.credential, config.collection)
+                break;
             default: //InMemory
                 console.log('RepositoryFactory - Create InMemoryRepository.')
                 const [ Container, Repository ] =
