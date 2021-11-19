@@ -1,3 +1,5 @@
+import FileSystemContainer from "./FileSystemContainer.js"
+
 export default class FileSystemRepository {
     #container
     #id = 1
@@ -37,8 +39,8 @@ export default class FileSystemRepository {
         }
     }
 
-    constructor(container) {
-        this.#container = container
+    constructor(filePath) {
+        this.#container = new FileSystemContainer(filePath)
         this.#id = FileSystemRepository.#calculateId(this.#container.readSync())
     }
 

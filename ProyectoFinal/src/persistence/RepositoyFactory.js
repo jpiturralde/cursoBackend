@@ -43,12 +43,14 @@ export default class RepositoryFactory {
         switch (config.type) {
             case 'FS':
                 console.log('RepositoryFactory - Create FileSystemRepository.')
-                const [FSContainer, FSRepository] =
-                    await Promise.all([
-                        import('./FileSystemContainer.js'),
-                        import('./FileSystemRepository.js')
-                    ]);
-                repo = new FSRepository.default(new FSContainer.default(config.connectionString))
+                const FileSystemRepository = await import('./FileSystemRepository.js')
+                repo = new FileSystemRepository.default(config.connectionString)
+                // const [FSContainer, FSRepository] =
+                //     await Promise.all([
+                //         import('./FileSystemContainer.js'),
+                //         import('./FileSystemRepository.js')
+                //     ]);
+                // repo = new FSRepository.default(new FSContainer.default(config.connectionString))
                 break;
             case 'MongoDb':
                 console.log('RepositoryFactory - Create MongoDbRepository.')
