@@ -96,6 +96,36 @@ Basándose en los contenedores ya desarrollados (memoria, archivos) desarrollar 
 3. Incluir un archivo de configuración (config) que contenga los datos correspondientes para conectarse a las bases de datos o medio de persistencia que corresponda.
 4. **Opcional**: Hacer lo mismo para bases de datos relacionales: MariaDB/SQLite3.
 
+## Cómo ejecutar
+
+### Configuración por default: InMemoryRepository
+Por defecto se busca en archivo **./config/persistence-config.json** para establecer qué tipo de persistencia se utiliza y cuál es la configuración correspondiente. En caso de no encontrarse ese archivo, se inicia persistencia en memoria. A continuación, ejemplo de esta situación:
+
+    npm start  
+````
+proyectofinal@1.0.0 start
+node ./src/server.js ./config/persistence-config.json
+RepositoryFactory - Not found ./config/persistence-config.json 
+RepositoryFactory - Default configuration initialized 
+RepositoryFactory {
+  ProductsRepository: { type: 'InMemory' },
+  ShoppingCartsRepository: { type: 'InMemory' }
+}
+RepositoryFactory - Create InMemoryRepository.
+Dao InMemoryRepository {}
+RepositoryFactory - Create InMemoryRepository.
+Dao InMemoryRepository {}
+Servidor escuchando en el puerto 8080
+````
+ 
+### ./config/[TYPE]-persistence-config.json
+En la carpeta **config** se encuentran archivos de configuración para los diferentes tipos de persistencia soportados. Para utilizarlos, se puede cambiar el script de ejecución o simplemente se puede renombrar uno de los archivos de ejemplo, y ejecutar nuevamente npm start para iniciar el server.
+A continuación, los archivos de configuración mencionados:
+
+ - [firebase-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/firebase-persistence-config.json)
+ - [fs-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/fs-persistence-config.json)
+ - [inMemory-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/inMemory-persistence-config.json)
+ - [mongodb-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/mongodb-persistence-config.json)
 
 #
 Autor: jpiturralde@gmail.com (U610166)
