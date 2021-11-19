@@ -5,22 +5,6 @@ export default class FirebaseRepository {
     static #dbs = new Map()
     #container
 
-    static createPayload(id, object) {
-        const payload = {
-            id, 
-            timestamp: Date.now(), 
-            ...object
-        }
-        payload.timestamp = Date.now()
-        return payload
-    }
-
-    static uid() {
-        const head = Date.now().toString(36);
-        const tail = Math.random().toString(36).substr(2);
-        return head + tail;
-    }
-
     static merge(currentVersion, newVersion) {
         const originalTimestamp = currentVersion.timestamp
         const merged = { ...currentVersion, ...newVersion }
@@ -29,7 +13,7 @@ export default class FirebaseRepository {
         return merged
     } 
 
-    static #asObj = doc => ({ id: doc.id, ...doc.data() })
+    static #getPayload = doc => ({ id: doc.id, ...doc.data() })
 
     constructor(credential, collection) {
         console.log('FirebaseRepository', credential, collection)
@@ -48,9 +32,8 @@ export default class FirebaseRepository {
     }
 
     async post(object) {
-        const payload = FirebaseRepository.createPayload(FirebaseRepository.uid(), object)
-        await this.#container.doc(payload.id).set(payload)
-        return payload
+        await this.#container.doc(object.id).set(object)
+        return object
     }
 
     async put(id, data) {
@@ -67,7 +50,7 @@ export default class FirebaseRepository {
         const snapshot = await this.#container.get()
         const result = []
         snapshot.forEach(doc => {
-            result.push(FirebaseRepository.#asObj(doc))
+            result.push(FirebaseRepository.#getPayload(doc))
         })
         return result
     }
@@ -75,7 +58,7 @@ export default class FirebaseRepository {
     async getById(id) {
         const result = await this.#container.doc(id).get()
         if (result.data()) {
-            return FirebaseRepository.#asObj(result)
+            return FirebaseRepository.#getPayload(result)
         }
         return null
     }

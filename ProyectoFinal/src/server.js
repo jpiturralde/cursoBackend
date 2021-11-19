@@ -7,9 +7,21 @@ import { ProductsDao, ShoppingCartsDao } from "./daos/index.js"
 import { RepositoryFactory } from "./persistence/index.js"
 
 RepositoryFactory.initialize(process.argv.slice(2)[0])
+let productsModel
+let shoppingCartsModel
+try {
+    productsModel = new ProductsDao(await RepositoryFactory.createProductsRepository())
+} catch (error) {
+    console.error(`Error al crear ProductsDao ${error}`) 
+    throw Error(error)
+}
+try {
+    shoppingCartsModel = new ShoppingCartsDao(await RepositoryFactory.createShoppingCartsRepository())
+} catch (error) {
+    console.error(`Error al crear ShoppingCartsDao ${error}`) 
+    throw Error(error)
+}
 
-const productsModel = new ProductsDao(await RepositoryFactory.createProductsRepository())
-const shoppingCartsModel = new ShoppingCartsDao(await RepositoryFactory.createShoppingCartsRepository())
 
 const db = {
     'products': productsModel,

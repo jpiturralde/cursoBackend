@@ -6,39 +6,32 @@ export default class MongoDbRepository {
     #collection
     #container
 
-    static createPayload(id, object) {
-        const payload = {
-            id, 
-            timestamp: Date.now(), 
-            ...object
-        }
-        payload.timestamp = Date.now()
-        return payload
-    }
-
-    static getPayload(data) { return data.payload }
-
-    static uid() {
-        const head = Date.now().toString(36);
-        const tail = Math.random().toString(36).substr(2);
-        return head + tail;
-    }
-
     constructor(uri, db, collection) {
-        this.#client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        try {
+            this.#client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        }
+        catch (error) {
+            console.error(error)
+            throw(error)
+        }
         this.#db = db
         this.#collection = collection
     }
 
     async init() {
-        await this.#client.connect()
+        try {
+            await this.#client.connect()
+        }
+        catch (error) {
+            console.error(error)
+            throw(error)
+        }
         this.#container = this.#client.db(this.#db).collection(this.#collection)
     }
 
     async post(object) {
-        const payload = MongoDbRepository.createPayload(MongoDbRepository.uid(), object)
-        await this.#container.insertOne(payload)
-        return payload
+        await this.#container.insertOne(object)
+        return object
     }
 
     async put(id, data) {
