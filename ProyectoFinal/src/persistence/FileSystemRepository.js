@@ -2,16 +2,18 @@ import FileSystemContainer from "./FileSystemContainer.js"
 
 export default class FileSystemRepository {
     #container
+    #fieldKey
 
     static getPayload(data) { return data.payload }
 
-    constructor(filePath) {
+    constructor(filePath, fieldKey = 'id') {
         this.#container = new FileSystemContainer(filePath)
+        this.#fieldKey = fieldKey
     }
 
     async post(object) {
         const content = await this.#container.read()
-        content.push({ id: object.id, payload: object })
+        content.push({ id: object[this.#fieldKey], payload: object })
         await this.#container.write(content)
         return object
     }

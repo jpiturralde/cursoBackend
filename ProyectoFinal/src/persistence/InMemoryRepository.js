@@ -1,13 +1,15 @@
 export default class InMemoryRepository {
     #container = []
+    #fieldKey
     
     static getPayload(data) { return data.payload }
 
-    constructor() {
+    constructor(fieldKey = 'id') {
+        this.#fieldKey = fieldKey
     }
 
     async post(object) {
-        this.#container.push({ id: object.id, payload: object })
+        this.#container.push({ id: object[this.#fieldKey], payload: object })
         return object
     }
     

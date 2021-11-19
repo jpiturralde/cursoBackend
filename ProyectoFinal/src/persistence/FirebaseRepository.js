@@ -4,6 +4,7 @@ import fs from 'fs'
 export default class FirebaseRepository {
     static #dbs = new Map()
     #container
+    #fieldKey
 
     static merge(currentVersion, newVersion) {
         const originalTimestamp = currentVersion.timestamp
@@ -15,7 +16,7 @@ export default class FirebaseRepository {
 
     static #getPayload = doc => ({ id: doc.id, ...doc.data() })
 
-    constructor(credential, collection) {
+    constructor(credential, collection, fieldKey = 'id') {
         console.log('FirebaseRepository', credential, collection)
         let db = FirebaseRepository.#dbs.get(credential)
         if (!db) {
@@ -28,11 +29,12 @@ export default class FirebaseRepository {
             db = admin.firestore()
             FirebaseRepository.#dbs.set(credential, db)
         }
-        this.#container = db.collection(collection)        
+        this.#container = db.collection(collection)
+        this.#fieldKey = fieldKey        
     }
 
     async post(object) {
-        await this.#container.doc(object.id).set(object)
+        await this.#container.doc(object[this.#fieldKey]).set(object)
         return object
     }
 

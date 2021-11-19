@@ -5,8 +5,15 @@ export default class MongoDbRepository {
     #db
     #collection
     #container
+    #fieldKey
 
-    constructor(uri, db, collection) {
+    static #index(key, value) {
+        let index = {}
+        index[key] = value
+        return index
+    }
+
+    constructor(uri, db, collection, fieldKey = 'id') {
         try {
             this.#client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         }
@@ -16,6 +23,7 @@ export default class MongoDbRepository {
         }
         this.#db = db
         this.#collection = collection
+        this.#fieldKey = fieldKey
     }
 
     async init() {
@@ -39,9 +47,9 @@ export default class MongoDbRepository {
         if (current) {
             const originalTimestamp = current.timestamp
             const merged = { ...current, ...data }
-            merged.id = id
+            merged[this.#fieldKey] = id
             merged.timestamp = originalTimestamp
-            await this.#container.updateOne({id}, {"$set": merged})
+            await this.#container.updateOne(MongoDbRepository.#index(this.#fieldKey, id), {"$set": merged})
             return merged
         }
         return null
@@ -52,7 +60,7 @@ export default class MongoDbRepository {
     }
 
     async getById(id) {
-        const result = await this.#container.find({id}).toArray()
+        const result = await this.#container.find(MongoDbRepository.#index(this.#fieldKey, id)).toArray()
         return result[0]
     }
 
@@ -61,6 +69,6 @@ export default class MongoDbRepository {
     }
 
     async deleteById(id) {
-        await this.#container.deleteOne({id})
+        await this.#container.deleteOne(MongoDbRepository.#index(this.#fieldKey, id))
     }
 }
