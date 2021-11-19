@@ -2,55 +2,18 @@ import FileSystemContainer from "./FileSystemContainer.js"
 
 export default class FileSystemRepository {
     #container
-    #id = 1
-    
-    static #calculateId(content) {
-        if (content.length > 0) {
-            const ids = content.map(function (element) {
-                return element.id
-            })
-            const max = ids.reduce((previous, current) => current > previous ? current : previous) 
-            return max+1
-        }
-        return 1
-    }
-
-    static createPayload(id, object) {
-        const payload = {
-            id, 
-            timestamp: Date.now(), 
-            ...object
-        }
-        payload.timestamp = Date.now()
-        return payload
-    }
 
     static getPayload(data) { return data.payload }
 
-    schemaValidations(data) {
-        return []
-    }
-
-    schemaErrors(data) {
-        const errors = this.schemaValidations(data)
-
-        if (errors.length > 0) {
-            throw new Error(errors)
-        }
-    }
-
     constructor(filePath) {
         this.#container = new FileSystemContainer(filePath)
-        this.#id = FileSystemRepository.#calculateId(this.#container.readSync())
     }
 
     async post(object) {
         const content = await this.#container.read()
-        const payload = FileSystemRepository.createPayload(this.#id, object)
-        this.#id = Math.max(this.#id, payload.id)+1
-        content.push({ id: payload.id, payload })
+        content.push({ id: object.id, payload: object })
         await this.#container.write(content)
-        return payload
+        return object
     }
     
     async getAll() {

@@ -1,39 +1,14 @@
 export default class InMemoryRepository {
     #container = []
-    #id = 1
     
-    static createPayload(id, object) {
-        const payload = {
-            id, 
-            timestamp: Date.now(), 
-            ...object
-        }
-        payload.timestamp = Date.now()
-        return payload
-    }
-
     static getPayload(data) { return data.payload }
-
-    schemaValidations(data) {
-        return []
-    }
-
-    schemaErrors(data) {
-        const errors = this.schemaValidations(data)
-
-        if (errors.length > 0) {
-            throw new Error(errors)
-        }
-    }
 
     constructor() {
     }
 
     async post(object) {
-        const payload = InMemoryRepository.createPayload(this.#id, object)
-        this.#id = Math.max(this.#id, payload.id)+1
-        this.#container.push({ id: payload.id, payload })
-        return payload
+        this.#container.push({ id: object.id, payload: object })
+        return object
     }
     
     async getAll() {
@@ -42,7 +17,7 @@ export default class InMemoryRepository {
     }
 
     async getById(id) {
-        const result = this.#container.filter(x => x.id==id) 
+        const result = this.#container.filter(x => x.id==id)
         if (result.length > 0) {
             return InMemoryRepository.getPayload(result[0])
         }

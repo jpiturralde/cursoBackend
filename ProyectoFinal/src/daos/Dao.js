@@ -1,6 +1,21 @@
 export default class Dao {
     #repo
     
+    static #uid() {
+        const head = Date.now().toString(36);
+        const tail = Math.random().toString(36).substr(2);
+        return head + tail;
+    }
+
+    static createPayload(object) {
+        const payload = {
+            id: object.id || Dao.#uid(), 
+            timestamp: Date.now(), 
+            ...object
+        }
+        return payload
+    }
+
     constructor(repo) {
         this.#repo = repo
         console.log('Dao', this.#repo)
@@ -21,7 +36,7 @@ export default class Dao {
     async post(data) { 
         this.schemaErrors(data)
         
-        return this.#repo.post(data) 
+        return this.#repo.post(Dao.createPayload(data)) 
     }
 
     async put(id, data) { 

@@ -42,7 +42,7 @@ export default class ProductsDao extends Dao {
             return exists[0]
         }
 
-        return this.#repo.post(data)
+        return this.#repo.post(Dao.createPayload(data))
     }
 
 }
