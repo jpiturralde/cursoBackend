@@ -1,0 +1,8 @@
+{
+    "ProductsRepository": {
+        "type": "InMemory"
+    }, 
+    "ShoppingCartsRepository": {
+        "type": "InMemory"
+    }
+}

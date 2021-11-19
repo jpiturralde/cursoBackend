@@ -1,4 +1,4 @@
-export default class Repository {
+export default class FileSystemRepository {
     #container
     #id = 1
     
@@ -39,12 +39,12 @@ export default class Repository {
 
     constructor(container) {
         this.#container = container
-        this.#id = Repository.#calculateId(this.#container.readSync())
+        this.#id = FileSystemRepository.#calculateId(this.#container.readSync())
     }
 
     async post(object) {
         const content = await this.#container.read()
-        const payload = Repository.createPayload(this.#id, object)
+        const payload = FileSystemRepository.createPayload(this.#id, object)
         this.#id = Math.max(this.#id, payload.id)+1
         content.push({ id: payload.id, payload })
         await this.#container.write(content)
@@ -53,7 +53,7 @@ export default class Repository {
     
     async getAll() {
         const content = await this.#container.read()
-        const result = content.map(x => Repository.getPayload(x))
+        const result = content.map(x => FileSystemRepository.getPayload(x))
         return result
     }
 
@@ -61,7 +61,7 @@ export default class Repository {
         const content = await this.#container.read()
         const result = content.filter(x => x.id==id) 
         if (result.length > 0) {
-            return Repository.getPayload(result[0])
+            return FileSystemRepository.getPayload(result[0])
         }
         return null
     }
