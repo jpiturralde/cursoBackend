@@ -1,12 +1,8 @@
 {
     "ProductsRepository": {
-        "type": "Firebase", 
-        "credential": "./config/cursobe-80baa-firebase-adminsdk-p4myf-dd7998e104.json",
-        "collection": "products"
+        "type": "InMemory"
     }, 
     "ShoppingCartsRepository": {
-        "type": "Firebase", 
-        "credential": "./config/cursobe-80baa-firebase-adminsdk-p4myf-dd7998e104.json",
-        "collection": "shoppingCarts"
+        "type": "InMemory"
     }
 }

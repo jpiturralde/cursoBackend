@@ -3,9 +3,8 @@ import express from 'express';
 import { logger, errorHandler, authorization, unkownRoute} from "./lib/index.js"
 import { ShoppingCartsController, DefaultController } from "./controllers/index.js"
 import { ShoppingCartsService } from "./services/index.js"
-import { Products, ShoppingCarts } from "./models/index.js"
 import { ProductsDao, ShoppingCartsDao } from "./daos/index.js"
-import RepositoryFactory from "./persistence/RepositoyFactory.js"
+import { RepositoryFactory } from "./persistence/index.js"
 
 RepositoryFactory.initialize(process.argv.slice(2)[0])
 

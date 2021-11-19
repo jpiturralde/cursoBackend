@@ -46,7 +46,7 @@ export default class RepositoryFactory {
                 const [FSContainer, FSRepository] =
                     await Promise.all([
                         import('./FileSystemContainer.js'),
-                        import('./Repository.js')
+                        import('./FileSystemRepository.js')
                     ]);
                 repo = new FSRepository.default(new FSContainer.default(config.connectionString))
                 break;
@@ -63,12 +63,8 @@ export default class RepositoryFactory {
                 break;
             default: //InMemory
                 console.log('RepositoryFactory - Create InMemoryRepository.')
-                const [ Container, Repository ] =
-                    await Promise.all([
-                        import('./Container.js'),
-                        import('./Repository.js')
-                    ]);
-                repo = new Repository.default(new Container.default())
+                const InMemoryRepository = await import('./InMemoryRepository.js')
+                repo = new InMemoryRepository.default()
             }
         return repo
     }
