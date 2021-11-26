@@ -4,7 +4,8 @@
   "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "node ./src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",
@@ -12,6 +13,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-handlebars": "^5.3.4",
+    "faker": "^5.5.3",
     "knex": "^0.95.12",
     "mysql": "^2.18.1",
     "socket.io": "^4.2.0",

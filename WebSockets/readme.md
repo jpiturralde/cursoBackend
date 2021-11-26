@@ -46,6 +46,10 @@ Luego de implementar desafío [PrimeraDB](https://github.com/jpiturralde/cursoBa
 - Cambia la persistencia de los productos de memoria a base de datos MariaDB.
 	-	Para poder utilizar este mecanismo se tiene que ejecutar previamente el script [websocketsdb_ddl.sql](https://github.com/jpiturralde/cursoBackend/blob/master/WebSockets/scripts/websocketsdb_ddl.sql) para crear la BD y tabla correspondiente.
  
+## MOCKS
+Sobre el desafío entregable de la clase 16, crear una vista en forma de tabla que consuma desde la ruta ‘/api/productos-test’ del servidor una lista con 5 productos generados al azar utilizando **Faker.js** como generador de información aleatoria de test (en lugar de tomarse desde la base de datos). Elegir apropiadamente los temas para conformar el objeto ‘producto’ (nombre, precio y foto).
+
+
 #
 
 Autor: jpiturralde@gmail.com (U610166)

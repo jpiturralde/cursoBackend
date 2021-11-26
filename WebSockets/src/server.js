@@ -1,22 +1,24 @@
 const express = require('express')
 const { Server: HttpServer } = require('http')
 const { Server: IOServer } = require('socket.io')
-// const productsDB = require('./products-inMemory-db.js')
-// const messagesDB = require('./messages-fs-db.js')
 const DBWrapper = require('./DBWrapper.js')
 const ProductsDBWrapper = require('./ProductsDBWrapper.js')
 const RepositoryDB = require('./RepositoryDB.js')
 const mariaDB = require('../options/mariaDB.js')
 const sqlite3 = require('../options/SQLite3.js')
+const { mockRouter } = require("./mock-router")
 const messagesDB = new DBWrapper(new RepositoryDB('messages', mariaDB))
 const productsDB = new ProductsDBWrapper(sqlite3)
 
 const app = express()
-const http = new HttpServer(app)
-const io = new IOServer(http)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
+app.use('/api/productos-test', mockRouter)
 
+const http = new HttpServer(app)
+const io = new IOServer(http)
 io.on('connection', async socket => {
     console.log('Un cliente se ha conectado')
 
