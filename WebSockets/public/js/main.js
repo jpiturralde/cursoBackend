@@ -12,7 +12,6 @@ async function loadAndCompileTemplate(templatePath) {
 
 /* BEGIN PRODUCTS */
 async function renderProducts(products) {
-    console.log(products)
     const productsTpl = await loadAndCompileTemplate('/templates/products.hbs')
     const thereAreProducts = products.length > 0
     const html = productsTpl({ thereAreProducts, products })
@@ -34,6 +33,32 @@ function addProduct(e) {
 /* END PRODUCTS */
 
 /* BEGIN MESSAGES */
+function createMessage() {
+    const message = {
+        author: {
+            id: document.getElementById('id').value,
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            age: document.getElementById('age').value,
+            nickName: document.getElementById('nickName').value,
+            avatar: document.getElementById('avatar').value
+        },
+        text: document.getElementById('text').value
+    }
+    cleanFields()
+    return message
+}
+
+function cleanFields() {
+    document.getElementById('id').value = ''
+    document.getElementById('firstName').value = ''
+    document.getElementById('lastName').value = ''
+    document.getElementById('age').value = ''
+    document.getElementById('nickName').value = ''
+    document.getElementById('avatar').value = ''
+    document.getElementById('text').value = ''
+}
+
 async function renderMessages(messages) {
     const messagesTpl = await loadAndCompileTemplate('/templates/messages.hbs')
     const html = messagesTpl({ messages })
@@ -41,15 +66,10 @@ async function renderMessages(messages) {
 }
 
 function addMessage(e) {
-    const message = {
-        author: document.getElementById('author').value,
-        text: document.getElementById('text').value
-    };
-    document.getElementById('author').value = ''
-    document.getElementById('text').value = ''
-    socket.emit('new-message', message);
+    socket.emit('new-message', createMessage());
     return false;
 }
+
 /* END MESSAGES */
 
 socket.on('messages', function(messages) { renderMessages(messages); });
