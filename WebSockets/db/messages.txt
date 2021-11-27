@@ -58,5 +58,50 @@
       "text": "todo bien?",
       "ts": 1637981885723
     }
+  },
+  {
+    "id": 10,
+    "value": {
+      "author": {
+        "id": "j@p",
+        "firstName": "J",
+        "lastName": "P",
+        "age": "2",
+        "nickName": "JP",
+        "avatar": "https://cdn1.iconfinder.com/data/icons/diversity-avatars-volume-1-heads/64/matrix-niobe-128.png"
+      },
+      "text": "normalizado",
+      "ts": 1638023304635
+    }
+  },
+  {
+    "id": 11,
+    "value": {
+      "author": {
+        "id": "a@b.com",
+        "firstName": "A",
+        "lastName": "B",
+        "age": "1",
+        "nickName": "AB",
+        "avatar": "https://cdn1.iconfinder.com/data/icons/diversity-avatars-volume-1-heads/64/matrix-neo-man-white-128.png"
+      },
+      "text": "al fin!!!!",
+      "ts": 1638023353573
+    }
+  },
+  {
+    "id": 12,
+    "value": {
+      "author": {
+        "id": "j@p",
+        "firstName": "J",
+        "lastName": "P",
+        "age": "1",
+        "nickName": "JP",
+        "avatar": "https://cdn1.iconfinder.com/data/icons/diversity-avatars-volume-1-heads/64/matrix-niobe-128.png"
+      },
+      "text": "con compression rate",
+      "ts": 1638024390538
+    }
   }
 ]

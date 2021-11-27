@@ -10,6 +10,8 @@ const { mockRouter } = require("./mock-router")
 //const messagesDB = new DBWrapper(new RepositoryDB('messages', mariaDB))
 const messagesDB = require('./messages-fs-db.js')
 const productsDB = new ProductsDBWrapper(sqlite3)
+const ChatNormalizr = require('./ChatNormalizr.js')
+
 
 const app = express()
 app.use(express.json())
@@ -24,7 +26,8 @@ io.on('connection', async socket => {
     console.log('Un cliente se ha conectado')
 
     /* Envio los mensajes al cliente que se conectó */
-    const messages  = await messagesDB.get() 
+    const denormalizedMessages = await messagesDB.get()
+    const messages  = ChatNormalizr.normalizeChat(denormalizedMessages) 
     socket.emit('messages', messages)
 
     /* Envio los productos al cliente que se conectó */
@@ -33,7 +36,7 @@ io.on('connection', async socket => {
     socket.on('new-message', async data => {
         data.ts = Date.now()
         await messagesDB.post(data)
-        const messages  = await messagesDB.get() 
+        const messages  = ChatNormalizr.normalizeChat(await messagesDB.get())  
         io.sockets.emit('messages', messages);
     });
 
