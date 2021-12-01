@@ -1,5 +1,5 @@
 # Problema con Fetch
-  
+![problemaConFetch](https://github.com/jpiturralde/cursoBackend/blob/login/draft-websocket/problemaConFetch.PNG)  
 Al server llegan los 2 request a /api/login, pero en el cliente el primero da error y el segundo termina bien. Como consecuencia, en el server quedan 2 sesiones generadas para el mismo usuario.
 
 El error no ocurre siempre. Algunas veces, el primer request se ejecuta bien en el servidor y termina bien en el cliente.
