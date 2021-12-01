@@ -1,0 +1,37 @@
+
+<div class="jumbotron">
+    <div class="table-responsive">
+        <h1 style="color:green;">Bienvenido {{userName}}!!!</h1>
+        <form>
+            <input type="button"  onclick = "logout(this)" class="btn btn-success mt-3 mb-5" value="Desloguear">
+        </form>
+    </div> 
+</div>
+<div class="jumbotron">
+    <h1 style="color:blue;">Ingrese Producto</h1>
+    <br>
+    
+    <form>
+        <div class="form-group">
+            <label for="product"><b>Producto</b></label>
+            <input id="product" class="form-control" type="text" name="product">
+        </div>
+        <input type="button"  onclick = "addProduct(this)" class="btn btn-success mt-3 mb-5" value="Enviar">
+    </form>
+    <h2 style="color:red;">Lista de Productos</h2> <a href="http://localhost:8080/productos-test.html">Listado faker</a>
+    <div id="products"></div>
+</div>
+<div class="jumbotron">
+    <h1 style="color:blue;">Ingrese Mensaje</h1>
+    <br>
+    
+    <form onsubmit="return addMessage(this)">
+        <div class="form-group">
+            <label for="message"><b>Mensaje</b></label>
+            <input id="message" class="form-control" type="text" name="message">
+        </div>
+        <input type="submit" class="btn btn-success mt-3 mb-5" value="Enviar">
+    </form>
+    <h2 style="color:red;">Lista de Mensajes</h2>
+    <div id="messages"></div>
+</div>
