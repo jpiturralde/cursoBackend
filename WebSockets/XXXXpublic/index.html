@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+        integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
+    <script src="js/chatNormalizerClient.js"></script>
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+    <div class="container mt-3">
+        <a href="http://localhost:8080/productos-test.html">Listado faker</a>
+        <div class="jumbotron">
+            <h1 style="color:blue;">Ingrese Producto</h1>
+            <br>
+            
+            <form onsubmit="return addProduct(this)">
+                <div class="form-group">
+                    <label for="title"><b>Nombre</b></label>
+                    <input id="title" class="form-control" type="text" name="title">
+                </div>
+            
+                <div class="form-group">
+                    <label for="price"><b>Precio</b></label>
+                    <input id="price" class="form-control" type="text" name="price">
+                </div>
+            
+                <div class="form-group">
+                    <label for="thumbnail"><b>Foto URL</b></label>
+                    <input id="thumbnail" class="form-control" type="text" name="thumbnail">
+                </div>
+            
+                <input type="submit" class="btn btn-success mt-3 mb-5" value="Enviar">
+            </form>
+            <h2 style="color:red;">Lista de Productos</h2>
+            <div id="products"></div>
+        </div>
+        <div class="jumbotron">
+            <div id="messagesCenter">
+                <h1 style="color:blue;">Centro de Mensajes</h1>
+                <div id="messages"></div>
+                <form onsubmit="return addMessage(this)">
+                    <input type="email" id="id" placeholder="Tu email" required="required"><br>
+                    <input type="text" id="firstName" placeholder="Tu nombre"><br>
+                    <input type="text" id="lastName" placeholder="Tu apellido"><br>
+                    <input type="text" id="age" placeholder="Tu edad"><br>
+                    <input type="text" id="nickName" placeholder="Tu alias"><br>
+                    <input type="text" id="avatar" placeholder="Tu avatar"><br>
+                    <input type="text" id="text" placeholder="Cuéntanos algo..."><br>
+                    <input type="submit" value="Enviar">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
+    <script src="js/chatNormalizerClient.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

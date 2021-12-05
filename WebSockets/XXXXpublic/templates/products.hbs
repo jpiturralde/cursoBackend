@@ -1,0 +1,27 @@
+{{#if thereAreProducts}}
+<div class="table-responsive">
+    <table class="table table-dark">
+        <tr style="color: yellow;">
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Foto</th>
+        </tr>
+        
+        {{#each products}}
+        <tr>
+            <td>
+                {{this.value.title}}
+            </td>
+            <td>
+                {{this.value.price}}
+            </td>
+            <td>
+                <img src="{{this.value.thumbnail}}" alt="{{this.value.title}}">
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
+{{else}}
+<h3 class="alert alert-danger">No se encontraron productos.</h3>
+{{/if}}

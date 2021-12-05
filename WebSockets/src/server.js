@@ -29,7 +29,7 @@ const MongoStore = require('connect-mongo')
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const store = MongoStore.create({
     //En Atlas connect App :  Make sure to change the node version to 2.2.12:
-    mongoUrl: 'mongodb+srv://codeuser:codeuser@cluster0.xjgs3.mongodb.net/AuthDB?retryWrites=true&w=majority',
+    mongoUrl: 'mongodb+srv://<user>:<password>@cluster0.xjgs3.mongodb.net/<DB>?retryWrites=true&w=majority',
     mongoOptions: advancedOptions
 })
 
