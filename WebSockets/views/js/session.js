@@ -1,21 +1,13 @@
 const socket = io.connect();
 
-Handlebars.registerHelper("timestampToLocaleString", function(timestamp) {
-    const date = new Date(timestamp)
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-})
-
-async function loadAndCompileTemplate(templatePath) {
-    const template = await fetch(templatePath).then(response => response.text())
-    return Handlebars.compile(template)
-}
-
 /* BEGIN PRODUCTS */
 async function renderProducts(products) {
-    const productsTpl = await loadAndCompileTemplate('/templates/products.hbs')
+    const productsTpl = await loadAndCompileTemplate('products.hbs')
     const thereAreProducts = products.length > 0
     const html = productsTpl({ thereAreProducts, products })
-    document.getElementById('products').innerHTML = html
+    if (document.getElementById('products') && html) {
+        document.getElementById('products').innerHTML = html
+    }
 }
 
 function addProduct(e) {
@@ -33,6 +25,19 @@ function addProduct(e) {
 /* END PRODUCTS */
 
 /* BEGIN MESSAGES */
+// async function renderMessages(messages) {
+//     const messagesTpl = await loadAndCompileTemplate('messages.hbs')
+//     const html = messagesTpl({ messages })
+//     if (document.getElementById('messages') && html) {
+//         document.getElementById('messages').innerHTML = html
+//     }
+// }
+
+// function addMessage(e) {
+//     socket.emit('new-message', document.getElementById('message').value);
+//     document.getElementById('message').value = ''
+//     return false;
+// }
 function createMessage() {
     const message = {
         author: {
@@ -60,12 +65,10 @@ function cleanFields() {
 }
 
 async function renderMessages(normalized) {
-    console.log('normalized', normalized)
     const chat = denormalizeChat(normalized) 
     const messages = chat.messages
-    console.log('messages', messages)
     const compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
-    const messagesTpl = await loadAndCompileTemplate('/templates/messages.hbs')
+    const messagesTpl = await loadAndCompileTemplate('/messages.hbs')
     const html = messagesTpl({ messages, compressionRate })
     document.getElementById('messages').innerHTML = html
 }
@@ -74,8 +77,29 @@ function addMessage(e) {
     socket.emit('new-message', createMessage());
     return false;
 }
+/* END MESSAGES */
 
+
+/* BEGIN SESSION */
+
+async function renderSession(userName, messages, products, visits) {
+    console.log('renderSession')
+    const sessionTpl = await loadAndCompileTemplate('session.hbs')
+    const html = sessionTpl({ userName })
+    document.getElementById('content').innerHTML = html
+    renderProducts(products)
+    renderMessages(messages)
+}
+
+async function onLogin() {
+    location.href = '/login.html'
+}
 /* END MESSAGES */
 
 socket.on('messages', function(messages) { renderMessages(messages); });
 socket.on('products', function(products) { renderProducts(products); });
+socket.on('session', function(userName, messages, products, visits) { 
+    console.log('on session')
+    renderSession(userName, messages, products, visits); });
+// socket.on('visits', function(visits) { renderVisits(visits); });
+socket.on('login', () => onLogin())

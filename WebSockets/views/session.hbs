@@ -1,0 +1,47 @@
+
+<div class="jumbotron">
+    <div class="table-responsive">
+        <h1 style="color:green;">Bienvenido {{userName}}</h1>
+        <div class="text-left">
+            <button class="btn btn-success my-3" onclick="location.href = '/logout'">Desloguear</button>
+        </div>
+    </div> 
+</div>
+<div class="jumbotron">
+    <a href="http://localhost:8080/productos-test.html">Listado faker</a>
+    <h1 style="color:blue;">Ingrese Producto</h1>
+    <br>
+        <form onsubmit="return addProduct(this)">
+            <div class="form-group">
+                <label for="title"><b>Nombre</b></label>
+                <input id="title" class="form-control" type="text" name="title">
+            </div>
+            <div class="form-group">
+                <label for="price"><b>Precio</b></label>
+                <input id="price" class="form-control" type="text" name="price">
+            </div>
+            <div class="form-group">
+                <label for="thumbnail"><b>Foto URL</b></label>
+                <input id="thumbnail" class="form-control" type="text" name="thumbnail">
+            </div>
+            <input type="submit" class="btn btn-success mt-3 mb-5" value="Enviar">
+        </form>
+        <h2 style="color:red;">Lista de Productos</h2>
+        <div id="products"></div>
+</div>
+<div class="jumbotron">
+    <div id="messagesCenter">
+        <h1 style="color:blue;">Centro de Mensajes</h1>
+        <div id="messages"></div>
+        <form onsubmit="return addMessage(this)">
+            <input type="email" id="id" placeholder="Tu email" required="required"><br>
+            <input type="text" id="firstName" placeholder="Tu nombre"><br>
+            <input type="text" id="lastName" placeholder="Tu apellido"><br>
+            <input type="text" id="age" placeholder="Tu edad"><br>
+            <input type="text" id="nickName" placeholder="Tu alias"><br>
+            <input type="text" id="avatar" placeholder="Tu avatar"><br>
+            <input type="text" id="text" placeholder="Cuéntanos algo..."><br>
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
+</div>
