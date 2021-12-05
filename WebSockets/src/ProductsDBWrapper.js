@@ -1,8 +1,8 @@
-const DBWrapper = require('./DBWrapper.js')
-const RepositoryDB = require('./RepositoryDB.js')
-const knexLib = require("knex")
+import DBWrapper from './DBWrapper.js'
+import RepositoryDB from './RepositoryDB.js'
+import knexLib from 'knex'
 
-class ProductsDBWrapper extends DBWrapper {
+export default class ProductsDBWrapper extends DBWrapper {
     #knex
 
     constructor(config) {
@@ -23,17 +23,5 @@ class ProductsDBWrapper extends DBWrapper {
                     })
                 }
             })
-             
-        // return this.#knex.schema.dropTableIfExists('products')
-        // .finally(() => {
-        //   return this.#knex.schema.createTable('products', table => {
-        //     table.increments('id').primary();
-        //     table.string('title', 50).notNullable();
-        //     table.float('price').notNullable();
-        //     table.string('thumbnail', 250).notNullable();
-        //   })
-        // })
     }
 }
-
-module.exports = ProductsDBWrapper

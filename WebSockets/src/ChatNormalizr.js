@@ -1,6 +1,5 @@
-const { normalize: norm, denormalize: denorm, schema } = require("normalizr");
-
-class ChatNormalizr {
+import { normalize as norm, denormalize as denorm, schema } from 'normalizr'
+export default class ChatNormalizr {
     static #user = new schema.Entity('users')
     static #message = new schema.Entity('messages', {
         value: { author: ChatNormalizr.#user }
@@ -44,5 +43,3 @@ class ChatNormalizr {
         return this.#content
     } 
 }
-
-module.exports = ChatNormalizr

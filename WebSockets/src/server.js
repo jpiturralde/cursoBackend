@@ -1,22 +1,21 @@
-const express = require('express')
-const exphbs = require('express-handlebars')
+import express from 'express'
+import exphbs from 'express-handlebars'
 
-const { Server: HttpServer } = require('http')
-const { Server: IOServer } = require('socket.io')
+import { Server as HttpServer } from 'http'
+import { Server as IOServer } from 'socket.io'
 
-const DBWrapper = require('./DBWrapper.js')
-const ProductsDBWrapper = require('./ProductsDBWrapper.js')
-const RepositoryDB = require('./RepositoryDB.js')
-const mariaDB = require('../options/mariaDB.js')
-const sqlite3 = require('../options/SQLite3.js')
-const { mockRouter } = require("./mock-router")
+import ProductsDBWrapper from './ProductsDBWrapper.js'
+//import RepositoryDB from './RepositoryDB.js'
+//import { mariaDB } from '../options/mariaDB.js'
 //const messagesDB = new DBWrapper(new RepositoryDB('messages', mariaDB))
-const messagesDB = require('./messages-fs-db.js')
+import * as messagesDB from './messages-fs-db.js'
+import { options as sqlite3 } from '../options/SQLite3.js'
 const productsDB = new ProductsDBWrapper(sqlite3)
-const ChatNormalizr = require('./ChatNormalizr.js')
+import { mockRouter } from "./mock-router.js"
+import ChatNormalizr from './ChatNormalizr.js'
 
 //SESSION CONFIG
-const session = require('express-session')
+import session from 'express-session'
 /* ------------------------------------------------*/
 /*           Persistencia por FileStore            */
 /* ------------------------------------------------*/
@@ -25,15 +24,15 @@ const session = require('express-session')
 /* ------------------------------------------------*/
 /*           Persistencia por MongoDB              */
 /* ------------------------------------------------*/
-const MongoStore = require('connect-mongo')
+import MongoStore from 'connect-mongo'
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const store = MongoStore.create({
     //En Atlas connect App :  Make sure to change the node version to 2.2.12:
-    mongoUrl: 'mongodb+srv://<user>:<password>@cluster0.xjgs3.mongodb.net/<DB>?retryWrites=true&w=majority',
+    mongoUrl: 'mongodb+srv://codeuser:codeuser@cluster0.xjgs3.mongodb.net/AuthDB?retryWrites=true&w=majority',
     mongoOptions: advancedOptions
 })
 
-const sharedsession = require("express-socket.io-session")
+import sharedsession from 'express-socket.io-session'
 const sessionMiddleware  = session({
     store: store,
     secret: 'cursoBackend',
@@ -41,8 +40,13 @@ const sessionMiddleware  = session({
     saveUninitialized: false
 })
 
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 const ROOT_PATH = __dirname.substr(0, __dirname.length-4)
+console.log(ROOT_PATH)
 const app = express()
 app.engine('.hbs', exphbs({ extname: '.hbs', defaultLayout: 'main.hbs' }))
 app.set('view engine', '.hbs')

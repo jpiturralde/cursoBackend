@@ -1,7 +1,7 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 const encoding = 'utf8'
-class Contenedor {
+export default class Contenedor {
     #id = 1
     #filePath = './defaultStorage.txt'
     #content = new Array()
@@ -132,7 +132,6 @@ class Contenedor {
 
 }
 
-module.exports = Contenedor
 
 // console.log(`-----------------${new Date().toLocaleTimeString()}--------------`)
 // const t = new Contenedor('./contenedor.txt')

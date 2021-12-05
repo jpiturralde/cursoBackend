@@ -1,4 +1,4 @@
-const Contenedor = require('./Contenedor.js')
+import Contenedor from './Contenedor.js'
 const DB_PATH = './db/messages.txt'
 
 const contenedor = new Contenedor(DB_PATH)
@@ -11,4 +11,4 @@ async function get() {
     return await contenedor.getAll()
 }
 
-module.exports = {get, post}
+export {get, post}

@@ -1,4 +1,4 @@
-class DBWrapper {
+export default class DBWrapper {
     #db
 
     constructor(db) {
@@ -26,5 +26,4 @@ class DBWrapper {
     }
 }
 
-module.exports = DBWrapper
 

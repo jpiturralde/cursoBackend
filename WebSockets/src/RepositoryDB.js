@@ -1,8 +1,5 @@
-// import knexLib from 'knex'
-const knexLib = require("knex")
-
-// export default class RepositoryDB {
-class RepositoryDB {
+import knexLib from 'knex'
+export default class RepositoryDB {
     entity
     pk = 'id'
     knex
@@ -93,5 +90,3 @@ class RepositoryDB {
     }
 
 }
-
-module.exports = RepositoryDB

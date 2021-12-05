@@ -1,5 +1,5 @@
-const { Router } = require('express')
-const faker = require('faker')
+import { Router } from 'express'
+import faker from 'faker'
 faker.locale = 'es'
 
 function randomValue() {
@@ -21,4 +21,4 @@ mockRouter.get('/', async (req, res) => {
     res.json(products)
 })
 
-module.exports = { mockRouter }
+export { mockRouter }
