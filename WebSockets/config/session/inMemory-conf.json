@@ -1,8 +1,0 @@
-{
-    "type": "InMemory",
-    "conf": {
-        "secret": "secret",
-        "resave": false,
-        "saveUninitialized": false
-    }
-}

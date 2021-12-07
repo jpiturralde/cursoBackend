@@ -1,9 +1,11 @@
 {
-    "type": "MongoDb",
-    "conf": {
+    "type": "MongoStore",
+    "session": {
         "secret": "cursoBackend",
         "resave": false,
-        "saveUninitialized": false,
+        "saveUninitialized": false        
+    },
+    "store": {
         "uri": "mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]>?retryWrites=true&w=majority",
         "options": { 
             "useNewUrlParser": true, 

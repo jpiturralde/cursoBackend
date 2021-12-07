@@ -1,0 +1,14 @@
+{
+    "type": "FileStore",
+    "session": {
+        "secret": "cursoBackend",
+        "resave": false,
+        "saveUninitialized": false        
+    },
+    "store": {
+        "options": {
+            "path": "./sessions",
+            "ttl": 5
+        }
+    }
+}

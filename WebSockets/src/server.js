@@ -1,11 +1,4 @@
-import express from 'express'
-import exphbs from 'express-handlebars'
-
-import { Server as HttpServer } from 'http'
-import { Server as IOServer } from 'socket.io'
-
-import { mockRouter } from "./mock-router.js"
-import ChatNormalizr from './ChatNormalizr.js'
+//PERSISTENCE CONFIG
 import { ProductsDao, MessagesDao } from "./daos/index.js"
 import { RepositoryFactory } from "./persistence/index.js"
 
@@ -26,38 +19,27 @@ try {
 }
 
 //SESSION CONFIG
-import session from 'express-session'
-/* ------------------------------------------------*/
-/*           Persistencia por FileStore            */
-/* ------------------------------------------------*/
-//const FileStore = require('session-file-store')(session)
-//onst store = new FileStore({ path: './sessions', ttl: 600, logFn: function(){}, retries:0 })
-/* ------------------------------------------------*/
-/*           Persistencia por MongoDB              */
-/* ------------------------------------------------*/
-import MongoStore from 'connect-mongo'
-const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
-const store = MongoStore.create({
-    //En Atlas connect App :  Make sure to change the node version to 2.2.12:
-    mongoUrl: 'mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]>?retryWrites=true&w=majority',
-    mongoOptions: advancedOptions
-})
+import { SessionManagerFactory } from "./session/index.js"
+SessionManagerFactory.initialize(process.argv.slice(2)[1])
+let sessionMiddleware
+try {
+    sessionMiddleware = await SessionManagerFactory.createSessionManager()
+} catch (error) {
+    console.error(`Error al crear sessionMiddleware ${error}`) 
+    throw Error(error)
+}
 
-import sharedsession from 'express-socket.io-session'
-const sessionMiddleware  = session({
-    store: store,
-    secret: 'cursoBackend',
-    resave: true,
-    saveUninitialized: false
-})
-
+// UTILS CONFIG
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const ROOT_PATH = __dirname.substr(0, __dirname.length-4)
-console.log(ROOT_PATH)
+
+//APP CONFIG
+import express from 'express'
+import exphbs from 'express-handlebars'
 const app = express()
 app.engine('.hbs', exphbs({ extname: '.hbs', defaultLayout: 'main.hbs' }))
 app.set('view engine', '.hbs')
@@ -66,9 +48,11 @@ app.use(express.static(ROOT_PATH + '/views'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+import { mockRouter } from "./mock-router.js"
 app.use('/api/productos-test', mockRouter)
 
 /* --------------------- ROUTES --------------------------- */
+const getNombreSession = req => req.session.userName ? req.session.userName : ''
 
 // LOGIN
 app.get('/login', (req, res) => {
@@ -157,10 +141,14 @@ app.get('/api/info', (req, res) => {
     res.json({msg: 'Send info ok!' + req.sessionID })
 })
 
+// SOCKET CONFIG
+import { Server as HttpServer } from 'http'
+import { Server as IOServer } from 'socket.io'
+import ChatNormalizr from './ChatNormalizr.js'
 
-const getNombreSession = req => req.session.userName ? req.session.userName : ''
 const http = new HttpServer(app)
 const io = new IOServer(http)
+import sharedsession from 'express-socket.io-session'
 io.use(sharedsession(sessionMiddleware, { autoSave: true }))
 
 io.on('connection', async socket => {

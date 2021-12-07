@@ -3,8 +3,8 @@ import session from 'express-session'
 
 const DEFAULT_SESSION_MANAGER_FACTORY_CONFIGURATION = { 
     type: 'InMemory',
-    conf: {
-        secret: "secret",
+    session: {
+        secret: "default",
         resave: false,
         saveUninitialized: false
     }
@@ -28,40 +28,41 @@ export default class SessionManagerFactory {
     // static async createSessionManager(config) {
         // config = SessionManagerFactory.#parseConfig(config)
         let sessionManager
-        switch (config.type) {
-            case 'FS':
+        switch (SessionManagerFactory.#sessionConfig.type) {
+            case 'FileStore':
                 console.log('SessionManagerFactory - FileStore.')
+//const FileStore = require('session-file-store')(session)
+//onst store = new FileStore({ path: './sessions', ttl: 600, logFn: function(){}, retries:0 })
                 
-                const FileSystemRepository = await import('./FileSystemRepository.js')
-                repo = new FileSystemRepository.default(config.connectionString)
-                sessionManager = session({
-                    secret: 'shhhhhhhhhhhhhhhhhhhhh',
-                    resave: false,
-                    saveUninitialized: false
+                // const FileSystemRepository = await import('./FileSystemRepository.js')
+                // repo = new FileSystemRepository.default(config.connectionString)
+                // sessionManager = session({
+                //     secret: 'shhhhhhhhhhhhhhhhhhhhh',
+                //     resave: false,
+                //     saveUninitialized: false
+                // })
+                throw Error('FileStore no implementado!!! No sé cómo usarlo con import en lugar de require!!!');
+            case 'MongoStore':
+                console.log('SessionManagerFactory - Create MongoStore.')
+                // import MongoStore from 'connect-mongo'
+                //import * as connectMongo from 'connect-mongo'
+                const MongoStore = await import('connect-mongo')
+                // const mongoStore = new MongoStore.default()
+                const store = MongoStore.default.create({
+                    //En Atlas connect App :  Make sure to change the node version to 2.2.12:
+                    mongoUrl: SessionManagerFactory.#sessionConfig.store.uri,
+                    mongoOptions: SessionManagerFactory.#sessionConfig.store.options || {}
                 })
-                break;
-            case 'MongoDb':
-                console.log('RepositoryFactory - Create MongoDbRepository.')
-                const MongoDbRepository = await import('./MongoDbRepository.js')
-                repo = new MongoDbRepository.default(config.uri, config.db, config.collection)
-                repo.init()
-                break;
-            case 'Firebase':
-                console.log('RepositoryFactory - Create FirebaseRepository.')
-                const FirebaseRepository = await import('./FirebaseRepository.js')
-                repo = new FirebaseRepository.default(config.credential, config.collection)
-                break;
-            case 'SQLite3':
-                console.log('RepositoryFactory - Create SQLite3Repository.')
-                const SQLite3Repository = await import('./SQLite3Repository.js')
-                repo = new SQLite3Repository.default(config.entity, config.connectionString)
+                const sessionConfig = SessionManagerFactory.#sessionConfig.session
+                sessionConfig.store = store
+                sessionManager = session(sessionConfig)
                 break;
             default: //InMemory
                 console.log('SessionManagerFactory - MemoryStore.')
                 sessionManager = session({
-                    secret: 'shhhhhhhhhhhhhhhhhhhhh',
-                    resave: false,
-                    saveUninitialized: false
+                    secret: SessionManagerFactory.#sessionConfig.conf.secret,
+                    resave: SessionManagerFactory.#sessionConfig.conf.resave || false,
+                    saveUninitialized: SessionManagerFactory.#sessionConfig.conf.saveUninitialized || false
                 })
             }
         return sessionManager
