@@ -65,9 +65,13 @@ function cleanFields() {
 }
 
 async function renderMessages(normalized) {
-    const chat = denormalizeChat(normalized) 
-    const messages = chat.messages
-    const compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
+    let messages = normalized
+    let compressionRate = 0
+    if (typeof normalized == 'object') {
+        const chat = denormalizeChat(normalized) 
+        messages = chat.messages
+        compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
+    }
     const messagesTpl = await loadAndCompileTemplate('/messages.hbs')
     const html = messagesTpl({ messages, compressionRate })
     document.getElementById('messages').innerHTML = html
@@ -82,10 +86,10 @@ function addMessage(e) {
 
 /* BEGIN SESSION */
 
-async function renderSession(userName, messages, products, visits) {
-    console.log('renderSession')
-    const sessionTpl = await loadAndCompileTemplate('session.hbs')
-    const html = sessionTpl({ userName })
+async function renderHome(userName, messages, products, visits) {
+    console.log('renderHome')
+    const homeTpl = await loadAndCompileTemplate('home.hbs')
+    const html = homeTpl({ userName })
     document.getElementById('content').innerHTML = html
     renderProducts(products)
     renderMessages(messages)
@@ -98,8 +102,8 @@ async function onLogin() {
 
 socket.on('messages', function(messages) { renderMessages(messages); });
 socket.on('products', function(products) { renderProducts(products); });
-socket.on('session', function(userName, messages, products, visits) { 
-    console.log('on session')
-    renderSession(userName, messages, products, visits); });
+socket.on('home', function(userName, messages, products, visits) { 
+    console.log('on home')
+    renderHome(userName, messages, products, visits); });
 // socket.on('visits', function(visits) { renderVisits(visits); });
 socket.on('login', () => onLogin())

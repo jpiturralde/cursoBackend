@@ -40,6 +40,7 @@ const ROOT_PATH = __dirname.substr(0, __dirname.length-4)
 //APP CONFIG
 import express from 'express'
 import exphbs from 'express-handlebars'
+import { logger } from "./lib/index.js"
 const app = express()
 app.engine('.hbs', exphbs({ extname: '.hbs', defaultLayout: 'main.hbs' }))
 app.set('view engine', '.hbs')
@@ -47,6 +48,7 @@ app.use(sessionMiddleware)
 app.use(express.static(ROOT_PATH + '/views'))           
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(logger)
 
 import { mockRouter } from "./mock-router.js"
 app.use('/api/productos-test', mockRouter)
@@ -56,22 +58,21 @@ const getNombreSession = req => req.session.userName ? req.session.userName : ''
 
 // LOGIN
 app.get('/login', (req, res) => {
-    res.sendFile(ROOT_PATH+'/views/login.html')
+    if (!isAuthenticated(req)) {
+        res.sendFile(ROOT_PATH+'/views/login.html')
+    }
+    else {
+        res.redirect("/home")
+    }
   })
   
 app.post('/login', (req, res) => {
     console.log('/login', req.body.userName)
-    if (req.session.visits) {
-        req.session.visits++
-        const result = { msg: `${getNombreSession(req)} visitaste la página ${req.session.visits} veces.`}
-        console.log(result)
-    } else {
+    if (!isAuthenticated(req)) {
         req.session.userName = req.body.userName
-        req.session.visits = 1
-        const result = { msg: `Te damos la bienvenida ${getNombreSession(req)}`}
-        console.log(result)
+        req.session.visits = 0
     }
-    res.redirect("/session")
+    res.redirect("/home")
 })
 
 //  LOGOUT
@@ -92,20 +93,27 @@ app.get('/logout', (req, res) => {
   })
 
 //  SESSION
-app.get('/session', (req, res) => {
-    res.sendFile(ROOT_PATH + '/views/session.html')
+app.get('/home', isAuth, (req, res) => {
+    if (!req.session.visits) {
+        req.session.visits = 0
+    }
+    req.session.visits++
+    console.log('/home', req.session.userName, req.session.visits)    
+    res.sendFile(ROOT_PATH + '/views/home.html')
 })
 
+const isAuthenticated = (req) => { return req.session.userName != undefined }
 //  ROOT
-app.get('/', (req, res) => {
-    console.log('GET /')
-    if (req.session.visits) {
-        res.redirect("/session")
+function isAuth(req, res, next) {
+    if (isAuthenticated(req)) {
+        next()
+    } else {
+        res.redirect('/login')
     }
-    else {
-        res.redirect("/login")
-    }
-    //res.sendFile(__dirname + '/views/index.html');
+  }
+
+app.get('/', isAuth, (req, res) => {
+    res.redirect("/home")
 })
 
 app.get('/api/logout', (req, res) => {
@@ -151,6 +159,13 @@ const io = new IOServer(http)
 import sharedsession from 'express-socket.io-session'
 io.use(sharedsession(sessionMiddleware, { autoSave: true }))
 
+const socketLogger = (socket, next) => {
+    const date = new Date()
+    console.log(`${date.toLocaleString()} ${socket.handshake.session.userName} socketEvent`)
+    next();
+}
+
+io.use(socketLogger)
 io.on('connection', async socket => {
     console.log('Un cliente se ha conectado', socket.handshake.session.userName)
 
@@ -159,32 +174,26 @@ io.on('connection', async socket => {
         const userName = socket.handshake.session.userName
         let visits = socket.handshake.session.visits++
         const denormalizedMessages = await messagesDB.get()
-        // console.log(denormalizedMessages)
-        const messages  = ChatNormalizr.normalizeChat(denormalizedMessages) 
-        // console.log('onConnection messages=')
-        // print(messages)
+        let messages = denormalizedMessages
+        if (denormalizedMessages.length > 0) {
+            console.log('onConnection denormalizedMessages=', denormalizedMessages)
+            messages  = ChatNormalizr.normalizeChat(denormalizedMessages) 
+            console.log('onConnection messages=')
+            print(messages)
+        }
         const products = await productsDB.get()
-        console.log('emit session')
-        socket.emit('session', userName, messages, products, visits)
+        console.log('emit home')
+        socket.emit('home', userName, messages, products, visits)
     }
     else {
         console.log('emit login')
         socket.emit('login')
     }
 
-    /* Envio los mensajes al cliente que se conectó */
-    // const denormalizedMessages = await messagesDB.get()
-    // const messages  = ChatNormalizr.normalizeChat(denormalizedMessages) 
-    // socket.emit('messages', messages)
-
-    /* Envio los productos al cliente que se conectó */
-    // socket.emit('products', await productsDB.get())
-    
     socket.on('new-message', async data => {
         data.ts = Date.now()
         await messagesDB.post(data)
         const denormalizedMessages = await messagesDB.get()
-        console.log('new-message', denormalizedMessages)
         const messages  = ChatNormalizr.normalizeChat(denormalizedMessages)  
         io.sockets.emit('messages', messages);
     });
@@ -193,13 +202,6 @@ io.on('connection', async socket => {
         await productsDB.post(data)
         const products = await productsDB.get()
         io.sockets.emit('products', products);
-    });
-
-    socket.on('new-session', async data => {
-        const userName = socket.handshake.session.userName
-        const visits = socket.handshake.session.visits++
-        console.log('new-session', userName)
-        socket.emit('session', userName, messages, products)
     });
 })
 
