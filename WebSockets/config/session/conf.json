@@ -1,0 +1,13 @@
+{
+    "type": "MongoDb",
+    "conf": {
+        "secret": "cursoBackend",
+        "resave": false,
+        "saveUninitialized": false,
+        "uri": "mongodb+srv://codeuser:codeuser@cluster0.xjgs3.mongodb.net/AuthDB?retryWrites=true&w=majority",
+        "options": { 
+            "useNewUrlParser": true, 
+            "useUnifiedTopology": true 
+        }
+    }
+}

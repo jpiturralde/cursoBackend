@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node ./src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node ./src/server.js ./config/persistence/conf.json",
+    "dev": "nodemon src/server.js ./config/persistence/conf.json"
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",

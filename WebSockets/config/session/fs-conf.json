@@ -1,0 +1,10 @@
+{
+    "type": "FS",
+    "conf": {
+        "secret": "secret",
+        "resave": false,
+        "saveUninitialized": false,
+        "path": "./sessions",
+        "ttl": 5
+    }
+}

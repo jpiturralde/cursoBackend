@@ -1,0 +1,8 @@
+{
+    "ProductsRepository": {
+        "type": "SQLite3",
+        "entity": "products",
+        "connectionString": "./db/ecommerce.sqlite",
+        "useNullAsDefault": true
+    }
+}

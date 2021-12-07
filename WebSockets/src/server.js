@@ -4,15 +4,26 @@ import exphbs from 'express-handlebars'
 import { Server as HttpServer } from 'http'
 import { Server as IOServer } from 'socket.io'
 
-import ProductsDBWrapper from './ProductsDBWrapper.js'
-//import RepositoryDB from './RepositoryDB.js'
-//import { mariaDB } from '../options/mariaDB.js'
-//const messagesDB = new DBWrapper(new RepositoryDB('messages', mariaDB))
-import * as messagesDB from './messages-fs-db.js'
-import { options as sqlite3 } from '../options/SQLite3.js'
-const productsDB = new ProductsDBWrapper(sqlite3)
 import { mockRouter } from "./mock-router.js"
 import ChatNormalizr from './ChatNormalizr.js'
+import { ProductsDao, MessagesDao } from "./daos/index.js"
+import { RepositoryFactory } from "./persistence/index.js"
+
+RepositoryFactory.initialize(process.argv.slice(2)[0])
+let productsDB
+let messagesDB
+try {
+    productsDB = new ProductsDao(await RepositoryFactory.createProductsRepository())
+} catch (error) {
+    console.error(`Error al crear ProductsDao ${error}`) 
+    throw Error(error)
+}
+try {
+    messagesDB = new MessagesDao(await RepositoryFactory.createMessagesRepository())
+} catch (error) {
+    console.error(`Error al crear MessagesDao ${error}`) 
+    throw Error(error)
+}
 
 //SESSION CONFIG
 import session from 'express-session'
@@ -28,7 +39,7 @@ import MongoStore from 'connect-mongo'
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const store = MongoStore.create({
     //En Atlas connect App :  Make sure to change the node version to 2.2.12:
-    mongoUrl: 'mongodb+srv://codeuser:codeuser@cluster0.xjgs3.mongodb.net/AuthDB?retryWrites=true&w=majority',
+    mongoUrl: 'mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]>?retryWrites=true&w=majority',
     mongoOptions: advancedOptions
 })
 
@@ -153,14 +164,17 @@ const io = new IOServer(http)
 io.use(sharedsession(sessionMiddleware, { autoSave: true }))
 
 io.on('connection', async socket => {
-    console.log('Un cliente se ha conectado', socket.handshake.session.userName, socket.handshake.session.visits)
+    console.log('Un cliente se ha conectado', socket.handshake.session.userName)
 
     if (socket.handshake.session.userName) {
         console.log('onConnection')
         const userName = socket.handshake.session.userName
         let visits = socket.handshake.session.visits++
         const denormalizedMessages = await messagesDB.get()
+        // console.log(denormalizedMessages)
         const messages  = ChatNormalizr.normalizeChat(denormalizedMessages) 
+        // console.log('onConnection messages=')
+        // print(messages)
         const products = await productsDB.get()
         console.log('emit session')
         socket.emit('session', userName, messages, products, visits)
@@ -181,7 +195,9 @@ io.on('connection', async socket => {
     socket.on('new-message', async data => {
         data.ts = Date.now()
         await messagesDB.post(data)
-        const messages  = ChatNormalizr.normalizeChat(await messagesDB.get())  
+        const denormalizedMessages = await messagesDB.get()
+        console.log('new-message', denormalizedMessages)
+        const messages  = ChatNormalizr.normalizeChat(denormalizedMessages)  
         io.sockets.emit('messages', messages);
     });
 
@@ -198,6 +214,12 @@ io.on('connection', async socket => {
         socket.emit('session', userName, messages, products)
     });
 })
+
+import util from 'util'
+
+function print(objeto) {
+  console.log(util.inspect(objeto, false, 12, true))
+}
 
 
 /* ------------------------------------------------------ */
