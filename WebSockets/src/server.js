@@ -47,52 +47,19 @@ const authenticationManager = {
     ),
     authenticationFn: isAuthenticated
 }
+
+
+// SERVER CONFIG
+import { Server as HttpServer } from 'http'
 import { ExpressApp } from './app.js'
-const app = ExpressApp({
+const http = new HttpServer(ExpressApp({
     rootPath: ROOT_PATH,
     sessionMiddleware,
     authenticationManager,
     logger
-})
-
-// const apiRouter = () => {
-//     const router = new Router()
-
-//     // LOGOUT
-//     router.get('/api/logout', getLogout)
-
-//     // INFO
-//     router.get('api/info', getInfo)
-
-//     return router
-// } 
-
-// const getInfo = (req, res) => {
-//     console.log('------------ req.session -------------')
-//     console.log(req.session)
-//     console.log('--------------------------------------')
-
-//     console.log('----------- req.sessionID ------------')
-//     console.log(req.sessionID)
-//     console.log('--------------------------------------')
-
-//     console.log('----------- req.cookies ------------')
-//     console.log(req.cookies)
-//     console.log('--------------------------------------')
-
-//     console.log('---------- req.sessionStore ----------')
-//     console.log(req.sessionStore)
-//     console.log('--------------------------------------')
-
-//     res.json({msg: 'Send info ok!' + req.sessionID })
-// }
-// app.get('/api/info', getInfo)
-
+}))
 
 // SOCKET CONFIG
-import { Server as HttpServer } from 'http'
-const http = new HttpServer(app)
-
 import { bindSocketIO } from './socket.js'
 bindSocketIO(http, sessionMiddleware, messagesDB, productsDB)
 
