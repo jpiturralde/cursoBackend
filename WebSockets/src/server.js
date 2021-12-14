@@ -52,8 +52,8 @@ import MongoDbRepository from './persistence/MongoDbRepository.js'
 // }
 let authenticationManager
 const config = {
-    uri: '//mongodb+srv://codeuser:codeuser@cluster0.xjgs3.mongodb.net/Test?retryWrites=true&w=majority',
-    db: 'Test',
+    uri: '//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority',
+    db: 'AuthDB',
     collection: 'users' 
 }
 try {
