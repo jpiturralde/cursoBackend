@@ -33,10 +33,14 @@ export const ExpressApp = (config) => {
     expressApp.use(config.logger)
 
     //Authentication
-    expressApp.use(config.authenticationManager.authenticationMdw)
+    config.authenticationManager.initApp(expressApp) //Con PassportLocalAuthentication
+//    expressApp.use(config.authenticationManager.authenticationMdw)
+
+
 
     //Routes
-    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager.authenticationFn))
+    //expressApp.use('/', webRouter(config.rootPath, config.authenticationManager.authenticationFn))
+    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager))
     expressApp.use('/', apiRouter())
     expressApp.use('/api/productos-test', mockRouter)
 

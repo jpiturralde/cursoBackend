@@ -15,30 +15,30 @@
   <div class="container my-5">
     <div class="jumbotron">
 
-      <h1 style="color:blue;">Signin</h1>
+      <h1 style="color:blue;">Signup</h1>
       <br>
-      <form class="form" action="/login" method="post" role="form" autocomplete="off">
+      <form class="form" action="/signup" method="post" role="form" autocomplete="off">
 
         <div class="form-group">
-          <input name='username' placeholder="Nombre" class="form-control" type="email" required>
+          <input name='username' placeholder="Usuario" class="form-control" type="email" required>
         </div>
         <div class="form-group">
           <input name='password' placeholder="Password" class="form-control" type="password" required>
         </div>
 
         <div class="form-group">
-          <input class="btn btn-success my-3" type="submit" value="Signin">
+          <input class="btn btn-success my-3" type="submit" value="Signup">
         </div>
       </form>
       <hr>
       <div class="text-center"></div>
-      <button class="btn btn-success my-3" onclick="goSignup()">Signup</button>
+      <button class="btn btn-success my-3" onclick="goSignin()">Signin</button>
     </div>
   </div>
 
   <script>
-    function goSignup() {
-      location.href = '/signup';
+    function goSignin() {
+      location.href = '/login';
     }
   </script>
 </body>

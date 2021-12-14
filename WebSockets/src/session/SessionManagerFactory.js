@@ -44,10 +44,7 @@ export default class SessionManagerFactory {
                 throw Error('FileStore no implementado!!! No sé cómo usarlo con import en lugar de require!!!');
             case 'MongoStore':
                 console.log('SessionManagerFactory - Create MongoStore.')
-                // import MongoStore from 'connect-mongo'
-                //import * as connectMongo from 'connect-mongo'
                 const MongoStore = await import('connect-mongo')
-                // const mongoStore = new MongoStore.default()
                 const store = MongoStore.default.create({
                     //En Atlas connect App :  Make sure to change the node version to 2.2.12:
                     mongoUrl: SessionManagerFactory.#sessionConfig.store.uri,

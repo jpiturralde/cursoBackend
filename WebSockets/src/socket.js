@@ -6,11 +6,11 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
     io.use(sharedsession(sessionMiddleware, { autoSave: true }))
     io.use(socketLogger)
     io.on('connection', async socket => {
-        console.log('Un cliente se ha conectado', socket.handshake.session.userName)
+        console.log('Un cliente se ha conectado', socket.handshake.session.username)
     
-        if (socket.handshake.session.userName) {
+        if (socket.handshake.session.username) {
             console.log('onConnection')
-            const userName = socket.handshake.session.userName
+            const userName = socket.handshake.session.username
             const visits = socket.handshake.session.visits
             const messages = await messagesDB.get()
             const products = await productsDB.get()
@@ -38,7 +38,7 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
 
 const socketLogger = (socket, next) => {
     const date = new Date()
-    console.log(`${date.toLocaleString()} ${socket.handshake.session.userName} socketEvent`)
+    console.log(`${date.toLocaleString()} ${socket.handshake.session.username} socketEvent`)
     next();
 }
 
