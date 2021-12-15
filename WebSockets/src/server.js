@@ -6,11 +6,21 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const ROOT_PATH = __dirname.substr(0, __dirname.length-4)
 
+const DOTENV_PATH = ROOT_PATH + '/config/.env'
+console.log('DOTENV_PATH', DOTENV_PATH)
+import dotenv from 'dotenv'
+dotenv.config({path: DOTENV_PATH})
+
+console.log('server - .ENV'
+, process.env.AUTHENTICATION_CONFIG_PATH
+, process.env.PERSISTENCE_CONFIG_PATH
+, process.env.SESSION_CONFIG_PATH)
 //PERSISTENCE CONFIG
 import { ProductsDao, MessagesDao } from "./daos/index.js"
 import { RepositoryFactory } from "./persistence/index.js"
 
-RepositoryFactory.initialize(process.argv.slice(2)[0])
+// RepositoryFactory.initialize(process.argv.slice(2)[0])
+RepositoryFactory.initialize(process.env.PERSISTENCE_CONFIG_PATH)
 let productsDB
 let messagesDB
 try {
@@ -28,7 +38,8 @@ try {
 
 //SESSION CONFIG
 import { SessionManagerFactory } from "./session/index.js"
-SessionManagerFactory.initialize(process.argv.slice(2)[1])
+//SessionManagerFactory.initialize(process.argv.slice(2)[1])
+SessionManagerFactory.initialize(process.env.SESSION_CONFIG_PATH)
 let sessionMiddleware
 try {
     sessionMiddleware = await SessionManagerFactory.createSessionManager()
@@ -48,7 +59,8 @@ import { UsersDao } from './daos/index.js'
 //     ),
 //     authenticationFn: isAuthenticated
 // }
-await AuthenticationManagerFactory.initialize('./config/authentication/conf.json', RepositoryFactory, UsersDao)
+//await AuthenticationManagerFactory.initialize('./config/authentication/conf.json', RepositoryFactory, UsersDao)
+await AuthenticationManagerFactory.initialize(process.env.AUTHENTICATION_CONFIG_PATH, RepositoryFactory, UsersDao)
 const authenticationManager = await AuthenticationManagerFactory.create()
 
 // SERVER CONFIG

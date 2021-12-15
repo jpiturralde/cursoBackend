@@ -57,9 +57,9 @@ export default class SessionManagerFactory {
             default: //InMemory
                 console.log('SessionManagerFactory - MemoryStore.')
                 sessionManager = session({
-                    secret: SessionManagerFactory.#sessionConfig.conf.secret,
-                    resave: SessionManagerFactory.#sessionConfig.conf.resave || false,
-                    saveUninitialized: SessionManagerFactory.#sessionConfig.conf.saveUninitialized || false
+                    secret: SessionManagerFactory.#sessionConfig.session.secret,
+                    resave: SessionManagerFactory.#sessionConfig.session.resave || false,
+                    saveUninitialized: SessionManagerFactory.#sessionConfig.session.saveUninitialized || false
                 })
             }
         return sessionManager

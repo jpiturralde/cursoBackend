@@ -35,21 +35,17 @@ const getRoot = (req, res) => {
     // LOGIN
 const getLogin = (rootPath, isAuthenticated) => (req, res) => {
     if (!isAuthenticated(req)) {
-        console.log('web-router.getLogin /views/login.html')
         res.sendFile(rootPath+'/views/login.html')
     }
     else {
-        console.log('web-router.getLogin /home')
         res.redirect("/home")
     }
 }
 
 const postLogin = isAuthenticated => (req, res) => {
     console.log('/login', req.body.username)
-//    if (!isAuthenticated(req)) {
-        req.session.username = req.body.username
-        req.session.visits = 0
-//    }
+    req.session.username = req.body.username
+    req.session.visits = 0
     res.redirect("/home")
 }
 
@@ -61,21 +57,17 @@ const getFailLogin = (req, res) => {
     // SIGNUP
 const getSignup = (rootPath, isAuthenticated) => (req, res) => {
     if (!isAuthenticated(req)) {
-        console.log('web-router.getLogin /views/signup.html')
         res.sendFile(rootPath+'/views/signup.html')
     }
     else {
-        console.log('web-router.getSignup /home')
         res.redirect("/home")
     }
 }
 
 const postSignup = isAuthenticated => (req, res) => {
     console.log('/signup', req.body.username)
-    // if (!isAuthenticated(req)) {
-        req.session.username = req.body.username
-        req.session.visits = 0
-    // }
+    req.session.username = req.body.username
+    req.session.visits = 0
     res.redirect("/home")
 }
 
