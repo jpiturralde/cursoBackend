@@ -37,10 +37,8 @@ try {
     throw Error(error)
 }
 
- import { isSecured } from "./lib/index.js"
-import { PassportLocalAuthentication } from './authentication/index.js'
+import { AuthenticationManagerFactory } from './authentication/index.js'
 import { UsersDao } from './daos/index.js'
-import MongoDbRepository from './persistence/MongoDbRepository.js'
 // const authenticationManager = {
 //     authenticationMdw: authentication(
 //         [{
@@ -50,28 +48,8 @@ import MongoDbRepository from './persistence/MongoDbRepository.js'
 //     ),
 //     authenticationFn: isAuthenticated
 // }
-let authenticationManager
-const config = {
-    uri: '//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority',
-    db: 'AuthDB',
-    collection: 'users' 
-}
-try {
-    const  repo = new MongoDbRepository(config.uri, config.db, config.collection)
-    await repo.init()
-    const authConfig = {
-        usersDB: new UsersDao(repo),
-        scopes: [{
-            path:'/home', 
-            methods: ['GET']
-        }], 
-        isSecured
-    }
-    authenticationManager = new PassportLocalAuthentication(authConfig)
-} catch (error) {
-    console.error(error)
-}
-console.log('server - authenticationManager', authenticationManager)
+await AuthenticationManagerFactory.initialize('./config/authentication/conf.json', RepositoryFactory, UsersDao)
+const authenticationManager = await AuthenticationManagerFactory.create()
 
 // SERVER CONFIG
 import { logger } from "./lib/index.js"

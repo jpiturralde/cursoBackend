@@ -47,8 +47,7 @@ export default class Dao {
 
     async getAll() { return this.#repo.getAll() }
 
-    async getById(id) { 
-        console.log('Dao.getById', id)
+    async getById(id) {
         return this.#repo.getById(id) 
     }
 

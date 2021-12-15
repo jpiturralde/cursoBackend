@@ -50,13 +50,13 @@ export default class UsersDao extends Dao {
 
     async getByUserName(username) {
         const result = await this.#repo.getBy( { username } )
-        if (result.length > 0) {
+        if (result && result.length > 0) {
             return result[0]
         }
         return null
     }
 
-    async post(data) { 
+    async post(data) {
         return await super.post(UsersDao.#createUser(data))
     }
 

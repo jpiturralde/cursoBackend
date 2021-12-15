@@ -31,8 +31,7 @@ export default class InMemoryRepository {
         let result = []
         keys.forEach(k => {
             result = this.#container.filter(x => x.payload[k]==query[k])
-        })        
-        console.log('InMemoryRepository.getBy', query, this.#container, result)
+        })
         if (result.length > 0) {
             return result.map(x => InMemoryRepository.getPayload(x))
         }

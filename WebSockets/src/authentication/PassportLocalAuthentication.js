@@ -47,11 +47,9 @@ export default class PassportLocalAuthentication {
     static #serializer() { return (user, done) => { done(null, user.id) } }
 
     static #deserializer(db) {
-        return (id, done) => { 
-            console.log('PassportLocalAuthentication.#deserializer', id)
+        return (id, done) => {
             db.getById(id)
             .then(user => {
-                console.log('PassportLocalAuthentication.#deserializer', user)
                 done(null, user)
             })
             .catch(err => {
@@ -64,10 +62,7 @@ export default class PassportLocalAuthentication {
     constructor(config) {
         passport.use('signup', PassportLocalAuthentication.#signupStrategy(config.usersDB))
         passport.use('signin', PassportLocalAuthentication.#signinStrategy(config.usersDB))
-        passport.serializeUser((user, done) => {
-            console.log('passport.serializeUser', user)
-            done(null, user.id);
-        })
+        passport.serializeUser(PassportLocalAuthentication.#serializer())
         passport.deserializeUser(PassportLocalAuthentication.#deserializer(config.usersDB))
         this.#passportInstance = passport
         this.#config = config
@@ -82,20 +77,15 @@ export default class PassportLocalAuthentication {
     authenticationMdw(loginURI = '/login') {
         return (req, res, next) => {
             if (this.#config.isSecured(this.#config.scopes, req) && !this.authenticationFn(req)) {
-                console.log('PassportLocalAuthentication.authenticationMdw redirect(loginURI)')
                 res.redirect(loginURI)
             } else {
-                console.log('PassportLocalAuthentication.authenticationMdw next()')
                 next()
             }
         }
     }
 
-    authenticationFn(req) { 
-        const isAuthenticated = req.isAuthenticated() 
-        console.log('PassportLocalAuthentication.authenicationFn', isAuthenticated)
-        // console.log('PassportLocalAuthentication.authenicationFn', req)
-        return isAuthenticated
+    authenticationFn(req) {
+        return req.isAuthenticated()
     }
 
     signupMdw(failureRedirect) {
