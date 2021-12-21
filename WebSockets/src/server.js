@@ -1,26 +1,14 @@
-// UTILS CONFIG
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+// CONTEXT
+import { context } from './context.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const ROOT_PATH = __dirname.substr(0, __dirname.length-4)
-
-const DOTENV_PATH = ROOT_PATH + '/config/.env'
-console.log('DOTENV_PATH', DOTENV_PATH)
-import dotenv from 'dotenv'
-dotenv.config({path: DOTENV_PATH})
-
-console.log('server - .ENV'
-, process.env.AUTHENTICATION_CONFIG_PATH
-, process.env.PERSISTENCE_CONFIG_PATH
-, process.env.SESSION_CONFIG_PATH)
+console.log('Server context', context)
 //PERSISTENCE CONFIG
 import { ProductsDao, MessagesDao } from "./daos/index.js"
 import { RepositoryFactory } from "./persistence/index.js"
 
 // RepositoryFactory.initialize(process.argv.slice(2)[0])
-RepositoryFactory.initialize(process.env.PERSISTENCE_CONFIG_PATH)
+// RepositoryFactory.initialize(process.env.PERSISTENCE_CONFIG_PATH)
+RepositoryFactory.initialize(context.PERSISTENCE_CONFIG_PATH)
 let productsDB
 let messagesDB
 try {
@@ -36,10 +24,9 @@ try {
     throw Error(error)
 }
 
-//SESSION CONFIG
+// SESSION CONFIG
 import { SessionManagerFactory } from "./session/index.js"
-//SessionManagerFactory.initialize(process.argv.slice(2)[1])
-SessionManagerFactory.initialize(process.env.SESSION_CONFIG_PATH)
+SessionManagerFactory.initialize(context.SESSION_CONFIG_PATH)
 let sessionMiddleware
 try {
     sessionMiddleware = await SessionManagerFactory.createSessionManager()
@@ -48,19 +35,10 @@ try {
     throw Error(error)
 }
 
+// AUTHENTICATION CONFIG
 import { AuthenticationManagerFactory } from './authentication/index.js'
 import { UsersDao } from './daos/index.js'
-// const authenticationManager = {
-//     authenticationMdw: authentication(
-//         [{
-//             path:'/home', 
-//             methods: ['GET']
-//         }]
-//     ),
-//     authenticationFn: isAuthenticated
-// }
-//await AuthenticationManagerFactory.initialize('./config/authentication/conf.json', RepositoryFactory, UsersDao)
-await AuthenticationManagerFactory.initialize(process.env.AUTHENTICATION_CONFIG_PATH, RepositoryFactory, UsersDao)
+await AuthenticationManagerFactory.initialize(context.AUTHENTICATION_CONFIG_PATH, RepositoryFactory, UsersDao)
 const authenticationManager = await AuthenticationManagerFactory.create()
 
 // SERVER CONFIG
@@ -68,7 +46,7 @@ import { logger } from "./lib/index.js"
 import { Server as HttpServer } from 'http'
 import { ExpressApp } from './app.js'
 const http = new HttpServer(ExpressApp({
-    rootPath: ROOT_PATH,
+    rootPath: context.ROOT_PATH,
     sessionMiddleware,
     authenticationManager,
     logger
@@ -80,7 +58,7 @@ bindSocketIO(http, sessionMiddleware, messagesDB, productsDB)
 
 /* ------------------------------------------------------ */
 /* Server Listen */
-const PORT = process.env.port || 8080
+const PORT = context.port || 8080
 const httpServer = http.listen(PORT)
 httpServer.on('listening', () => {
     console.log(`Servidor escuchando en el puerto ${httpServer.address().port}`)
