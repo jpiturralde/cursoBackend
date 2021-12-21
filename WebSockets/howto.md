@@ -15,6 +15,8 @@ Los usuarios son persistidos en MongoDB. A continuación se muestra ejemplo de c
 }
 ````
 Si no se especifica repositorio de usuarios, por defectose utiliza repositorio en memoria.
+
+Ejemplos en https://github.com/jpiturralde/cursoBackend/tree/dotenv/WebSockets/config/authentication/examples
   
 
 ## Persistencia
