@@ -14,8 +14,11 @@ export const processRouter = (rootPath) => {
     return router
 } 
 
+import * as os from 'os'
+const numCores = os.cpus().length
+
 const getInfo = (req, res) => {
-    res.render('process-info', { process })    
+    res.render('process-info', { process, numCores })    
 }
 
 const DEFAULT_RANDOM_COUNT = 100000000
