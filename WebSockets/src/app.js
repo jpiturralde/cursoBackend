@@ -3,6 +3,7 @@ import exphbs from 'express-handlebars'
 import { webRouter } from './routers/web-router.js'
 import { mockRouter } from "./routers/mock-router.js"
 import { apiRouter, getInfo } from './routers/api-router.js'
+import { processRouter } from './routers/process-router.js'
 
 /**
  * config {
@@ -42,6 +43,7 @@ export const ExpressApp = (config) => {
     //expressApp.use('/', webRouter(config.rootPath, config.authenticationManager.authenticationFn))
     expressApp.use('/', webRouter(config.rootPath, config.authenticationManager))
     expressApp.use('/', apiRouter())
+    expressApp.use('/', processRouter(config.rootPath))
     expressApp.use('/api/productos-test', mockRouter)
 
     return expressApp
