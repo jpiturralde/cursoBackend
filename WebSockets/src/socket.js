@@ -6,19 +6,18 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
     io.use(sharedsession(sessionMiddleware, { autoSave: true }))
     io.use(socketLogger)
     io.on('connection', async socket => {
-        console.log('Un cliente se ha conectado', socket.handshake.session.username)
+        console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} onConnection`)
     
         if (socket.handshake.session.username) {
-            console.log('onConnection')
             const userName = socket.handshake.session.username
             const visits = socket.handshake.session.visits
             const messages = await messagesDB.get()
             const products = await productsDB.get()
-            console.log('emit home')
+            console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} emit home`)
             socket.emit('home', userName, messages, products, visits)
         }
         else {
-            console.log('emit login')
+            console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} emit login`)
             socket.emit('login')
         }
     
@@ -37,8 +36,7 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
 }
 
 const socketLogger = (socket, next) => {
-    const date = new Date()
-    console.log(`${date.toLocaleString()} ${socket.handshake.session.username} socketEvent`)
+    console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} socketEvent`)
     next();
 }
 

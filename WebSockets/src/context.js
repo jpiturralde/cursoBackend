@@ -1,20 +1,8 @@
 // ARGS
+import cluster from 'cluster'
 import parseArgs from 'minimist'
 import dotenv from 'dotenv'
 import * as fs from 'fs'
-
-const options = {
-    default: {
-        p: 8080,
-        e: 'prod',
-        dep: './config/prod/.env' 
-    },
-    alias: {
-        p: 'port',
-        e: 'env',
-        dep: 'dotenvPath'
-    }
-}
 
 async function verifyPaths(envs) {
     const paths = Array.from(new Map(Object.entries(envs)), ([name, value]) => ({ name, value }))
@@ -38,8 +26,25 @@ async function invalidFilePath(obj) {
     })
 }
 
-let context 
+
+const options = {
+    default: {
+        p: 8080,
+        m: 'FORK',
+        e: 'prod',
+        dep: './config/prod/.env' 
+    },
+    alias: {
+        p: 'PORT',
+        m: 'MODE',
+        e: 'ENV',
+        dep: 'dotenvPath'
+    }
+}
+
 const args = parseArgs(process.argv.slice(2), options)
+
+let context 
 try {
     const result = dotenv.config({path: args.dotenvPath})
 
@@ -49,13 +54,15 @@ try {
 
     const { parsed: envs } = result
     
-    await verifyPaths(envs)
+    if (cluster.isPrimary) {
+        await verifyPaths(envs)
+    }
 
     context = {
+        ...args,
         ...envs,
-        ROOT_PATH: process.cwd(),
-        PORT: args.port,
-        ENV: args.env
+        ROOT_PATH: process.cwd(), 
+        isModeFork: () =>  args.MODE == 'FORK'
     }
 } catch (error) {
     console.log('********************** Loading context error **********************')

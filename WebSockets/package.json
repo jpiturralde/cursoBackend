@@ -5,8 +5,9 @@
   "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
   "main": "src/server.js",
   "scripts": {
-    "start": "node ./src/server.js",
-    "dev": "nodemon src/server.js --dep ./config/dev/.env"
+    "start": "node ./src/main.js",
+    "dev": "nodemon src/main.js --dep ./config/dev/.env",
+    "prod": "nodemon src/main.js --dep ./config/prod/.env"
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",
