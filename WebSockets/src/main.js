@@ -6,7 +6,7 @@ import { createServer  } from './server.js'
 
 async function startServer() {
     const http = await createServer()
-    const PORT = context.port || 8080
+    const PORT = context.PORT || 8080
     const httpServer = http.listen(PORT)
     httpServer.on('listening', () => {
         console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} Servidor express escuchando en el puerto ${PORT} - PID ${process.pid}`)

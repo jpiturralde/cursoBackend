@@ -47,7 +47,7 @@ const args = parseArgs(process.argv.slice(2), options)
 let context 
 try {
     const result = dotenv.config({path: args.dotenvPath})
-
+    
     if (result.error) {
         throw result.error
     }
@@ -59,11 +59,15 @@ try {
     }
 
     context = {
-        ...args,
         ...envs,
+        ...args,
         ROOT_PATH: process.cwd(), 
         isModeFork: () =>  args.MODE == 'FORK'
     }
+    // if (envs.PORT) {
+    //     context.PORT = parseInt(envs.PORT)
+    //     context.p = context.PORT
+    // }
 } catch (error) {
     console.log('********************** Loading context error **********************')
     console.log(`DOTENV_PATH = ${args.dotenvPath}`)
