@@ -1,12 +1,16 @@
 import { Router } from "express"
 import { fork } from 'child_process'
 import path from 'path'
+import compression from 'compression'
 
 export const processRouter = (rootPath) => {
     const router = new Router()
 
     //  INFO
     router.get('/info', getInfo)
+
+    //  INFOZIP
+    router.get('/infozip', compression(), getInfo)
 
     // API/RANDOMS
     router.get('/api/randoms', getRandoms(rootPath))
