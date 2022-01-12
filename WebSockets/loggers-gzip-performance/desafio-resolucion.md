@@ -13,9 +13,6 @@ Incorporar al proyecto de servidor de trabajo la compresión gzip.
 Verificar sobre la ruta /info con y sin compresión, la diferencia de cantidad de bytes devueltos en un caso y otro.
 
   **RESOLUCIÓN**
-
-     ``gzip``
-
    ![infozip](https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/infozip.PNG)
 
 Luego implementar loggueo (con alguna librería vista en clase) que registre lo siguiente:
