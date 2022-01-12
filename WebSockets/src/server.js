@@ -1,6 +1,3 @@
-import cluster from 'cluster'
-import * as os from 'os'
-
 // CONTEXT
 import { context } from './context.js'
 //PERSISTENCE CONFIG
