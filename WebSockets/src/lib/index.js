@@ -1,4 +1,4 @@
-import { logger } from "./logger-middleware.js"
+import { logger, loggerMdw } from "./logger-middleware.js"
 import { 
     errorHandler, 
     ACCESS_DENIED_ERROR_MSG, 
@@ -11,7 +11,7 @@ import { authorization } from "./authorization-middleware.js"
 import { unkownRoute } from "./unknown-route-middleware.js"
 
 export { 
-    logger, 
+    logger, loggerMdw,
     errorHandler, 
     authentication, isAuthenticated, isSecured, securedScope, securedMethod,
     authorization, ACCESS_DENIED_ERROR_MSG, 

@@ -1,3 +1,6 @@
+// LOGGER
+import { logger } from './logger.js'
+
 // ARGS
 import cluster from 'cluster'
 import parseArgs from 'minimist'
@@ -61,7 +64,8 @@ try {
     context = {
         ...envs,
         ...args,
-        ROOT_PATH: process.cwd(), 
+        ROOT_PATH: process.cwd(),
+        logger, 
         isModeFork: () =>  args.MODE == 'FORK'
     }
     // if (envs.PORT) {
@@ -69,10 +73,10 @@ try {
     //     context.p = context.PORT
     // }
 } catch (error) {
-    console.log('********************** Loading context error **********************')
-    console.log(`DOTENV_PATH = ${args.dotenvPath}`)
-    console.error(error)
-    console.log('********************** Process exit *******************************')
+    logger.error('********************** Loading context error **********************')
+    logger.error(`DOTENV_PATH = ${args.dotenvPath}`)
+    logger.error(error)
+    logger.error('********************** Process exit *******************************')
     process.exit(1)
 }
 

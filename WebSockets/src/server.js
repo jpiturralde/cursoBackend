@@ -9,11 +9,13 @@ import { SessionManagerFactory } from "./session/index.js"
 import { AuthenticationManagerFactory } from './authentication/index.js'
 import { UsersDao } from './daos/index.js'
 // SERVER CONFIG
-import { logger } from "./lib/index.js"
+import { loggerMdw } from "./lib/index.js"
 import { Server as HttpServer } from 'http'
 import { ExpressApp } from './app.js'
 // SOCKET CONFIG
 import { bindSocketIO } from './socket.js'
+
+const logger = context.logger
 
 //PERSISTENCE CONFIG
 async function createDB() {
@@ -23,13 +25,13 @@ async function createDB() {
     try {
         productsDB = new ProductsDao(await RepositoryFactory.createProductsRepository())
     } catch (error) {
-        console.error(`Error al crear ProductsDao ${error}`) 
+        logger.error(`Error al crear ProductsDao ${error}`) 
         throw Error(error)
     }
     try {
         messagesDB = new MessagesDao(await RepositoryFactory.createMessagesRepository())
     } catch (error) {
-        console.error(`Error al crear MessagesDao ${error}`) 
+        logger.error(`Error al crear MessagesDao ${error}`) 
         throw Error(error)
     }
     return {
@@ -46,7 +48,7 @@ async function createSessionManager() {
     try {
         sessionMiddleware = await SessionManagerFactory.createSessionManager()
     } catch (error) {
-        console.error(`Error al crear sessionMiddleware ${error}`) 
+        logger.error(`Error al crear sessionMiddleware ${error}`) 
         throw Error(error)
     }
     return sessionMiddleware
@@ -61,34 +63,21 @@ async function createAthenticationManager() {
 
 // SERVER CONFIG
 async function createServer() {
-    console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} creating server ..........................`)
+    logger.info(`${process.ppid}-${process.pid} creating server ..........................`)
     const sessionMiddleware = await createSessionManager()
     const http = new HttpServer(ExpressApp({
         rootPath: context.ROOT_PATH,
         sessionMiddleware,
         authenticationManager: await createAthenticationManager(),
-        logger
+        logger: loggerMdw(logger)
     }))
 
     const db = await createDB()
 
     // SOCKET CONFIG
     bindSocketIO(http, sessionMiddleware, db.messagesDB, db.productsDB)
-    console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} server created ..........................`)
+    logger.info(`${process.ppid}-${process.pid} server created ..........................`)
     return http
 }
-
-//const http = await createServer()
-
-/* ------------------------------------------------------ */
-/* Server Listen */
-// const PORT = context.port || 8080
-// const httpServer = http.listen(PORT)
-// httpServer.on('listening', () => {
-//     console.log(`Servidor express escuchando en el puerto ${PORT} - PID WORKER ${process.pid}`)
-// })
-// httpServer.on('error', error => console.log(`Error en servidor ${error}`))
-
-// }//else cluster.isPrimary
 
 export { createServer }
