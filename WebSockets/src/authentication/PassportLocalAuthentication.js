@@ -5,7 +5,7 @@ export default class PassportLocalAuthentication {
     #config
     #passportInstance
 
-    static #signupStrategy(db) {
+    static #signupStrategy(db, logger) {
         return new LocalStrategy({
                 passReqToCallback: true
             },
@@ -13,12 +13,12 @@ export default class PassportLocalAuthentication {
                 db.getByUserName(username)
                 .then(user => {
                     if (user) {
-                        console.log(`PassportLocalAuthentication#sigupStrategy: ${username} already exists.`);
+                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} already exists.`);
                         return done(null, false)
                     }
                     db.post( {username, password} )
                     .then(user => {
-                        console.log(`PassportLocalAuthentication#sigupStrategy: ${username} registered successfuly.`)
+                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
                         return done(null, user)
                     })
                 })
@@ -32,11 +32,11 @@ export default class PassportLocalAuthentication {
             (req, username, password, done) => {
                 db.getByUserName(username).then(user => {
                     if (!user) {
-                        console.log(`PassportLocalAuthentication#siginStrategy: Invalid cretentials.`);
+                        logger.info(`PassportLocalAuthentication#signinStrategy: Invalid cretentials.`);
                         return done(null, false)
                     }
                     if (!db.validateHash(password, user.password)) {
-                        console.log(`PassportLocalAuthentication#siginStrategy: Invalid cretentials.`);
+                        logger.info(`PassportLocalAuthentication#signinStrategy: Invalid cretentials.`);
                         return done(null, false)
                     }
                     return done(null, user)
@@ -46,24 +46,24 @@ export default class PassportLocalAuthentication {
 
     static #serializer() { return (user, done) => { done(null, user.id) } }
 
-    static #deserializer(db) {
+    static #deserializer(db, logger) {
         return (id, done) => {
             db.getById(id)
             .then(user => {
                 done(null, user)
             })
             .catch(err => {
-                console.error('PassportLocalAuthentication.#deserializer', err)
+                logger.error('PassportLocalAuthentication.#deserializer', err)
                 done(err)
             })
         }
     }
 
     constructor(config) {
-        passport.use('signup', PassportLocalAuthentication.#signupStrategy(config.usersDB))
-        passport.use('signin', PassportLocalAuthentication.#signinStrategy(config.usersDB))
+        passport.use('signup', PassportLocalAuthentication.#signupStrategy(config.usersDB, config.logger))
+        passport.use('signin', PassportLocalAuthentication.#signinStrategy(config.usersDB, config.logger))
         passport.serializeUser(PassportLocalAuthentication.#serializer())
-        passport.deserializeUser(PassportLocalAuthentication.#deserializer(config.usersDB))
+        passport.deserializeUser(PassportLocalAuthentication.#deserializer(config.usersDB, config.logger))
         this.#passportInstance = passport
         this.#config = config
     }

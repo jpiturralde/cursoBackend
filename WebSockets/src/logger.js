@@ -16,6 +16,14 @@ log4js.configure({
   }
 })
 
-const logger = log4js.getLogger()
+const log = log4js.getLogger()
+
+const logger = {
+  trace: (msg) => { log.trace(`${process.ppid}-${process.pid} ${msg}`) },
+  debug: (msg) => { log.debug(`${process.ppid}-${process.pid} ${msg}`) },
+  info: (msg) => { log.info(`${process.ppid}-${process.pid} ${msg}`) },
+  warn: (msg) => { log.warn(`${process.ppid}-${process.pid} ${msg}`) },
+  error: (msg) => { log.error(`${process.ppid}-${process.pid} ${msg}`) }
+}
 
 export { logger }

@@ -6,6 +6,6 @@ export const logger = (req, res, next) => {
 
 export const loggerMdw = (logger) => (req, res, next) => {
     const date = new Date()
-    logger.info(`${process.ppid}-${process.pid} ${req.method} ${req.path}`)
+    logger.info(`${req.method} ${req.path}`)
     next();
 }

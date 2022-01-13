@@ -43,7 +43,7 @@ async function createDB() {
 
 // SESSION CONFIG
 async function createSessionManager() {
-    SessionManagerFactory.initialize(context.SESSION_CONFIG_PATH)
+    SessionManagerFactory.initialize(context.SESSION_CONFIG_PATH, logger)
     let sessionMiddleware
     try {
         sessionMiddleware = await SessionManagerFactory.createSessionManager()
@@ -57,13 +57,13 @@ async function createSessionManager() {
 
 // AUTHENTICATION CONFIG
 async function createAthenticationManager() {
-    await AuthenticationManagerFactory.initialize(context.AUTHENTICATION_CONFIG_PATH, RepositoryFactory, UsersDao)
+    await AuthenticationManagerFactory.initialize(context.AUTHENTICATION_CONFIG_PATH, RepositoryFactory, UsersDao, logger)
     return await AuthenticationManagerFactory.create()
 }
 
 // SERVER CONFIG
 async function createServer() {
-    logger.info(`${process.ppid}-${process.pid} creating server ..........................`)
+    logger.info(`Creating server ..........................`)
     const sessionMiddleware = await createSessionManager()
     const http = new HttpServer(ExpressApp({
         rootPath: context.ROOT_PATH,
@@ -75,8 +75,8 @@ async function createServer() {
     const db = await createDB()
 
     // SOCKET CONFIG
-    bindSocketIO(http, sessionMiddleware, db.messagesDB, db.productsDB)
-    logger.info(`${process.ppid}-${process.pid} server created ..........................`)
+    bindSocketIO(http, sessionMiddleware, db.messagesDB, db.productsDB, logger)
+    logger.info(`Server created ..........................`)
     return http
 }
 

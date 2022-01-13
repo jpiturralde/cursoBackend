@@ -11,18 +11,22 @@ const DEFAULT_SESSION_MANAGER_FACTORY_CONFIGURATION = {
 }
 
 export default class SessionManagerFactory {
+    static logger
     static #sessionConfig
 
-    static async initialize(sessionConfigPath) {
+    static async initialize(sessionConfigPath, logger) {
+        SessionManagerFactory.logger = logger
         try {
             SessionManagerFactory.#sessionConfig = JSON.parse(fs.readFileSync(sessionConfigPath, 'utf8'))
         } catch (e) {
-            console.log(`SessionManagerFactory - Not found ${sessionConfigPath} `)
+            logger.warn(`SessionManagerFactory - Not found ${sessionConfigPath} `)
             SessionManagerFactory.#sessionConfig = DEFAULT_SESSION_MANAGER_FACTORY_CONFIGURATION
-            console.log(`SessionManagerFactory - Default configuration initialized`)
+            logger.warn(`SessionManagerFactory - Default configuration initialized`)
         }
-        console.log('SessionManagerFactory', SessionManagerFactory.#sessionConfig)
+        logger.info('SessionManagerFactory', SessionManagerFactory.#sessionConfig)
     }
+
+
 
     static async createSessionManager() {
     // static async createSessionManager(config) {
@@ -30,7 +34,7 @@ export default class SessionManagerFactory {
         let sessionManager
         switch (SessionManagerFactory.#sessionConfig.type) {
             case 'FileStore':
-                console.log('SessionManagerFactory - FileStore.')
+                SessionManagerFactory.logger.info('SessionManagerFactory - FileStore.')
 //const FileStore = require('session-file-store')(session)
 //onst store = new FileStore({ path: './sessions', ttl: 600, logFn: function(){}, retries:0 })
                 
@@ -43,7 +47,7 @@ export default class SessionManagerFactory {
                 // })
                 throw Error('FileStore no implementado!!! No sé cómo usarlo con import en lugar de require!!!');
             case 'MongoStore':
-                console.log('SessionManagerFactory - Create MongoStore.')
+                SessionManagerFactory.logger.info('SessionManagerFactory - Create MongoStore.')
                 const MongoStore = await import('connect-mongo')
                 const store = MongoStore.default.create({
                     //En Atlas connect App :  Make sure to change the node version to 2.2.12:
@@ -55,7 +59,7 @@ export default class SessionManagerFactory {
                 sessionManager = session(sessionConfig)
                 break;
             default: //InMemory
-                console.log('SessionManagerFactory - MemoryStore.')
+                SessionManagerFactory.logger.info('SessionManagerFactory - MemoryStore.')
                 sessionManager = session({
                     secret: SessionManagerFactory.#sessionConfig.session.secret,
                     resave: SessionManagerFactory.#sessionConfig.session.resave || false,

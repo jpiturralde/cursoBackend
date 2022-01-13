@@ -1,23 +1,23 @@
 import { Server as IOServer } from 'socket.io'
 import sharedsession from 'express-socket.io-session'
 
-export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, productsDB) => {
+export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, productsDB, logger) => {
     const io = new IOServer(httpServer)
     io.use(sharedsession(sessionMiddleware, { autoSave: true }))
-    io.use(socketLogger)
+    io.use(socketLogger(logger))
     io.on('connection', async socket => {
-        console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} onConnection`)
+        logger.info(`${socket.handshake.session.username} onConnection`)
     
         if (socket.handshake.session.username) {
             const userName = socket.handshake.session.username
             const visits = socket.handshake.session.visits
             const messages = await messagesDB.get()
             const products = await productsDB.get()
-            console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} emit home`)
+            logger.info(`${socket.handshake.session.username} emit home`)
             socket.emit('home', userName, messages, products, visits)
         }
         else {
-            console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} emit login`)
+            logger.info(`emit login`)
             socket.emit('login')
         }
     
@@ -35,8 +35,8 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
     })
 }
 
-const socketLogger = (socket, next) => {
-    console.log(`${(new Date()).toLocaleString()} ${process.ppid}-${process.pid} ${socket.handshake.session.username} socketEvent`)
+const socketLogger = (logger) => (socket, next) => {
+    logger.info(`${socket.handshake.session.username} socketEvent`)
     next();
 }
 
