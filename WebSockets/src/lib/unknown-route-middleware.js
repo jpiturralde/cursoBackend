@@ -4,6 +4,7 @@ ej { error : -2, descripcion: ruta 'x' método 'y' no implementada}
 */
 import { UNKNOWN_ROUTE_ERROR_MSG } from "./index.js"
 
-export const unkownRoute = (req, res) => {
+export const unkownRoute = (logger) => (req, res) => {
+    logger.warn(`${req.method} ${req.path} Unknown route.`)
     res.status(404).json(UNKNOWN_ROUTE_ERROR_MSG(req));
 }

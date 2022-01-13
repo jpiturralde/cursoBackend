@@ -69,7 +69,8 @@ async function createServer() {
         rootPath: context.ROOT_PATH,
         sessionMiddleware,
         authenticationManager: await createAthenticationManager(),
-        logger: loggerMdw(logger)
+        loggerMdw, 
+        logger
     }))
 
     const db = await createDB()

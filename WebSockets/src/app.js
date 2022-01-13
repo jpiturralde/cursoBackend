@@ -4,6 +4,7 @@ import { webRouter } from './routers/web-router.js'
 import { mockRouter } from "./routers/mock-router.js"
 import { apiRouter, getInfo } from './routers/api-router.js'
 import { processRouter } from './routers/process-router.js'
+import { unkownRoute } from './lib/index.js'
 
 /**
  * config {
@@ -31,7 +32,7 @@ export const ExpressApp = (config) => {
     expressApp.use(express.urlencoded({ extended: true }))
 
     //Logger
-    expressApp.use(config.logger)
+    expressApp.use(config.loggerMdw(config.logger))
 
     //Authentication
     config.authenticationManager.initApp(expressApp) //Con PassportLocalAuthentication
@@ -45,6 +46,7 @@ export const ExpressApp = (config) => {
     expressApp.use('/', apiRouter())
     expressApp.use('/', processRouter(config.rootPath))
     expressApp.use('/api/productos-test', mockRouter)
+    expressApp.use(unkownRoute(config.logger))
 
     return expressApp
 }
