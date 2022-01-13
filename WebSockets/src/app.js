@@ -42,7 +42,7 @@ export const ExpressApp = (config) => {
 
     //Routes
     //expressApp.use('/', webRouter(config.rootPath, config.authenticationManager.authenticationFn))
-    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager))
+    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger))
     expressApp.use('/', apiRouter())
     expressApp.use('/', processRouter(config.rootPath))
     expressApp.use('/api/productos-test', mockRouter)

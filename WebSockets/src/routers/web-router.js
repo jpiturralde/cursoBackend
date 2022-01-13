@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-export const webRouter = (rootPath, authenticationManager) => {
+export const webRouter = (rootPath, authenticationManager, logger) => {
     const router = new Router()
 
     //  ROOT
@@ -8,12 +8,12 @@ export const webRouter = (rootPath, authenticationManager) => {
 
     // LOGIN
     router.get('/login', getLogin(rootPath, authenticationManager.authenticationFn))
-    router.post('/login', authenticationManager.signinMdw('/faillogin'), postLogin(authenticationManager.authenticationFn))
+    router.post('/login', authenticationManager.signinMdw('/faillogin'), postLogin(logger))
     router.get('/faillogin', getFailLogin);
 
     // SIGNUP
     router.get('/signup', getSignup(rootPath, authenticationManager.authenticationFn))
-    router.post('/signup', authenticationManager.signupMdw('/failsignup'), postSignup(authenticationManager.authenticationFn))
+    router.post('/signup', authenticationManager.signupMdw('/failsignup'), postSignup(logger))
     router.get('/failsignup', getFailSignup);
 
     //  HOME
@@ -42,8 +42,8 @@ const getLogin = (rootPath, isAuthenticated) => (req, res) => {
     }
 }
 
-const postLogin = isAuthenticated => (req, res) => {
-    console.log('/login', req.body.username)
+const postLogin = logger => (req, res) => {
+    logger.info('/login', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
     res.redirect("/home")
@@ -65,7 +65,7 @@ const getSignup = (rootPath, isAuthenticated) => (req, res) => {
 }
 
 const postSignup = isAuthenticated => (req, res) => {
-    console.log('/signup', req.body.username)
+    logger.info('/signup', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
     res.redirect("/home")
@@ -77,12 +77,12 @@ const getFailSignup = (req, res) => {
 }
 
     // HOME
-const getHome = rootPath => (req, res) => {
+const getHome = (rootPath, logger) => (req, res) => {
     if (!req.session.visits) {
         req.session.visits = 0
     }
     req.session.visits++
-    console.log('/home', req.session.username, req.session.visits, req.session.passport)    
+    logger.info('/home', req.session.username, req.session.visits, req.session.passport)    
     res.sendFile(rootPath + '/views/home.html')
 }
 
@@ -92,7 +92,6 @@ const getLogout = (req, res) => {
     req.session.destroy(err => {
         if (!err) {
             const msg = `Hasta luego ${userName}`
-            console.log(msg)
             res.render('logout', { msg })
         }
         else res.send({ error: 'logout', body: err })
