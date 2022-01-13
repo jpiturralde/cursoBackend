@@ -19,7 +19,7 @@ const logger = context.logger
 
 //PERSISTENCE CONFIG
 async function createDB() {
-    RepositoryFactory.initialize(context.PERSISTENCE_CONFIG_PATH)
+    RepositoryFactory.initialize(context.PERSISTENCE_CONFIG_PATH, logger)
     let productsDB
     let messagesDB
     try {
