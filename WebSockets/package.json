@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node ./src/main.js",
     "dev": "nodemon src/main.js --dep ./config/dev/.env",
-    "prod": "nodemon src/main.js --dep ./config/prod/.env"
+    "prod": "nodemon src/main.js --dep ./config/prod/.env",
+    "prof": "node --prof ./src/main.js" 
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",
