@@ -12,6 +12,9 @@ export const processRouter = (rootPath) => {
     //  INFOZIP
     router.get('/infozip', compression(), getInfo)
 
+    //  INFOZIP
+    router.get('/infoconsole', loggerConsole, getInfo)
+
     // API/RANDOMS
     router.get('/api/randoms', getRandoms(rootPath))
 
@@ -23,6 +26,22 @@ const numCores = os.cpus().length
 
 const getInfo = (req, res) => {
     res.render('process-info', { process, numCores })    
+}
+
+const loggerConsole = (req, res, next) => {
+    const date = new Date()
+    const info = {
+        argv: process.argv,
+        cwd: process.cwd(), 
+        rss: process.memoryUsage.rss(),
+        platform: process.platform,
+        execPath: process.execPath,
+        pid: process.pid,
+        version: process.version,
+        cores: numCores
+    }
+    console.log(`${date.toLocaleString()} ${process.ppid}-${process.pid}`, info)
+    next();
 }
 
 const DEFAULT_RANDOM_COUNT = 100000000
