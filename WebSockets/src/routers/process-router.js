@@ -2,6 +2,7 @@ import { Router } from "express"
 import { fork } from 'child_process'
 import path from 'path'
 import compression from 'compression'
+import { GENERATE_RANDOMS, generateRandoms } from '../process/generateRandoms.js'
 
 export const processRouter = (rootPath) => {
     const router = new Router()
@@ -17,6 +18,9 @@ export const processRouter = (rootPath) => {
 
     // API/RANDOMS
     router.get('/api/randoms', getRandoms(rootPath))
+
+    // API/RANDOMSNOFORK
+    router.get('/api/randomsnofork', getRandomsNoFork)
 
     return router
 } 
@@ -48,13 +52,18 @@ const DEFAULT_RANDOM_COUNT = 100000000
 
 const getRandoms = (rootPath) => (req, res) => {
     const qty = req.query.cant || DEFAULT_RANDOM_COUNT
-    const computo = fork(path.resolve(rootPath+'/src/process', 'generateRandoms.js'), [qty])
+    const computo = fork(path.resolve(rootPath+'/src/process', 'forkProcess.js'), [qty])
     computo.on('message', msg => {
         if ( msg == 'readyToProcess') {
-            computo.send('startProcess')
+            computo.send(GENERATE_RANDOMS)
         }
         else {
             res.json({ msg })
         }
     })
+}
+
+const getRandomsNoFork = (req, res) => {
+    const qty = req.query.cant || DEFAULT_RANDOM_COUNT
+    res.json({ msg: generateRandoms(qty) })
 }
