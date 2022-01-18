@@ -27,7 +27,8 @@ Considerar el siguiente criterio:
  - Registrar sólo los logs de warning a un archivo llamada warn.log
  - Enviar sólo los logs de error a un archivo llamada error.log
 
-
+  **RESOLUCIÓN**
+    https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/src/logger.js
 
 ## ANÁLISIS COMPLETO DE PERFORMANCE
 
