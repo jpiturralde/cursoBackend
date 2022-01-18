@@ -8,12 +8,16 @@
     "start": "node ./src/main.js",
     "dev": "nodemon src/main.js --dep ./config/dev/.env",
     "prod": "nodemon src/main.js --dep ./config/prod/.env",
-    "prof": "node --prof ./src/main.js" 
+    "prof": "node --prof ./src/main.js",
+    "inspect": "node --inspect ./src/main.js",
+    "test": "node ./src/tests/benchmark.js 100 20 http://localhost:8080/info",
+    "testconsole": "node ./src/tests/benchmark.js 100 20 http://localhost:8080/infoconsole"
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",
   "license": "ISC",
   "dependencies": {
+    "autocannon": "^7.6.0",
     "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",

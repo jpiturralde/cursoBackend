@@ -88,6 +88,14 @@ Para ambas condiciones (con o sin console.log) en la ruta '/info' OBTENER:
 Utilizaremos como test de carga Artillery en línea de comandos, emulando 50 conexiones concurrentes con 20 request por cada una. Extraer un reporte con los resultados en archivo de texto.
 
 **RESOLUCIÓN**
+**Cómo ejecutar**
+- Para ejecutar el profiler de node:
+ ``npm run prof ``
+- Para ejecutar el artillery de /info (usa logger) 
+``artillery --count 50 -n 40 http://localhost:8080/info > result_info.txt ``
+- Para ejecutar el artillery de /infoconsole (usa console.log):
+``artillery --count 50 -n 40 http://localhost:8080/infoconsole > result_infoconsole.txt ``
+
 
 ![artillery-comparison](https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/artillery-comparison.PNG)
   
@@ -102,8 +110,20 @@ Luego utilizaremos Autocannon en línea de comandos, emulando 100 conexiones con
 
 2) El perfilamiento del servidor con el modo inspector de node.js --inspect. Revisar el tiempo de los procesos menos performantes sobre el archivo fuente de inspección.
 
-  
+**RESOLUCIÓN**
+**Cómo ejecutar**
+- Para ejecutar el inspect de node:
+ ``npm run inspect ``
+- Para ejecutar benchmark de /info (usa logger):
+``npm run test ``
+- Para ejecutar benchmark de /infoconsole (usa console.log):
+``npm run testconsole``
 
+![inspect-logger_vs_console](https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/inspect-logger_vs_console.PNG)
+
+**Conlusión**
+  Se puede observar que en cualquier caso, los tiempos usando console.log son mayores y la cantidad de requests ejecutados en la prueba es menor mostrando que el uso de logger mejora considerablemente la performence general del sistema.
+   
 3) El diagrama de flama con 0x, emulando la carga con Autocannon con los mismos parámetros anteriores.
 
 Realizar un informe en formato pdf sobre las pruebas realizadas incluyendo los resultados de todos los test (texto e imágenes)
