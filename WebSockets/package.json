@@ -11,7 +11,8 @@
     "prof": "node --prof ./src/main.js",
     "inspect": "node --inspect ./src/main.js",
     "test": "node ./src/tests/benchmark.js 100 20 http://localhost:8080/info",
-    "testconsole": "node ./src/tests/benchmark.js 100 20 http://localhost:8080/infoconsole"
+    "testconsole": "node ./src/tests/benchmark.js 100 20 http://localhost:8080/infoconsole",
+    "0x": "0x ./src/main.js"
   },
   "keywords": [],
   "author": "jpiturralde@gmail.com (U610166)",

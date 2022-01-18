@@ -126,6 +126,22 @@ Luego utilizaremos Autocannon en línea de comandos, emulando 100 conexiones con
    
 3) El diagrama de flama con 0x, emulando la carga con Autocannon con los mismos parámetros anteriores.
 
+
+**RESOLUCIÓN**
+**Cómo ejecutar**
+- Para ejecutar 0x:
+ ``npm run 0x ``
+
+Los diagramas se encuentran en:
+ - https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/0x-info
+ - https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/0x-infoconsole
+
+**Conclusión**
+  Revisando el diagrama de flama se puede ver que se genera una meseta en la función loggerConsole que es donde se realiza el logueo por consola utilizando console.log.
+
+![0x-infoconsole](https://github.com/jpiturralde/cursoBackend/blob/logs/WebSockets/loggers-gzip-performance/0x-infoconsole.PNG)
+
+
 Realizar un informe en formato pdf sobre las pruebas realizadas incluyendo los resultados de todos los test (texto e imágenes)
 
   
