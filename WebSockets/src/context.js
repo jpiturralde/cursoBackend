@@ -32,7 +32,7 @@ async function invalidFilePath(obj) {
 
 const options = {
     default: {
-        p: 8080,
+        p: process.env.PORT || 8080,
         m: 'FORK',
         e: 'prod',
         dep: './config/prod/.env' 

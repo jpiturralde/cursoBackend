@@ -17,7 +17,7 @@ export const webRouter = (rootPath, authenticationManager, logger) => {
     router.get('/failsignup', getFailSignup);
 
     //  HOME
-    router.get('/home', getHome(rootPath))
+    router.get('/home', getHome(rootPath, logger))
 
     //  LOGOUT
     router.get('/logout', getLogout)
@@ -42,7 +42,7 @@ const getLogin = (rootPath, isAuthenticated) => (req, res) => {
     }
 }
 
-const postLogin = logger => (req, res) => {
+const postLogin = (logger) => (req, res) => {
     logger.info('/login', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
@@ -64,7 +64,7 @@ const getSignup = (rootPath, isAuthenticated) => (req, res) => {
     }
 }
 
-const postSignup = isAuthenticated => (req, res) => {
+const postSignup = (logger) => (req, res) => {
     logger.info('/signup', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
