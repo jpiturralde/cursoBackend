@@ -16,7 +16,9 @@ export default class PassportLocalAuthentication {
                         logger.info(`PassportLocalAuthentication#signupStrategy: ${username} already exists.`);
                         return done(null, false)
                     }
-                    db.post( {username, password} )
+                    const {name, address, phone } = req.body
+                    const avatar = req.file.filename
+                    db.post( {username, password, name, address, phone, avatar} )
                     .then(user => {
                         logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
                         return done(null, user)
@@ -25,7 +27,7 @@ export default class PassportLocalAuthentication {
             })
     }
 
-    static #signinStrategy(db) {
+    static #signinStrategy(db, logger) {
         return new LocalStrategy({
                 passReqToCallback: true
             },

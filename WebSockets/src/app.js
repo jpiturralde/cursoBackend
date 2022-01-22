@@ -4,7 +4,7 @@ import { webRouter } from './routers/web-router.js'
 import { mockRouter } from "./routers/mock-router.js"
 import { apiRouter, getInfo } from './routers/api-router.js'
 import { processRouter } from './routers/process-router.js'
-import { unkownRoute } from './lib/index.js'
+import { unkownRoute, imageLoaderMdw } from './lib/index.js'
 
 /**
  * config {
@@ -15,6 +15,8 @@ import { unkownRoute } from './lib/index.js'
  * }
  * */
 export const ExpressApp = (config) => {
+    const VIEWS_PATH = config.rootPath + '/views'
+    const IMAGES_PATH = config.rootPath + '/views/images'
 
     const expressApp = express()
 
@@ -25,7 +27,7 @@ export const ExpressApp = (config) => {
     //Session
     expressApp.use(config.sessionMiddleware)
 
-    expressApp.use(express.static(config.rootPath + '/views'))
+    expressApp.use(express.static(VIEWS_PATH))
 
     expressApp.use(express.json())
 
@@ -41,8 +43,8 @@ export const ExpressApp = (config) => {
 
 
     //Routes
-    //expressApp.use('/', webRouter(config.rootPath, config.authenticationManager.authenticationFn))
-    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger))
+    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger, imageLoaderMdw(IMAGES_PATH)))
+    // expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger))
     expressApp.use('/', apiRouter())
     expressApp.use('/', processRouter(config.rootPath))
     expressApp.use('/api/productos-test', mockRouter)

@@ -12,7 +12,11 @@ export default class UsersDao extends Dao {
     static #createUser(data) {
         return {
             username: data.username,
-            password: UsersDao.#createHash(data.password)
+            password: UsersDao.#createHash(data.password),
+            name: data.name,
+            address: data.address,
+            phone: data.phone,
+            avatar: data.avatar
         }
     }
 

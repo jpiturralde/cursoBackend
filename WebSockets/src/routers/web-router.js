@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-export const webRouter = (rootPath, authenticationManager, logger) => {
+export const webRouter = (rootPath, authenticationManager, logger, imageLoaderMdw) => {
     const router = new Router()
 
     //  ROOT
@@ -13,7 +13,7 @@ export const webRouter = (rootPath, authenticationManager, logger) => {
 
     // SIGNUP
     router.get('/signup', getSignup(rootPath, authenticationManager.authenticationFn))
-    router.post('/signup', authenticationManager.signupMdw('/failsignup'), postSignup(logger))
+    router.post('/signup', imageLoaderMdw.single('avatar'), authenticationManager.signupMdw('/failsignup'), postSignup(logger))
     router.get('/failsignup', getFailSignup);
 
     //  HOME
