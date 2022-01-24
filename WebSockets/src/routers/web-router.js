@@ -83,8 +83,6 @@ const getHome = (rootPath, logger) => (req, res) => {
     }
     req.session.visits++
     logger.info('/home', req.session.username, req.session.visits)   
-    console.log(req.user) 
-    console.log(req.session) 
     res.sendFile(rootPath + '/views/home.html')
 }
 
