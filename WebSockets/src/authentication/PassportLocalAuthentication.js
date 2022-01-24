@@ -52,7 +52,8 @@ export default class PassportLocalAuthentication {
         return (id, done) => {
             db.getById(id)
             .then(user => {
-                done(null, user)
+                const { username, name, address, phone, avatar } = user
+                done(null, { username, name, address, phone, avatar })
             })
             .catch(err => {
                 logger.error('PassportLocalAuthentication.#deserializer', err)

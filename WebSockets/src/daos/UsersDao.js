@@ -29,14 +29,6 @@ export default class UsersDao extends Dao {
         this.#repo = repo
     }
 
-    schemaErrors(data) {
-        const errors = this.schemaValidations(data)
-
-        if (errors.length > 0) {
-            throw new Error(errors)
-        }
-    }
-
     schemaValidations(data) {
         const errors = []
         if (!data.username) {
