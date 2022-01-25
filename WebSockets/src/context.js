@@ -15,11 +15,6 @@ process.context = baseContext
 
 const envArgsContext = await loadEnvArgs()
 
-// let context = { 
-//     ...baseContext,
-//     ...envArgsContext
-// }
-
 process.context = { 
     ...baseContext,
     ...envArgsContext
@@ -27,6 +22,7 @@ process.context = {
 process.context.persistence = await loadPersistence()
 process.context.sessionMiddleware = await loadSessionManager()
 process.context.authenticationManager = await loadAuthenticationManager()
+
 const context = process.context
 export { context }
 
