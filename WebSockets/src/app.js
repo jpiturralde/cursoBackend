@@ -2,7 +2,7 @@ import express from 'express'
 import exphbs from 'express-handlebars'
 import { webRouter } from './routers/web-router.js'
 import { mockRouter } from "./routers/mock-router.js"
-import { apiRouter, getInfo } from './routers/api-router.js'
+import { apiRouter } from './routers/api-router.js'
 import { processRouter } from './routers/process-router.js'
 import { unkownRoute, imageLoaderMdw } from './lib/index.js'
 
@@ -15,8 +15,9 @@ import { unkownRoute, imageLoaderMdw } from './lib/index.js'
  * }
  * */
 export const ExpressApp = (config) => {
-    const VIEWS_PATH = config.rootPath + '/views'
-    const IMAGES_PATH = config.rootPath + '/views/images'
+    const { rootPath, sessionMiddleware, logger, loggerMdw, authenticationManager } = config
+    const VIEWS_PATH = rootPath + '/views'
+    const IMAGES_PATH = rootPath + '/views/images'
 
     const expressApp = express()
 
@@ -25,7 +26,7 @@ export const ExpressApp = (config) => {
     expressApp.set('view engine', '.hbs')
 
     //Session
-    expressApp.use(config.sessionMiddleware)
+    expressApp.use(sessionMiddleware)
 
     expressApp.use(express.static(VIEWS_PATH))
 
@@ -34,21 +35,17 @@ export const ExpressApp = (config) => {
     expressApp.use(express.urlencoded({ extended: true }))
 
     //Logger
-    expressApp.use(config.loggerMdw(config.logger))
+    expressApp.use(loggerMdw(logger))
 
     //Authentication
-    config.authenticationManager.initApp(expressApp) //Con PassportLocalAuthentication
-//    expressApp.use(config.authenticationManager.authenticationMdw)
-
-
+    authenticationManager.initApp(expressApp) //Con PassportLocalAuthentication
 
     //Routes
-    expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger, imageLoaderMdw(IMAGES_PATH)))
-    // expressApp.use('/', webRouter(config.rootPath, config.authenticationManager, config.logger))
+    expressApp.use('/', webRouter(rootPath, authenticationManager, logger, imageLoaderMdw(IMAGES_PATH)))
     expressApp.use('/', apiRouter())
-    expressApp.use('/', processRouter(config.rootPath))
-    expressApp.use('/api/productos-test', mockRouter)
-    expressApp.use(unkownRoute(config.logger))
+    expressApp.use('/', processRouter(rootPath))
+    // expressApp.use('/api/productos-test', mockRouter)
+    expressApp.use(unkownRoute(logger))
 
     return expressApp
 }

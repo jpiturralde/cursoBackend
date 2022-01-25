@@ -1,34 +1,36 @@
 import { Router } from "express"
+import faker from 'faker'
+faker.locale = 'es'
 
 export const apiRouter = () => {
     const router = new Router()
 
-    // LOGOUT
-    // router.get('/api/logout', getLogout)
-
-    // INFO
     router.get('/api/info', getInfo)
+    router.use('/api/productos-test', getProducts)
 
     return router
 } 
 
-export const getInfo = (req, res) => { res.json(info()) }
+const getInfo = async (req, res) => { res.json(await process.context.api.info.get()) }
 
-import * as os from 'os'
-const numCores = os.cpus().length
-
-export const info = () => { return {
-    numCores,
-    process: {
-        argv: process.argv,
-        cwd: process.cwd(), 
-        rss: process.memoryUsage.rss(),
-        platform: process.platform,
-        execPath: process.execPath,
-        pid: process.pid,
-        version: process.version
-    }} 
+const getProducts = async (req, res) => {
+    const products = []
+    for (let i = 0; i < 5; i++) {
+        products.push(randomValue())
+    }
+    res.json(products)
 }
+
+function randomValue() {
+    return { value: {
+        title: faker.commerce.product(),
+        price: faker.commerce.price(),
+        thumbnail: `${faker.image.imageUrl()}?random=${Date.now()}`
+        }
+    }
+}
+
+
 
 // const getUserName = req => req.session.userName ? req.session.userName : ''
 

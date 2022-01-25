@@ -3,7 +3,6 @@ import { fork } from 'child_process'
 import path from 'path'
 import compression from 'compression'
 import { GENERATE_RANDOMS, generateRandoms } from '../process/generateRandoms.js'
-import { info } from './api-router.js'
 
 export const processRouter = (rootPath) => {
     const router = new Router()
@@ -26,13 +25,15 @@ export const processRouter = (rootPath) => {
     return router
 } 
 
-const getInfo = (req, res) => { 
-    res.render('process-info', info())    
+const info = () => { return process.context.api.info.get() }
+
+const getInfo = async (req, res) => { 
+    res.render('process-info', await info())    
 }
 
-const loggerConsole = (req, res, next) => {
+const loggerConsole = async (req, res, next) => {
     const date = new Date()
-    console.log(`${date.toLocaleString()} ${process.ppid}-${process.pid}`, info())
+    console.log(`${date.toLocaleString()} ${process.ppid}-${process.pid}`, await info())
     next();
 }
 
