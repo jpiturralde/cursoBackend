@@ -44,7 +44,7 @@ export const ExpressApp = (config) => {
     expressApp.use('/', webRouter(rootPath, authenticationManager, logger, imageLoaderMdw(IMAGES_PATH)))
     expressApp.use('/', apiRouter())
     expressApp.use('/', processRouter(rootPath))
-    // expressApp.use('/api/productos-test', mockRouter)
+
     expressApp.use(unkownRoute(logger))
 
     return expressApp
