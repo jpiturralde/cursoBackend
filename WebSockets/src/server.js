@@ -14,7 +14,7 @@ const logger = context.logger
 // SERVER CONFIG
 async function createServer() {
     logger.info(`Creating server ..........................`)
-    const { ROOT_PATH, sessionMiddleware, authenticationManager }  = context
+    const { ROOT_PATH, sessionMiddleware, authenticationManager, api }  = context
     const http = new HttpServer(ExpressApp({
         rootPath: ROOT_PATH,
         sessionMiddleware,
@@ -23,10 +23,11 @@ async function createServer() {
         logger
     }))
 
-    const { productsDS, messagesDS } = context.persistence
+    // const { productsDS, messagesDS } = context.persistence
 
     // SOCKET CONFIG
-    bindSocketIO(http, sessionMiddleware, messagesDS, productsDS, logger)
+    // bindSocketIO(http, sessionMiddleware, messagesDS, productsDS, logger)
+    bindSocketIO(http, sessionMiddleware, api, logger)
     logger.info(`Server created ..........................`)
     return http
 }

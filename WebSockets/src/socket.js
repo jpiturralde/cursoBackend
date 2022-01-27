@@ -1,7 +1,7 @@
 import { Server as IOServer } from 'socket.io'
 import sharedsession from 'express-socket.io-session'
 
-export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, productsDB, logger) => {
+export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
     const io = new IOServer(httpServer)
     io.use(sharedsession(sessionMiddleware, { autoSave: true }))
     io.use(socketLogger(logger))
@@ -11,8 +11,8 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
         if (socket.handshake.session.username) {
             const userName = socket.handshake.session.username
             const visits = socket.handshake.session.visits
-            const messages = await messagesDB.get()
-            const products = await productsDB.get()
+            const messages = await api.messages.get()
+            const products = await api.products.get()
             logger.info(`${socket.handshake.session.username} emit home`)
             socket.emit('home', userName, messages, products, visits)
         }
@@ -22,14 +22,14 @@ export const bindSocketIO = (httpServer, sessionMiddleware, messagesDB, products
         }
     
         socket.on('new-message', async data => {
-            await messagesDB.post(data)
-            const messages = await messagesDB.get()
+            await api.messages.post(data)
+            const messages = await api.messages.get()
             io.sockets.emit('messages', messages);
         })
     
         socket.on('new-product', async data => {
-            await productsDB.post(data)
-            const products = await productsDB.get()
+            await api.products.post(data)
+            const products = await api.products.get()
             io.sockets.emit('products', products);
         })
     })

@@ -5,15 +5,41 @@ faker.locale = 'es'
 export const apiRouter = () => {
     const router = new Router()
 
+    //INFO
     router.get('/api/info', getInfo)
-    router.use('/api/productos-test', getProducts)
+
+    //PRODUCTS
+    // router.get('/api/products', getProducts)
+    // router.post('/api/products', postProducts)
+    router.get('/api/products', getMdw(process.context.api.products))
+    router.post('/api/products', postMdw(process.context.api.products))
+
+    router.get('/api/messages', getMdw(process.context.api.messages))
+    router.post('/api/messages', postMdw(process.context.api.messages))
+
+    //PRODUCTOS-TEST
+    router.get('/api/productos-test', getProductsTest)
 
     return router
 } 
 
+
+const getMdw = (api) => async (req, res) => { res.json(await api.get()) }
+const postMdw = (api) => async (req, res) => {
+    try {
+        res.status(201).json(await api.post(req.body))
+    } catch (error) {
+        console.error(error)
+        res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
+    }
+}
+//INFO
 const getInfo = async (req, res) => { res.json(await process.context.api.info.get()) }
 
-const getProducts = async (req, res) => {
+
+
+//PRODUCTOS-TEST
+const getProductsTest = async (req, res) => {
     const products = []
     for (let i = 0; i < 5; i++) {
         products.push(randomValue())
