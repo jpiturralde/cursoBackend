@@ -7,14 +7,16 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
     io.use(socketLogger(logger))
     io.on('connection', async socket => {
         logger.info(`${socket.handshake.session.username} onConnection`)
-    
+
         if (socket.handshake.session.username) {
             const userName = socket.handshake.session.username
+            const authMgr = process.context.authenticationManager
+            const user = await authMgr.deserializeUser(socket.handshake.session.passport.user)
             const visits = socket.handshake.session.visits
             const messages = await api.messages.get()
             const products = await api.products.get()
             logger.info(`${socket.handshake.session.username} emit home`)
-            socket.emit('home', userName, messages, products, visits)
+            socket.emit('home', user, messages, products, visits)
         }
         else {
             logger.info(`emit login`)

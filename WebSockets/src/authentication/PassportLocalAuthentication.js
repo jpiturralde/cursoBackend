@@ -98,5 +98,13 @@ export default class PassportLocalAuthentication {
     signinMdw(failureRedirect) {
         return this.#passportInstance.authenticate('signin', { failureRedirect })
     }
-    
+
+    deserializeUser(id) {
+        return new Promise((resolve, reject) => {
+            this.#passportInstance.deserializeUser(id, (err, user) => {
+                if (err) return reject(err)
+                resolve(user)
+            })
+        })
+    }
 }

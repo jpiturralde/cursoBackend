@@ -86,10 +86,10 @@ function addMessage(e) {
 
 /* BEGIN SESSION */
 
-async function renderHome(userName, messages, products, visits) {
+async function renderHome(user, messages, products, visits) {
     console.log('renderHome')
     const homeTpl = await loadAndCompileTemplate('home.hbs')
-    const html = homeTpl({ userName })
+    const html = homeTpl({ user })
     document.getElementById('content').innerHTML = html
     renderProducts(products)
     renderMessages(messages)

@@ -23,10 +23,7 @@ async function createServer() {
         logger
     }))
 
-    // const { productsDS, messagesDS } = context.persistence
-
     // SOCKET CONFIG
-    // bindSocketIO(http, sessionMiddleware, messagesDS, productsDS, logger)
     bindSocketIO(http, sessionMiddleware, api, logger)
     logger.info(`Server created ..........................`)
     return http

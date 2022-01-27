@@ -5,12 +5,12 @@ faker.locale = 'es'
 export const apiRouter = () => {
     const router = new Router()
 
+    router.get('/api/sessionUser', sessionUser)
+
     //INFO
     router.get('/api/info', getInfo)
 
     //PRODUCTS
-    // router.get('/api/products', getProducts)
-    // router.post('/api/products', postProducts)
     router.get('/api/products', getMdw(process.context.api.products))
     router.post('/api/products', postMdw(process.context.api.products))
 
@@ -36,6 +36,7 @@ const postMdw = (api) => async (req, res) => {
 //INFO
 const getInfo = async (req, res) => { res.json(await process.context.api.info.get()) }
 
+const sessionUser = (req, res) => { res.json(req.user) }
 
 
 //PRODUCTOS-TEST
