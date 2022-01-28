@@ -9,12 +9,26 @@ export const UsersAPI = (dataSource) => {
         getByUserName: async (username) => {
             return await dataSource.getByUserName(username)
         },
-        post: async ({username, password, name, address, phone, avatar}) => {
-            // const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
-            return await dataSource.post({username, password, name, address, phone, avatar})
+        post: async (data) => {
+            return await dataSource.post(createUser(data))
         },
         validateHash: (data, hash) => {
             return bcrypt.compareSync(data, hash)
         }
     }
+}
+
+const createUser = (data) => {
+    return {
+        username: data.username,
+        password: createHash(data.password),
+        name: data.name,
+        address: data.address,
+        phone: data.phone,
+        avatar: data.avatar
+    }
+}
+
+const createHash = (value) => {
+    return bcrypt.hashSync(value, bcrypt.genSaltSync(10), null)
 }
