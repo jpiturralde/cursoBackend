@@ -1,7 +1,26 @@
 
 <div class="jumbotron">
     <div class="table-responsive">
-        <h1 style="color:green;">Bienvenido {{user.username}}</h1>
+        <table class="table table-sm">
+        <tbody>
+            <tr>
+            <td><img src="/images/{{user.avatar}}" alt="{{user.name}}" class="avatarImage"></td>
+            <td><h1 style="color:green;">{{user.name}}</h1></td>
+            </tr>
+            <tr>
+            <td>Usuario</td>
+            <td>{{user.username}}</td>
+            </tr>
+            <tr>
+            <td>Dirección</td>
+            <td>{{user.address}}</td>
+            </tr>
+            <tr>
+            <td>Teléfono</td>
+            <td>{{user.phone}}</td>
+            </tr>
+        </tbody>
+        </table>
         <div class="text-left">
             <button class="btn btn-success my-3" onclick="location.href = '/logout'">Desloguear</button>
         </div>
