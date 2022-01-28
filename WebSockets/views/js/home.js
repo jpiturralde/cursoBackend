@@ -25,19 +25,6 @@ function addProduct(e) {
 /* END PRODUCTS */
 
 /* BEGIN MESSAGES */
-// async function renderMessages(messages) {
-//     const messagesTpl = await loadAndCompileTemplate('messages.hbs')
-//     const html = messagesTpl({ messages })
-//     if (document.getElementById('messages') && html) {
-//         document.getElementById('messages').innerHTML = html
-//     }
-// }
-
-// function addMessage(e) {
-//     socket.emit('new-message', document.getElementById('message').value);
-//     document.getElementById('message').value = ''
-//     return false;
-// }
 function createMessage() {
     const message = {
         author: {
@@ -102,8 +89,7 @@ async function onLogin() {
 
 socket.on('messages', function(messages) { renderMessages(messages); });
 socket.on('products', function(products) { renderProducts(products); });
-socket.on('home', function(userName, messages, products, visits) { 
+socket.on('home', function(user, messages, products, visits) { 
     console.log('on home')
-    renderHome(userName, messages, products, visits); });
-// socket.on('visits', function(visits) { renderVisits(visits); });
+    renderHome(user, messages, products, visits); });
 socket.on('login', () => onLogin())

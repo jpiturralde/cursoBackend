@@ -29,16 +29,20 @@ export default class AuthenticationManagerFactory {
     static #config
     static #repoFactory
     static #usersDaoClass
+    static #usersAPI
     static #logger
 
-    static async initialize(configPath, repoFactory, usersDaoClass, logger) {
-        AuthenticationManagerFactory.#repoFactory = repoFactory
+    // static async initialize(configPath, repoFactory, usersDaoClass, logger) {
+    static async initialize(usersDaoClass, usersAPI) {
+        const { logger, AUTHENTICATION_CONFIG_PATH, persistence } = process.context
+        AuthenticationManagerFactory.#repoFactory = persistence.repositoryFactory
         AuthenticationManagerFactory.#usersDaoClass = usersDaoClass
+        AuthenticationManagerFactory.#usersAPI = usersAPI
         AuthenticationManagerFactory.#logger = logger
         try {
-            AuthenticationManagerFactory.#config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+            AuthenticationManagerFactory.#config = JSON.parse(fs.readFileSync(AUTHENTICATION_CONFIG_PATH, 'utf8'))
         } catch (e) {
-            AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Not found ${configPath} `)
+            AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Not found ${AUTHENTICATION_CONFIG_PATH} `)
             AuthenticationManagerFactory.#config = DEFAULT_FACTORY_CONFIGURATION
             AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Default configuration initialized`)
         }
@@ -53,8 +57,9 @@ export default class AuthenticationManagerFactory {
                 const repo = await AuthenticationManagerFactory.#repoFactory
                     .createRepository(AuthenticationManagerFactory.#config.repoConfig, AuthenticationManagerFactory.#logger)
                 const dao = await (new AuthenticationManagerFactory.#usersDaoClass(repo))
+                const api = AuthenticationManagerFactory.#usersAPI(dao)
                 const authConfig = {
-                    usersDB: dao,
+                    usersDB: api,
                     scopes: [{
                         path:'/home', 
                         methods: ['GET']
