@@ -1,7 +1,7 @@
 {
     "type": "FileStore",
     "session": {
-        "secret": "cursoBackend",
+        "secret": "YOUR_SECRET",
         "resave": false,
         "saveUninitialized": false        
     },

@@ -1,0 +1,13 @@
+{
+    "sysadm": {
+        "email": ""
+    },
+    "mailManager": {
+        "type": "ethereal | gmail",
+        "port": 587,
+        "auth": {
+            "user": "",
+            "pass": ""
+        }
+    }
+}

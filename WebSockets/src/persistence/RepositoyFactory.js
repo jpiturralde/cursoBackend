@@ -52,7 +52,8 @@ export default class RepositoryFactory {
             .createRepository(RepositoryFactory.#repoConfig.MessagesRepository, RepositoryFactory.#logger)
     }
 
-    static async createRepository(config, logger) {
+    static async createRepository(config) {
+        const { logger } = process.context
         config = RepositoryFactory.#parseConfig(config)
         let repo
         switch (config.type) {

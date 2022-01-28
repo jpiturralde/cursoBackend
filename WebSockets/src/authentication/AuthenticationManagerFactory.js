@@ -54,7 +54,7 @@ export default class AuthenticationManagerFactory {
             case 'PassportLocal':
                 AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory - Create PassportLocal.')
                 const repo = await AuthenticationManagerFactory.#repoFactory
-                    .createRepository(AuthenticationManagerFactory.#config.repoConfig, AuthenticationManagerFactory.#logger)
+                    .createRepository(AuthenticationManagerFactory.#config.repoConfig)
                 const dao = await (new AuthenticationManagerFactory.#usersDaoClass(repo))
                 const api = AuthenticationManagerFactory.#usersAPI(dao)
                 const authConfig = {

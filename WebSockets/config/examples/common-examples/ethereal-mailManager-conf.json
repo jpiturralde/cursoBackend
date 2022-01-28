@@ -1,0 +1,11 @@
+{
+    "mailManager": {
+        "type": "ethereal",
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "auth": {
+            "user": "[PUT_YOUR_ETHEREAL_USER]",
+            "pass": "[PUT_YOUR_ETHEREAL_PASS]"
+        }
+    }
+}

@@ -1,7 +1,7 @@
 {
     "type": "InMemory",
     "session": {
-        "secret": "cursoBackend",
+        "secret": "YOUR_SECRET",
         "resave": false,
         "saveUninitialized": false        
     }
