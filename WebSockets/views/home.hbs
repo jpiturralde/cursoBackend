@@ -27,7 +27,23 @@
     </div> 
 </div>
 <div class="jumbotron">
-    <a href="http://localhost:8080/productos-test.html">Listado faker</a>
+    <div class="table-responsive">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="/products.html">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/process-info.html">Información del Proceso</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/productos-test.html">Productos con Faker</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="jumbotron">
+    <a href="/productos-test.html">Listado faker</a>
     <h1 style="color:blue;">Ingrese Producto</h1>
     <br>
         <form onsubmit="return addProduct(this)">
