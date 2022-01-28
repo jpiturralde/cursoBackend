@@ -32,7 +32,6 @@ export default class AuthenticationManagerFactory {
     static #usersAPI
     static #logger
 
-    // static async initialize(configPath, repoFactory, usersDaoClass, logger) {
     static async initialize(usersDaoClass, usersAPI) {
         const { logger, AUTHENTICATION_CONFIG_PATH, persistence } = process.context
         AuthenticationManagerFactory.#repoFactory = persistence.repositoryFactory
