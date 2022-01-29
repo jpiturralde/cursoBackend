@@ -1,8 +1,9 @@
 {
     "sysadm": {
+        "name": "",
         "email": ""
     },
-    "mailManager": {
+    "emailManager": {
         "type": "ethereal | gmail",
         "port": 587,
         "auth": {

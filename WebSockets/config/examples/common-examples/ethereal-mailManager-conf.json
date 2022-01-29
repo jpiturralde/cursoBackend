@@ -1,5 +1,5 @@
 {
-    "mailManager": {
+    "emailManager": {
         "type": "ethereal",
         "host": "smtp.ethereal.email",
         "port": 587,
