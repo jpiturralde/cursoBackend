@@ -31,7 +31,7 @@ async function renderProducts(products) {
     }
 }
 
-function addProduct(e) {
+async function addProduct(e) {
     const product = {
         title: document.getElementById('title').value,
         price: document.getElementById('price').value,
@@ -40,6 +40,6 @@ function addProduct(e) {
     document.getElementById('title').value = ''
     document.getElementById('price').value = ''
     document.getElementById('thumbnail').value = ''
-    socket.emit('new-product', product);
+    await api.post(product)
     return false;
 }

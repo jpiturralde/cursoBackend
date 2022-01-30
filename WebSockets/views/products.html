@@ -20,6 +20,28 @@
     <div class="container mt-3">
         <a href="/">Inicio</a>
         <div class="jumbotron">
+            <h1 style="color:blue;">Ingrese Producto</h1>
+            <br>
+                <form onsubmit="return addProduct(this)">
+                    <div class="form-group">
+                        <label for="title"><b>Nombre</b></label>
+                        <input id="title" class="form-control" type="text" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="price"><b>Precio</b></label>
+                        <input id="price" class="form-control" type="text" name="price">
+                    </div>
+                    <div class="form-group">
+                        <label for="thumbnail"><b>Foto URL</b></label>
+                        <input id="thumbnail" class="form-control" type="text" name="thumbnail">
+                    </div>
+                    <input type="submit" class="btn btn-success mt-3 mb-5" value="Enviar">
+                </form>
+                <h2 style="color:red;">Lista de Productos</h2>
+                <div id="products"></div>
+        </div>
+
+        <div class="jumbotron">
             <div id="products"></div>
         </div>
     </div>
