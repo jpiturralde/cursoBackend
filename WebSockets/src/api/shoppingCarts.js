@@ -1,12 +1,49 @@
+import { ENTITY_NOT_FOUND_ERROR_MSG } from "../lib/index.js"
+
 const apiSpec = (ds) => {
     return {
         getById: async (id) => { return await ds.getById(id) },
         post: async (data) => { return await ds.post(data) },
         deleteById: async (id) => { return await ds.deleteById(id) },
-        getItems: async (id) => { return 'FALTA IMPLEMENTAR' },
-        addItem: async (id) => { return 'FALTA IMPLEMENTAR' },
-        deleteItem: async (id, productId) => { return 'FALTA IMPLEMENTAR' }
+        getItems: async (id) => { 
+            const shooppingCart = await find(ds, id)
+            return shooppingCart.items
+        },
+        addItem: async (id, item) => {
+            const shoppingCart = await find(ds, id)
+            const index = shoppingCart.items.findIndex(x => x.productId == item.productId)
+            let result = item
+            if (index > -1) {
+                shoppingCart.items[index].quantity += item.quantity
+                result = shoppingCart.items[index]
+            }
+            else {
+                const product = await process.context.api.products.getById(item.productId)
+                if (!product) {
+                    throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Producto ${item.productId} no encontrado.`)))
+                }
+                shoppingCart.items.push(item)
+            }
+            await ds.put(id, shoppingCart)
+            return result
+        },
+        deleteItem: async (id, productId) => {
+            const shoppingCart = await find(id)
+            const newContent = shoppingCart.items.filter(x => x.productId!=productId)
+            if (newContent.length < shoppingCart.items.length) {
+                shoppingCart.items = newContent
+                await ds.put(id, shoppingCart)
+            }
+        }
     }
+}
+
+const find = async (ds, id) => {
+    const shoppingCart = await ds.getById(id)
+    if (!shoppingCart) {
+        throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Shopping Cart ${id} no encontrado.`)))
+    }
+    return shoppingCart
 }
 
 export const ShoppingCartsAPI = (ds) => apiSpec(ds)

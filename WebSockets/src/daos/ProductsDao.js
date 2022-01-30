@@ -25,6 +25,7 @@ export default class ProductsDao extends Dao {
             data.msg = data.text
             delete data.text
         }
-        return await this.#repo.post(data)
+        // return await this.#repo.post(data)
+        return await super.post(data)
     }
 }
