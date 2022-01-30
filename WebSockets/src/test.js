@@ -1,30 +1,40 @@
-//import * as myProcess from './process/generateRandoms.js'
-import path from 'path'
-import { fork } from 'child_process'
-import { GENERATE_RANDOMS, generateRandoms } from './process/generateRandoms.js'
+import { context } from './context.js'
+
+const {logger} = context
+const emailManager = process.context.emailManager
 
 
-const DEFAULT_RANDOM_COUNT = 1000
 
-const getRandoms = (count) => {
-    console.log(`getRandoms #${process.pid}`, count)
-    const qty = count || DEFAULT_RANDOM_COUNT
-    const computo = fork(path.resolve(process.cwd()+'/src/process', 'forkProcess.js'), [qty])
+try {
+    const user = {
+        id: 1111111,
+        username: 'j@p',
+        name: 'Juan',
+        address: 'Gaona',
+        phone: '45353534',
+        avatar: 'dfsjskfjasljfds.png'
+    }
+    const USER_HTML = `<p><strong>ID: <span style="font-size:20px">${user.id}</span></strong></p>
     
-    computo.on('message', msg => {
-        if ( msg == 'readyToProcess') {
-            computo.send(GENERATE_RANDOMS)
-        }
-        else {
-            console.log(msg)
-        }
-    })
+    <p><strong>Username: <span style="font-size:20px">${user.username}</span></strong></p>
+
+    <p><strong>Name: <span style="font-size:20px">${user.name}</span></strong></p>
+    
+    <p><strong>Address: <span style="font-size:20px">${user.address}</span></strong></p>
+    
+    <p><strong>Phone: <span style="font-size:20px">${user.phone}</span></strong></p>
+    
+    <p><strong>Avatar: <span style="font-size:20px">${user.avatar}</span></strong></p>`
+
+    const mailOptions = {
+        to: process.context.sysadm.email,
+        subject: `Signup ${user.id}`,
+        html: USER_HTML
+        //html: '<h1 style="color: blue;">Contenido de prueba con archivo adjunto desde <span style="color: green;">Node.js con Nodemailer</span></h1>'
+    }
+    const info = await emailManager.sendMail(mailOptions)
+    logger.info(info)
+} catch (error) {
+    logger.error(error)
 }
 
-// console.log(myProcess.generateRandoms(1000))
-//console.log('EN TEST', getRandoms(10))
-
-const count = 10
-getRandoms(count)
-
-console.log(`GENERATE RANDOMS #${process.pid}`, generateRandoms(count))

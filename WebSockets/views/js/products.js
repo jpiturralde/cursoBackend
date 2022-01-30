@@ -1,5 +1,5 @@
 /* BEGIN PRODUCTS */
-const url = window.location.origin + '/api/products'
+const url = window.location.origin + '/api/productos'
 
 const api = {
     get: async () => { 

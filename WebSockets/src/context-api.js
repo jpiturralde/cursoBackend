@@ -1,10 +1,12 @@
 // AUTHENTICATION CONFIG
-import { InfoAPI, ProductsAPI, MessagesAPI } from './api/index.js'
+import { InfoAPI, ProductsAPI, MessagesAPI, ShoppingCartsAPI } from './api/index.js'
 
 export async function loadApiContext() {
+    const { productsDS, messagesDS, shoppingCartsDS} = process.context.persistence
     return {
         info: InfoAPI,
-        products: ProductsAPI(process.context.persistence.productsDS),
-        messages: MessagesAPI(process.context.persistence.messagesDS)
+        products: ProductsAPI(productsDS),
+        messages: MessagesAPI(messagesDS),
+        shoppingCarts: ShoppingCartsAPI(shoppingCartsDS, productsDS)
     }
 }

@@ -3,6 +3,7 @@ import faker from 'faker'
 faker.locale = 'es'
 
 export const apiRouter = () => {
+    const { api } = process.context
     const router = new Router()
 
     router.get('/api/sessionUser', sessionUser)
@@ -11,19 +12,37 @@ export const apiRouter = () => {
     router.get('/api/info', getInfo)
 
     //PRODUCTS
-    router.get('/api/products', getMdw(process.context.api.products))
-    router.post('/api/products', postMdw(process.context.api.products))
+    router.get('/api/productos', getMdw(api.products))
+    router.post('/api/productos', postMdw(api.products))
+    router.delete('/api/productos/:id', deleteMdw(api.products))
 
-    router.get('/api/messages', getMdw(process.context.api.messages))
-    router.post('/api/messages', postMdw(process.context.api.messages))
+    router.get('/api/messages', getMdw(api.messages))
+    router.post('/api/messages', postMdw(api.messages))
+
+    router.post('/api/carrito', postMdw(api.shoppingCarts))
+    router.get('/api/carrito/:id', getByIdMdw(api.shoppingCarts))
+    router.delete('/api/carrito/:id', deleteMdw(api.shoppingCarts))
+    router.get('/api/carrito/:id/productos', getItems(api.shoppingCarts))
+    router.post('/api/carrito/:id/productos', addItem(api.shoppingCarts))
+    router.delete('/api/carrito/:id/productos/:productId', deleteItem(api.shoppingCarts))
+
 
     //PRODUCTOS-TEST
     router.get('/api/productos-test', getProductsTest)
 
     return router
 } 
+const todoMdw = (api) => async (req, res) => { res.json('FALTA IMPLEMENTAR') }
 
-
+const getByIdMdw = (api) => async (req, res, next) => { 
+    const data = await api.getById(req.params.id)
+    if (!data) {
+        const error = new Error('No encontrado')
+        error.httpStatusCode = 404
+        return next(error)
+    }
+    res.json(data)
+}
 const getMdw = (api) => async (req, res) => { res.json(await api.get()) }
 const postMdw = (api) => async (req, res) => {
     try {
@@ -33,8 +52,43 @@ const postMdw = (api) => async (req, res) => {
         res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
     }
 }
+const deleteMdw = (api) => async (req, res) => {
+    api.deleteById(req.params.id)
+    res.json()
+}
+
+const getItems = (api) => async (req, res) => {
+    api.getItems(req.params.id)
+        .then(items => {
+            res.status(201).json(items)
+        }).catch(error => {
+            process.context.logger.error(error)
+            res.status(404).json(JSON.parse(error.message))
+        })
+}
+
+const addItem = (api) => async (req, res) => {
+    api.addItem(req.params.id, req.body)
+        .then(result => {
+            res.status(201).json(result)
+        }).catch(error => {
+            process.context.logger.error(error)
+            res.status(404).json(JSON.parse(error.message))
+        })
+}
+
+const deleteItem = (api) => async (req, res) => {
+    api.deleteItem(req.params.id, req.params.productId)
+        .then(result => {
+            res.status(201).json(result)
+        }).catch(error => {
+            console.error(error.message)
+            res.status(404).json(JSON.parse(error.message))
+        })
+}
+
 //INFO
-const getInfo = async (req, res) => { res.json(await process.context.api.info.get()) }
+const getInfo = async (req, res) => { res.json(await api.info.get()) }
 
 const sessionUser = (req, res) => { res.json(req.user) }
 
