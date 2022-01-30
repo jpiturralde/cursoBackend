@@ -90,6 +90,12 @@ const deleteItem = (api) => async (req, res) => {
 
 const checkout = (api) => async (req, res) => {
     try {
+        //Hardcodeo usuario para hacer pruebas hasta resolver la sesion en la API o implementar UI
+        req.user = {
+            username: 'j@p',
+            name: 'Juan',
+            phone: '+5491165663263'
+        }
         res.status(201).json(await api.checkout(req.params.id, req.user))
     } catch (error) {
         process.context.logger.error(error.message)

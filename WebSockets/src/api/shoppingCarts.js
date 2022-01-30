@@ -1,8 +1,8 @@
 import { ENTITY_NOT_FOUND_ERROR_MSG } from "../lib/index.js"
 
 const apiSpec = (ds) => {
-    const { emailManager, sysadm } = process.context 
-    const notifyFn = checkoutNotifier(emailManager, sysadm)
+    const { msgNotificationManager, emailManager, sysadm } = process.context 
+    const notifiyCheckout = checkoutNotifier(sysadm, emailManager, msgNotificationManager)
     return {
         getById: async (id) => { return await ds.getById(id) },
         post: async (data) => { return await ds.post(data) },
@@ -44,7 +44,7 @@ const apiSpec = (ds) => {
             const shoppingCart = await find(ds, id)
             shoppingCart.checkout = true
             await ds.put(id, shoppingCart)
-            notifyFn({user, shoppingCart})
+            notifiyCheckout({user, shoppingCart})
         }
     }
 }
@@ -71,14 +71,17 @@ const shoppingCartToHtml = (shooppingCart) => {
     ${itemsHtml}`
 }
 
-const checkoutNotifier = (emailManager, sysadm) => {
+const checkoutNotifier = (sysadm, emailManager, msgNotificationManager) => {
     return async (checkout) => {
+        const body = shoppingCartToHtml(checkout.shoppingCart)
         const mailOptions = {
             to: sysadm.email,
             subject: `Nuevo pedido de ${checkout.user.name} - ${checkout.user.username}`,
-            html: shoppingCartToHtml(checkout.shoppingCart)
+            html: body
         }
         emailManager.sendMail(mailOptions)    
+        msgNotificationManager.sendWhatsApp(sysadm.phone, body)
+        msgNotificationManager.sendSms(checkout.user.phone, `Pedido ${checkout.shoppingCart.id} se encuentra en proceso.`)
     }
 }
 
