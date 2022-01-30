@@ -1,6 +1,8 @@
 import { ENTITY_NOT_FOUND_ERROR_MSG } from "../lib/index.js"
 
 const apiSpec = (ds) => {
+    const { emailManager, sysadm } = process.context 
+    const notifyFn = checkoutNotifier(emailManager, sysadm)
     return {
         getById: async (id) => { return await ds.getById(id) },
         post: async (data) => { return await ds.post(data) },
@@ -28,12 +30,21 @@ const apiSpec = (ds) => {
             return result
         },
         deleteItem: async (id, productId) => {
-            const shoppingCart = await find(id)
+            const shoppingCart = await find(ds, id)
             const newContent = shoppingCart.items.filter(x => x.productId!=productId)
             if (newContent.length < shoppingCart.items.length) {
                 shoppingCart.items = newContent
                 await ds.put(id, shoppingCart)
             }
+        },
+        checkout: async (id, user) => {
+            if (!user) {
+                throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Usuario ${user}. No es posible hacer checkout.`)))
+            }
+            const shoppingCart = await find(ds, id)
+            shoppingCart.checkout = true
+            await ds.put(id, shoppingCart)
+            notifyFn({user, shoppingCart})
         }
     }
 }
@@ -44,6 +55,31 @@ const find = async (ds, id) => {
         throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Shopping Cart ${id} no encontrado.`)))
     }
     return shoppingCart
+}
+
+const shoppingCartToHtml = (shooppingCart) => {
+    const itemsHtml = shooppingCart.items.map( (item) => {
+        return `<p>Producto: ${item.productId}  -  Cantidad: ${item.quantity}</p>
+        `
+        }
+    )
+    
+    return `<p><strong>Pedido Nro: <span style="font-size:20px">${shooppingCart.id}</span></strong></p> 
+
+    <p><strong><span style="font-size:20px">Items</span></strong></p>
+
+    ${itemsHtml}`
+}
+
+const checkoutNotifier = (emailManager, sysadm) => {
+    return async (checkout) => {
+        const mailOptions = {
+            to: sysadm.email,
+            subject: `Nuevo pedido de ${checkout.user.name} - ${checkout.user.username}`,
+            html: shoppingCartToHtml(checkout.shoppingCart)
+        }
+        emailManager.sendMail(mailOptions)    
+    }
 }
 
 export const ShoppingCartsAPI = (ds) => apiSpec(ds)

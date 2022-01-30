@@ -14,6 +14,9 @@ export const UsersAPI = (dataSource) => {
         },
         validateHash: (data, hash) => {
             return bcrypt.compareSync(data, hash)
+        },
+        logout: async(user, session) => {
+            return "FALTA IMPLEMENTAR. Si el usuario tiene carrito asociado se tiene que guardar. En dónde?"
         }
     }
 }

@@ -25,6 +25,7 @@ export const apiRouter = () => {
     router.get('/api/carrito/:id/productos', getItems(api.shoppingCarts))
     router.post('/api/carrito/:id/productos', addItem(api.shoppingCarts))
     router.delete('/api/carrito/:id/productos/:productId', deleteItem(api.shoppingCarts))
+    router.patch('/api/carrito/:id/checkout', checkout(api.shoppingCarts))
 
 
     //PRODUCTOS-TEST
@@ -32,7 +33,6 @@ export const apiRouter = () => {
 
     return router
 } 
-const todoMdw = (api) => async (req, res) => { res.json('FALTA IMPLEMENTAR') }
 
 const getByIdMdw = (api) => async (req, res, next) => { 
     const data = await api.getById(req.params.id)
@@ -48,7 +48,7 @@ const postMdw = (api) => async (req, res) => {
     try {
         res.status(201).json(await api.post(req.body))
     } catch (error) {
-        console.error(error)
+        process.context.logger.error(error)
         res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
     }
 }
@@ -57,12 +57,13 @@ const deleteMdw = (api) => async (req, res) => {
     res.json()
 }
 
+
 const getItems = (api) => async (req, res) => {
     api.getItems(req.params.id)
         .then(items => {
             res.status(201).json(items)
         }).catch(error => {
-            process.context.logger.error(error)
+            process.context.logger.error(error.message)
             res.status(404).json(JSON.parse(error.message))
         })
 }
@@ -72,7 +73,7 @@ const addItem = (api) => async (req, res) => {
         .then(result => {
             res.status(201).json(result)
         }).catch(error => {
-            process.context.logger.error(error)
+            process.context.logger.error(error.message)
             res.status(404).json(JSON.parse(error.message))
         })
 }
@@ -82,9 +83,18 @@ const deleteItem = (api) => async (req, res) => {
         .then(result => {
             res.status(201).json(result)
         }).catch(error => {
-            console.error(error.message)
+            process.context.logger.error(error.message)
             res.status(404).json(JSON.parse(error.message))
         })
+}
+
+const checkout = (api) => async (req, res) => {
+    try {
+        res.status(201).json(await api.checkout(req.params.id, req.user))
+    } catch (error) {
+        process.context.logger.error(error.message)
+        res.status(400).json(JSON.parse(error.message))
+    }
 }
 
 //INFO
