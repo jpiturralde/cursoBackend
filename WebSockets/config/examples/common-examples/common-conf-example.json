@@ -10,5 +10,12 @@
             "user": "",
             "pass": ""
         }
+    },
+    "msgNotificationManager": {
+        "type": "twilio",
+        "accountSid": "",
+        "authToken": "",
+        "smsPhone": "",
+        "whatsappPhone": ""
     }
 }

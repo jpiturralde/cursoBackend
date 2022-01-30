@@ -8,6 +8,7 @@ import { loadSessionManager } from './context-session.js'
 import { createAthenticationManager as loadAuthenticationManager} from './context-authentication.js'
 import { loadApiContext } from './context-api.js'
 import { createEmailManager } from './lib/emailManager.js'
+import { createMsgNotificationManager } from './lib/msgNotificationManager.js'
 
 const loadConfig = async (configPath) => {
     logger.info(`Loading ${configPath}`)
@@ -48,9 +49,11 @@ const commonConfig = await loadConfig(process.context.COMMON_CONFIG_PATH)
 process.context = {
     ...process.context,
     sysadm: commonConfig.sysadm,
-    emailManagerConf: commonConfig.emailManager
+    emailManagerConf: commonConfig.emailManager,
+    msgNotificationManagerConf: commonConfig.msgNotificationManager
 }
 process.context.emailManager = createEmailManager(process.context.emailManagerConf)
+process.context.msgNotificationManager = createMsgNotificationManager(process.context.msgNotificationManagerConf)
 process.context.persistence = await loadPersistence()
 process.context.sessionMiddleware = await loadSessionManager()
 process.context.authenticationManager = await loadAuthenticationManager()
