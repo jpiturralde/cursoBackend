@@ -1,0 +1,37 @@
+{{#if thereAreProducts}}
+<h2 style="color:red;">Lista de Productos del Carrito</h2>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:deleteShoppingCart();">Cancelar</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:checkout();">Comprar</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="table-responsive">
+    <table class="table table-dark">
+        <tr style="color: yellow;">
+            <th>Id de producto</th>
+            <th>Cantidad</th>
+        </tr>
+        
+        {{#each products}}
+        <tr>
+            <td>
+                {{this.productId}}
+            </td>
+            <td>
+                {{this.quantity}}
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
+{{else}}
+<h3 class="alert alert-danger">No se encontraron productos.</h3>
+{{/if}}

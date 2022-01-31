@@ -19,9 +19,9 @@ export const apiRouter = () => {
     router.get('/api/messages', getMdw(api.messages))
     router.post('/api/messages', postMdw(api.messages))
 
-    router.post('/api/carrito', postMdw(api.shoppingCarts))
+    router.post('/api/carrito', postShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id', getByIdMdw(api.shoppingCarts))
-    router.delete('/api/carrito/:id', deleteMdw(api.shoppingCarts))
+    router.delete('/api/carrito/:id', deleteShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id/productos', getItems(api.shoppingCarts))
     router.post('/api/carrito/:id/productos', addItem(api.shoppingCarts))
     router.delete('/api/carrito/:id/productos/:productId', deleteItem(api.shoppingCarts))
@@ -58,6 +58,33 @@ const deleteMdw = (api) => async (req, res) => {
 }
 
 
+const postShoppingCartMdw = (api) => async (req, res) => {
+    try {
+        const { shoppingCartId } = req.session
+        console.log('shoppingCartId', shoppingCartId)
+        let shoppingCart 
+        if (!shoppingCartId) {
+            console.log('post')
+            shoppingCart = await api.post(req.body)
+            req.session.shoppingCartId = shoppingCart.id
+        }
+        else {
+            console.log('get')
+            shoppingCart = await api.getById(shoppingCartId)
+        }
+        console.log('shoppingCart', shoppingCart)
+        console.log(req.session)
+        res.status(201).json(shoppingCart)
+    } catch (error) {
+        process.context.logger.error(error)
+        res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
+    }
+}
+const deleteShoppingCartMdw = (api) => async (req, res) => {
+    api.deleteById(req.params.id)
+    delete req.session.shoppingCartId
+    res.json()
+}
 const getItems = (api) => async (req, res) => {
     api.getItems(req.params.id)
         .then(items => {
@@ -91,12 +118,17 @@ const deleteItem = (api) => async (req, res) => {
 const checkout = (api) => async (req, res) => {
     try {
         //Hardcodeo usuario para hacer pruebas hasta resolver la sesion en la API o implementar UI
-        req.user = {
-            username: 'j@p',
-            name: 'Juan',
-            phone: '+5491165663263'
+        let user = req.user
+        if (!user) {
+            const { sysadm } = process.context
+            user = {
+                username: sysadm.email,
+                name: sysadm.name,
+                phone: sysadm.phone
+            }
         }
-        res.status(201).json(await api.checkout(req.params.id, req.user))
+        res.status(201).json(await api.checkout(req.params.id, user))
+        delete req.session.shoppingCartId
     } catch (error) {
         process.context.logger.error(error.message)
         res.status(400).json(JSON.parse(error.message))
