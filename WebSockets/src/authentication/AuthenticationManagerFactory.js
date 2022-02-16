@@ -62,6 +62,12 @@ export default class AuthenticationManagerFactory {
                     scopes: [{
                         path:'/home', 
                         methods: ['GET']
+                    }, {
+                        path:'/products', 
+                        methods: ['GET']
+                    }, {
+                        path:'/shoppingCart', 
+                        methods: ['GET']
                     }], 
                     isSecured, 
                     logger: AuthenticationManagerFactory.#logger

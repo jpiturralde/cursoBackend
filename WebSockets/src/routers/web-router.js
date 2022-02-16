@@ -18,6 +18,8 @@ export const webRouter = (rootPath, authenticationManager, logger, imageLoaderMd
 
     //  HOME
     router.get('/home', getHome(rootPath, logger))
+    router.get('/products', getProducts(rootPath))
+    router.get('/shoppingCart', getShoppingCart(rootPath))
 
     //  LOGOUT
     router.get('/logout', getLogout)
@@ -86,7 +88,15 @@ const getHome = (rootPath, logger) => (req, res) => {
     res.sendFile(rootPath + '/views/home.html')
 }
 
-    // LOGOUT
+const getProducts = (rootPath) => (req, res) => {
+    res.sendFile(rootPath + '/views/products.html')
+}
+
+const getShoppingCart = (rootPath) => (req, res) => {
+    res.sendFile(rootPath + '/views/shoppingCart.html')
+}
+
+// LOGOUT
 const getLogout = (req, res) => {
     const userName = getUserName(req)
     req.session.destroy(err => {

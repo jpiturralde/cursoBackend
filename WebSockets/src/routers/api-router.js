@@ -9,7 +9,7 @@ export const apiRouter = () => {
     router.get('/api/sessionUser', sessionUser)
 
     //INFO
-    router.get('/api/info', getInfo)
+    router.get('/api/info', getInfo(api.info))
 
     //PRODUCTS
     router.get('/api/productos', getMdw(api.products))
@@ -136,7 +136,7 @@ const checkout = (api) => async (req, res) => {
 }
 
 //INFO
-const getInfo = async (req, res) => { res.json(await api.info.get()) }
+const getInfo = (api) => async (req, res) => { res.json(await api.get()) }
 
 const sessionUser = (req, res) => { res.json(req.user) }
 
