@@ -5,6 +5,9 @@
     "ShoppingCartsRepository": {
         "type": "InMemory"
     }, 
+    "ShoppingCartsByUserRepository": {
+        "type": "InMemory"
+    }, 
     "MessagesRepository": {
         "type": "InMemory"
     }
