@@ -6,3 +6,4 @@ dist
 .env
 nginx
 WebSockets/config/prod/*
+nginx-1.21.4/*
