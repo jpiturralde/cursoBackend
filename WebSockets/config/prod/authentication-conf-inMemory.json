@@ -1,6 +1,0 @@
-{
-    "type": "PassportLocal",
-    "repoConfig": {
-        "type": "InMemory" 
-    }
-}
