@@ -2,21 +2,21 @@
 const url = window.location.origin + '/api/carrito'
 
 const api = {
-    getById: async (id) => { 
-        return JSON.parse(await fetch(`${url}/${id}`).then(response => response.text()))
+    current: async (id) => { 
+        return JSON.parse(await fetch(`${url}/current`).then(response => response.text()))
     },
-    post: async () => { 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-        })
-        return response.json()
-    },
-    deleteById: async (id) => { 
-        const response = await fetch(`${url}/${id}`, {
+    // post: async () => { 
+    //     const response = await fetch(url, {
+    //         method: 'POST',
+    //         headers: {
+    //           'Accept': 'application/json',
+    //           'Content-Type': 'application/json'
+    //         }
+    //     })
+    //     return response.json()
+    // },
+    deleteItems: async (id) => { 
+        const response = await fetch(`${url}/${id}/productos`, {
             method: 'DELETE',
             headers: {
               'Accept': 'application/json',
@@ -47,7 +47,7 @@ const api = {
 }
 
 async function loadData() {
-    const shoppingCart = await api.post()
+    const shoppingCart = await api.current()
     setShoppingCartId(shoppingCart.id)
     render(shoppingCart)
 }
@@ -82,13 +82,15 @@ function getShoppingCartId() {
     return document.getElementById('shoppingCartId').innerHTML
 }
 
-async function deleteShoppingCart() {
+async function deleteShoppingCartItems() {
+    api.deleteItems(getShoppingCartId())
     await showInformation('Pedido Cancelado')
     setShoppingCartId('')
     setTimeout((page) => {location.href = page}, 2000, '/')
 }
 
 async function checkout() {
+    await api.checkout(getShoppingCartId())
     await showInformation(`Se generó el pedido número: ${getShoppingCartId()}`)
     setShoppingCartId('')
     setTimeout((page) => {location.href = page}, 2000, '/')

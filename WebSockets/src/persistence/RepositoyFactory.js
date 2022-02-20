@@ -3,6 +3,7 @@ import * as fs from 'fs'
 const DEFAULT_REPOSITORY_FACTORY_CONFIGURATION = {
     ProductsRepository: { type: 'InMemory' },
     ShoppingCartsRepository: { type: 'InMemory' },
+    ShoppingCartsByUserRepository: { type: 'InMemory' },
     MessagesRepository: { type: 'InMemory' }
 }
 
@@ -29,9 +30,14 @@ export default class RepositoryFactory {
             RepositoryFactory.#repoConfig.ShoppingCartsRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.ShoppingCartsRepository
             logger.warn(`RepositoryFactory - Default "ShoppingCartsRepository" initialized.`)
         }
+        if (!('ShoppingCartsByUserRepository' in RepositoryFactory.#repoConfig)) {
+            logger.warn(`RepositoryFactory - Field "ShoppingCartsByUserRepository" not found.`)
+            RepositoryFactory.#repoConfig.ShoppingCartsByUserRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.ShoppingCartsByUserRepository
+            logger.warn(`RepositoryFactory - Default "ShoppingCartsByUserRepository" initialized.`)
+        }
         if (!('MessagesRepository' in RepositoryFactory.#repoConfig)) {
             logger.warn(`RepositoryFactory - Field "MessagesRepository" not found.`)
-            RepositoryFactory.#repoConfig.MessagesRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.ShoppingCartsRepository
+            RepositoryFactory.#repoConfig.MessagesRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.MessagesRepository
             logger.warn(`RepositoryFactory - Default "MessagesRepository" initialized.`)
         }
         logger.info('RepositoryFactory', RepositoryFactory.#repoConfig)
@@ -39,17 +45,22 @@ export default class RepositoryFactory {
 
     static async createProductsRepository() {
         return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.ProductsRepository, RepositoryFactory.#logger)
+            .createRepository(RepositoryFactory.#repoConfig.ProductsRepository)
+    }
+
+    static async createShoppingCartsByUserRepository() {
+        return await RepositoryFactory
+            .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsByUserRepository)
     }
 
     static async createShoppingCartsRepository() {
         return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository, RepositoryFactory.#logger)
+            .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository)
     }
 
     static async createMessagesRepository() {
         return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.MessagesRepository, RepositoryFactory.#logger)
+            .createRepository(RepositoryFactory.#repoConfig.MessagesRepository)
     }
 
     static async createRepository(config) {

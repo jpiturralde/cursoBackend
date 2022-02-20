@@ -20,9 +20,12 @@ export default class PassportLocalAuthentication {
                     const avatar = req.file.filename
                     db.post( {username, password, name, address, phone, avatar} )
                     .then(user => {
-                        notifyFn('Nuevo registro', user)
-                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
-                        return done(null, user)
+                        process.context.api.shoppingCarts.post(user.id, {})
+                        .then(shoppingCart => {
+                            notifyFn('Nuevo registro', user)
+                            logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
+                            return done(null, user)
+                        })
                     })
                 })
             })
@@ -54,7 +57,10 @@ export default class PassportLocalAuthentication {
             db.getById(id)
             .then(user => {
                 const { username, name, address, phone, avatar } = user
-                done(null, { username, name, address, phone, avatar })
+                process.context.api.shoppingCarts.getByUser(user.id)
+                .then(shoppingCart => {
+                    done(null, { username, name, address, phone, avatar, shoppingCartId: shoppingCart.id })
+                })
             })
             .catch(err => {
                 logger.error('PassportLocalAuthentication.#deserializer', err)

@@ -1,5 +1,5 @@
 //PERSISTENCE CONFIG
-import { ProductsDao, MessagesDao, ShoppingCartsDao } from "./daos/index.js"
+import { ProductsDao, MessagesDao, ShoppingCartsDao, ShoppingCartsByUserDao } from "./daos/index.js"
 import { RepositoryFactory } from "./persistence/index.js"
 
 //PERSISTENCE CONFIG
@@ -27,7 +27,14 @@ export async function loadPersistence() {
     try {
         persistence.shoppingCartsDS = new ShoppingCartsDao(await RepositoryFactory.createShoppingCartsRepository())
     } catch (error) {
-        logger.error(`Error al crear MessagesDao ${error}`) 
+        logger.error(`Error al crear ShoppingCartsDao ${error}`) 
+        throw Error(error)
+    }
+
+    try {
+        persistence.shoppingCartsByUserDS = new ShoppingCartsByUserDao(await RepositoryFactory.createShoppingCartsByUserRepository())
+    } catch (error) {
+        logger.error(`Error al crear ShoppingCartsByUserDao ${error}`) 
         throw Error(error)
     }
 

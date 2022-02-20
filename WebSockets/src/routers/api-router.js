@@ -20,10 +20,12 @@ export const apiRouter = () => {
     router.post('/api/messages', postMdw(api.messages))
 
     router.post('/api/carrito', postShoppingCartMdw(api.shoppingCarts))
+    router.get('/api/carrito/current', getCurrentShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id', getByIdMdw(api.shoppingCarts))
     router.delete('/api/carrito/:id', deleteShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id/productos', getItems(api.shoppingCarts))
     router.post('/api/carrito/:id/productos', addItem(api.shoppingCarts))
+    router.delete('/api/carrito/:id/productos', deleteItems(api.shoppingCarts))
     router.delete('/api/carrito/:id/productos/:productId', deleteItem(api.shoppingCarts))
     router.patch('/api/carrito/:id/checkout', checkout(api.shoppingCarts))
 
@@ -36,6 +38,15 @@ export const apiRouter = () => {
 
 const getByIdMdw = (api) => async (req, res, next) => { 
     const data = await api.getById(req.params.id)
+    if (!data) {
+        const error = new Error('No encontrado')
+        error.httpStatusCode = 404
+        return next(error)
+    }
+    res.json(data)
+}
+const getCurrentShoppingCartMdw = (api) => async (req, res, next) => { 
+    const data = await api.getById(req.user.shoppingCartId)
     if (!data) {
         const error = new Error('No encontrado')
         error.httpStatusCode = 404
@@ -97,6 +108,16 @@ const getItems = (api) => async (req, res) => {
 
 const addItem = (api) => async (req, res) => {
     api.addItem(req.params.id, req.body)
+        .then(result => {
+            res.status(201).json(result)
+        }).catch(error => {
+            process.context.logger.error(error.message)
+            res.status(404).json(JSON.parse(error.message))
+        })
+}
+
+const deleteItems = (api) => async (req, res) => {
+    api.deleteItems(req.params.id)
         .then(result => {
             res.status(201).json(result)
         }).catch(error => {

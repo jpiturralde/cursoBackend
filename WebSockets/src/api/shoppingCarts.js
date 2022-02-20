@@ -1,18 +1,25 @@
 import { ENTITY_NOT_FOUND_ERROR_MSG } from "../lib/index.js"
 
-const apiSpec = (ds) => {
+const apiSpec = (shoppingCartsDS, shoppingCartsByUserDS) => {
     const { msgNotificationManager, emailManager, sysadm } = process.context 
     const notifiyCheckout = checkoutNotifier(sysadm, emailManager, msgNotificationManager)
     return {
-        getById: async (id) => { return await ds.getById(id) },
-        post: async (data) => { return await ds.post(data) },
-        deleteById: async (id) => { return await ds.deleteById(id) },
+        getById: async (id) => { return await shoppingCartsDS.getById(id) },
+        getByUser: async (id) => {
+            const shoppingCartByUser = await shoppingCartsByUserDS.getByUser(id)
+            return await shoppingCartsDS.getById(shoppingCartByUser.shoppingCartId) },
+        post: async (userId, data) => { 
+            const shoppingCart = await shoppingCartsDS.post(data)
+            await shoppingCartsByUserDS.post({userId, shoppingCartId: shoppingCart.id })
+            return shoppingCart
+        },
+        deleteById: async (id) => { return await shoppingCartsDS.deleteById(id) },
         getItems: async (id) => { 
-            const shooppingCart = await find(ds, id)
+            const shooppingCart = await find(shoppingCartsDS, id)
             return shooppingCart.items
         },
         addItem: async (id, item) => {
-            const shoppingCart = await find(ds, id)
+            const shoppingCart = await find(shoppingCartsDS, id)
             const index = shoppingCart.items.findIndex(x => x.productId == item.productId)
             let result = item
             if (index > -1) {
@@ -26,24 +33,30 @@ const apiSpec = (ds) => {
                 }
                 shoppingCart.items.push(item)
             }
-            await ds.put(id, shoppingCart)
+            await shoppingCartsDS.put(id, shoppingCart)
             return result
         },
+        deleteItems: async (id) => {
+            const shoppingCart = await find(shoppingCartsDS, id)
+            shoppingCart.items = []
+            await shoppingCartsDS.put(id, shoppingCart)
+    },
         deleteItem: async (id, productId) => {
-            const shoppingCart = await find(ds, id)
+            const shoppingCart = await find(shoppingCartsDS, id)
             const newContent = shoppingCart.items.filter(x => x.productId!=productId)
             if (newContent.length < shoppingCart.items.length) {
                 shoppingCart.items = newContent
-                await ds.put(id, shoppingCart)
+                await shoppingCartsDS.put(id, shoppingCart)
             }
         },
         checkout: async (id, user) => {
             if (!user) {
                 throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Usuario ${user}. No es posible hacer checkout.`)))
             }
-            const shoppingCart = await find(ds, id)
-            shoppingCart.checkout = true
-            await ds.put(id, shoppingCart)
+            const shoppingCart = await find(shoppingCartsDS, id)
+            //shoppingCart.checkout = true
+            shoppingCart.items = []
+            await shoppingCartsDS.put(id, shoppingCart)
             notifiyCheckout({user, shoppingCart})
         }
     }
@@ -85,4 +98,4 @@ const checkoutNotifier = (sysadm, emailManager, msgNotificationManager) => {
     }
 }
 
-export const ShoppingCartsAPI = (ds) => apiSpec(ds)
+export const ShoppingCartsAPI = (shoppingCartsDS, shoppingCartsByUserDS) => apiSpec(shoppingCartsDS, shoppingCartsByUserDS)
