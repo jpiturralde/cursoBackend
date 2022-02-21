@@ -1,0 +1,1 @@
+Carpeta para sesiones cuano se utiliza FileStore.
