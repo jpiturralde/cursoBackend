@@ -1,0 +1,10 @@
+{
+    "emailManager": {
+        "type": "gmail",
+        "port": 587,
+        "auth": {
+            "user": "[PUT_YOUR_GMAIL_USER@gmail.com]",
+            "pass": "[PUT_YOUR_GMAIL_PASS]"
+        }
+    }
+}

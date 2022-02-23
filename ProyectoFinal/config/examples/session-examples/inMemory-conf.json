@@ -1,0 +1,8 @@
+{
+    "type": "InMemory",
+    "session": {
+        "secret": "YOUR_SECRET",
+        "resave": false,
+        "saveUninitialized": false        
+    }
+}

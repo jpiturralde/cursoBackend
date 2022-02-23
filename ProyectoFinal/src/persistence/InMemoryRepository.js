@@ -26,6 +26,18 @@ export default class InMemoryRepository {
         return null
     }
 
+    async getBy(query, options = {}) {
+        const keys = Object.keys(query)
+        let result = []
+        keys.forEach(k => {
+            result = this.#container.filter(x => x.payload[k]==query[k])
+        })
+        if (result.length > 0) {
+            return result.map(x => InMemoryRepository.getPayload(x))
+        }
+        return null
+    }
+
     async put(id, data) {
         const index = this.#container.findIndex(x => x.id==id) 
         if ( index > -1) {

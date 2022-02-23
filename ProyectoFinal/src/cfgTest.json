@@ -1,4 +1,0 @@
-{
-    "type": "FS", 
-    "connectionString": "./db/products.txt"
-}

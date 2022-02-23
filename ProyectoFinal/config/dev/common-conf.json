@@ -1,0 +1,23 @@
+{
+    "sysadm": {
+        "name": "",
+        "email": "",
+        "phone": ""
+    },
+    "emailManager": {
+        "type": "ethereal",
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "auth": {
+            "user": "[PUT_YOUR_ETHEREAL_USER]",
+            "pass": "[PUT_YOUR_ETHEREAL_PASS]"
+        }
+    },
+    "msgNotificationManager": {
+        "type": "twilio",
+        "accountSid": "[PUT_YOUR_ACCOUNT_SID]",
+        "authToken": "[PUT_YOUR_AUTH_TOKEN]",
+        "smsPhone": "[PUT_YOUR_TWILIO_SMS_PHONE]",
+        "whatsappPhone": "[PUT_YOUR_TWILIO_WHASTAPP_PHONE"
+    }
+}

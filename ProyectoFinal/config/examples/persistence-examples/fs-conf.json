@@ -1,0 +1,18 @@
+{
+    "ProductsRepository": {
+        "type": "FS", 
+        "connectionString": "./db/products.txt"
+    }, 
+    "ShoppingCartsRepository": {
+        "type": "FS", 
+        "connectionString": "./db/carts.txt"
+    },
+    "ShoppingCartsByUserRepository": {
+        "type": "FS", 
+        "connectionString": "./db/cartsByUser.txt"
+    },
+    "MessagesRepository": {
+        "type": "FS", 
+        "connectionString": "./db/messages.txt"
+    }
+}

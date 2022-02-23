@@ -64,6 +64,14 @@ export default class MongoDbRepository {
         return result[0]
     }
 
+    async getBy(query, options = {}) {
+        const result = await this.#container.find(query, options)
+        if (await result.count === 0) {
+            return []
+        }
+        return await result.toArray()
+    }
+
     async deleteAll() {
         await this.#container.deleteMany({})
     }

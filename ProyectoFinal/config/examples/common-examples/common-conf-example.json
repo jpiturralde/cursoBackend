@@ -1,0 +1,21 @@
+{
+    "sysadm": {
+        "name": "",
+        "email": ""
+    },
+    "emailManager": {
+        "type": "ethereal | gmail",
+        "port": 587,
+        "auth": {
+            "user": "",
+            "pass": ""
+        }
+    },
+    "msgNotificationManager": {
+        "type": "twilio",
+        "accountSid": "",
+        "authToken": "",
+        "smsPhone": "",
+        "whatsappPhone": ""
+    }
+}

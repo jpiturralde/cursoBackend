@@ -4,7 +4,10 @@ export default class FileSystemRepository {
     #container
     #fieldKey
 
-    static getPayload(data) { return data.payload }
+    static getPayload(data) { 
+        const payload = data.payload || data
+        return payload
+    }
 
     constructor(filePath, fieldKey = 'id') {
         this.#container = new FileSystemContainer(filePath)

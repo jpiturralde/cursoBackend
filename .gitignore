@@ -5,5 +5,5 @@ dist
 **/*.log
 .env
 nginx
-WebSockets/config/prod/*
+*/config/prod/*
 nginx-1.21.4/*

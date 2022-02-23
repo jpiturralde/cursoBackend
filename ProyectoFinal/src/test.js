@@ -1,50 +1,49 @@
-import * as fs from 'fs'
+import { context } from './context.js'
 
-
-function main(param) {
-    let t = typeof param
-    switch (typeof param) {
-        case 'string':
-            console.log("STRING")
-            break;
-        case 'object':
-            console.log("OBJECT")
-            break;
-        default: //InMemory
-            console.log('UNDEFINED')
-    }
-    param = {msg: 'ASIGNADO'}
-    console.log(param)
-    console.log(typeof param)
-}
-
-function parseConfig(config) {
-    console.log('ENTRA: ', config)
-    switch (typeof config) {
-        case 'undefined': //InMemory
-            config = { type: 'InMemory' }
-            break;
-        case 'string':
-            console.log("LEVANTAR JSON Y CONVERTLO A OBJECT")
-            try {
-                //Utilizo método sincrónico porque necesito asegurarme de que si no existe el archivo, crearlo.
-                config = JSON.parse(fs.readFileSync(config, 'utf8'))
-            } catch (e) {
-                throw Error(`Not found ${config} `)
-            }
-            break;
-        case 'object': 
-            console.log("NO HAGO NADA")
-            break;
-        default: 
-            throw Error('Invalid config type.')
-    }
-    if (!('type' in config)) {
-        throw Error('Missing "type" field in config.')
-    }
-    console.log('SALE: ', config)
-    return config
+const {logger, msgNotificationManager } = context
+logger.info(context)
+try {
+    const sms = await msgNotificationManager.sendWhatsApp(context.sysadm.phone, 'Hola soy un SMS desde Node.js!')
+    console.log(sms)
+} catch (error) {
+    console.log(error)
 }
 
 
-parseConfig({type:'FS', connectionString: './db/carts.txt'})
+
+
+
+// const emailManager = process.context.emailManager
+// try {
+//     const user = {
+//         id: 1111111,
+//         username: 'j@p',
+//         name: 'Juan',
+//         address: 'Gaona',
+//         phone: '45353534',
+//         avatar: 'dfsjskfjasljfds.png'
+//     }
+//     const USER_HTML = `<p><strong>ID: <span style="font-size:20px">${user.id}</span></strong></p>
+    
+//     <p><strong>Username: <span style="font-size:20px">${user.username}</span></strong></p>
+
+//     <p><strong>Name: <span style="font-size:20px">${user.name}</span></strong></p>
+    
+//     <p><strong>Address: <span style="font-size:20px">${user.address}</span></strong></p>
+    
+//     <p><strong>Phone: <span style="font-size:20px">${user.phone}</span></strong></p>
+    
+//     <p><strong>Avatar: <span style="font-size:20px">${user.avatar}</span></strong></p>`
+
+//     const mailOptions = {
+//         to: process.context.sysadm.email,
+//         subject: `Signup ${user.id}`,
+//         html: USER_HTML
+//         //html: '<h1 style="color: blue;">Contenido de prueba con archivo adjunto desde <span style="color: green;">Node.js con Nodemailer</span></h1>'
+//     }
+//     const info = await emailManager.sendMail(mailOptions)
+//     logger.info(info)
+// } catch (error) {
+//     logger.error(error)
+// }
+
