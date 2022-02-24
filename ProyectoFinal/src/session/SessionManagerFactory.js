@@ -13,6 +13,7 @@ const DEFAULT_SESSION_MANAGER_FACTORY_CONFIGURATION = {
 export default class SessionManagerFactory {
     static logger
     static #sessionConfig
+    static #sessionManagerInstance
 
     static async initialize(sessionConfigPath, logger) {
         SessionManagerFactory.logger = logger
@@ -26,47 +27,44 @@ export default class SessionManagerFactory {
         logger.info('SessionManagerFactory', SessionManagerFactory.#sessionConfig)
     }
 
-
-
     static async createSessionManager() {
-    // static async createSessionManager(config) {
-        // config = SessionManagerFactory.#parseConfig(config)
-        let sessionManager
-        switch (SessionManagerFactory.#sessionConfig.type) {
-            case 'FileStore':
-                SessionManagerFactory.logger.info('SessionManagerFactory - FileStore.')
-//const FileStore = require('session-file-store')(session)
-//onst store = new FileStore({ path: './sessions', ttl: 600, logFn: function(){}, retries:0 })
-                
-                // const FileSystemRepository = await import('./FileSystemRepository.js')
-                // repo = new FileSystemRepository.default(config.connectionString)
-                // sessionManager = session({
-                //     secret: 'shhhhhhhhhhhhhhhhhhhhh',
-                //     resave: false,
-                //     saveUninitialized: false
-                // })
-                throw Error('FileStore no implementado!!! No sé cómo usarlo con import en lugar de require!!!');
-            case 'MongoStore':
-                SessionManagerFactory.logger.info('SessionManagerFactory - Create MongoStore.')
-                const MongoStore = await import('connect-mongo')
-                const store = MongoStore.default.create({
-                    //En Atlas connect App :  Make sure to change the node version to 2.2.12:
-                    mongoUrl: SessionManagerFactory.#sessionConfig.store.uri,
-                    mongoOptions: SessionManagerFactory.#sessionConfig.store.options || {}
-                })
-                const sessionConfig = SessionManagerFactory.#sessionConfig.session
-                sessionConfig.store = store
-                sessionManager = session(sessionConfig)
-                break;
-            default: //InMemory
-                SessionManagerFactory.logger.info('SessionManagerFactory - MemoryStore.')
-                sessionManager = session({
-                    secret: SessionManagerFactory.#sessionConfig.session.secret,
-                    resave: SessionManagerFactory.#sessionConfig.session.resave || false,
-                    saveUninitialized: SessionManagerFactory.#sessionConfig.session.saveUninitialized || false
-                })
-            }
-        return sessionManager
+        if (!SessionManagerFactory.#sessionManagerInstance) {
+            switch (SessionManagerFactory.#sessionConfig.type) {
+                case 'FileStore':
+                    SessionManagerFactory.logger.info('SessionManagerFactory - FileStore.')
+    //const FileStore = require('session-file-store')(session)
+    //onst store = new FileStore({ path: './sessions', ttl: 600, logFn: function(){}, retries:0 })
+                    
+                    // const FileSystemRepository = await import('./FileSystemRepository.js')
+                    // repo = new FileSystemRepository.default(config.connectionString)
+                    // SessionManagerFactory.#sessionManagerInstance = session({
+                    //     secret: 'shhhhhhhhhhhhhhhhhhhhh',
+                    //     resave: false,
+                    //     saveUninitialized: false
+                    // })
+                    throw Error('FileStore no implementado!!! No sé cómo usarlo con import en lugar de require!!!');
+                case 'MongoStore':
+                    SessionManagerFactory.logger.info('SessionManagerFactory - Create MongoStore.')
+                    const MongoStore = await import('connect-mongo')
+                    const store = MongoStore.default.create({
+                        //En Atlas connect App :  Make sure to change the node version to 2.2.12:
+                        mongoUrl: SessionManagerFactory.#sessionConfig.store.uri,
+                        mongoOptions: SessionManagerFactory.#sessionConfig.store.options || {}
+                    })
+                    const sessionConfig = SessionManagerFactory.#sessionConfig.session
+                    sessionConfig.store = store
+                    SessionManagerFactory.#sessionManagerInstance = session(sessionConfig)
+                    break;
+                default: //InMemory
+                    SessionManagerFactory.logger.info('SessionManagerFactory - MemoryStore.')
+                    SessionManagerFactory.#sessionManagerInstance = session({
+                        secret: SessionManagerFactory.#sessionConfig.session.secret,
+                        resave: SessionManagerFactory.#sessionConfig.session.resave || false,
+                        saveUninitialized: SessionManagerFactory.#sessionConfig.session.saveUninitialized || false
+                    })
+                }   
+        }
+        return SessionManagerFactory.#sessionManagerInstance
     }
 
     static #parseConfig(config) {

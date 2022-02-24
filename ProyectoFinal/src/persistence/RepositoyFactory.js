@@ -10,8 +10,10 @@ const DEFAULT_REPOSITORY_FACTORY_CONFIGURATION = {
 export default class RepositoryFactory {
     static #logger
     static #repoConfig
+    static #repos
 
     static async initialize(repoConfigPath, logger) {
+        RepositoryFactory.#repos = {}
         RepositoryFactory.#logger = logger
         try {
             RepositoryFactory.#repoConfig = JSON.parse(fs.readFileSync(repoConfigPath, 'utf8'))
@@ -44,23 +46,35 @@ export default class RepositoryFactory {
     }
 
     static async createProductsRepository() {
-        return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.ProductsRepository)
+        if (!RepositoryFactory.#repos.productsRepository) {
+            RepositoryFactory.#repos.productsRepository = await RepositoryFactory
+                .createRepository(RepositoryFactory.#repoConfig.ProductsRepository)
+        }
+        return RepositoryFactory.#repos.productsRepository
     }
 
     static async createShoppingCartsByUserRepository() {
-        return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsByUserRepository)
+        if (!RepositoryFactory.#repos.shoppingCartsByUserRepository) {
+            RepositoryFactory.#repos.shoppingCartsByUserRepository = await RepositoryFactory
+                .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsByUserRepository)
+        }
+        return RepositoryFactory.#repos.shoppingCartsByUserRepository
     }
 
     static async createShoppingCartsRepository() {
-        return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository)
+        if (!RepositoryFactory.#repos.shoppingCartsRepository) {
+            RepositoryFactory.#repos.shoppingCartsRepository = await RepositoryFactory
+                .createRepository(RepositoryFactory.#repoConfig.ShoppingCartsRepository)
+        }
+        return RepositoryFactory.#repos.shoppingCartsRepository
     }
 
     static async createMessagesRepository() {
-        return await RepositoryFactory
-            .createRepository(RepositoryFactory.#repoConfig.MessagesRepository)
+        if (!RepositoryFactory.#repos.messagesRepository) {
+            RepositoryFactory.#repos.messagesRepository = await RepositoryFactory
+                .createRepository(RepositoryFactory.#repoConfig.MessagesRepository)
+        }
+        return RepositoryFactory.#repos.messagesRepository
     }
 
     static async createRepository(config) {
