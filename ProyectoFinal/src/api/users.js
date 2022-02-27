@@ -17,6 +17,15 @@ export const UsersAPI = (dataSource) => {
         },
         logout: async(user, session) => {
             return "FALTA IMPLEMENTAR. Si el usuario tiene carrito asociado se tiene que guardar. En dónde?"
+        },
+        login: async(username, password) => {
+            const user = await dataSource.getByUserName(username)
+            if (user) {
+                if (bcrypt.compareSync(password, user.password)) {
+                    delete user.password
+                    return user
+                }
+            }
         }
     }
 }

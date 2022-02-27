@@ -22,6 +22,7 @@ export default class PassportLocalAuthentication {
                     .then(user => {
                         process.context.api.shoppingCarts.post(user.id, {})
                         .then(shoppingCart => {
+                            user.shoppingCartId = shoppingCart.id
                             notifyFn('Nuevo registro', user)
                             logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
                             return done(null, user)
@@ -36,29 +37,25 @@ export default class PassportLocalAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                db.getByUserName(username).then(user => {
+                db.login(username, password).then(user => {
                     if (!user) {
                         logger.info(`PassportLocalAuthentication#signinStrategy: Invalid cretentials.`);
-                        return done(null, false)
+                        return done(null, false, { message: 'Invalid cretentials' })
                     }
-                    if (!db.validateHash(password, user.password)) {
-                        logger.info(`PassportLocalAuthentication#signinStrategy: Invalid cretentials.`);
-                        return done(null, false)
-                    }
-                    return done(null, user)
+                    return done(null, user, { message: 'Logged in Successfully' })
                 })
             })
     }
 
     static #serializer() { return (user, done) => { done(null, user.id) } }
 
-    static #deserializer(db, logger) {
+    static #deserializer(db, logger) { 
         return (id, done) => {
             db.getById(id)
             .then(user => {
                 const { username, name, address, phone, avatar } = user
                 process.context.api.shoppingCarts.getByUser(user.id)
-                .then(shoppingCart => {
+                .then(shoppingCart => {  
                     done(null, { username, name, address, phone, avatar, shoppingCartId: shoppingCart.id })
                 })
             })
