@@ -10,7 +10,10 @@ export const UsersAPI = (dataSource) => {
             return await dataSource.getByUserName(username)
         },
         post: async (data) => {
-            return await dataSource.post(createUser(data))
+            if (await dataSource.getByUserName(data.username)) {
+                throw Error(`${data.username} already exists.`)
+            }
+            return userDto(await dataSource.post(createUser(data)))
         },
         validateHash: (data, hash) => {
             return bcrypt.compareSync(data, hash)
@@ -22,12 +25,17 @@ export const UsersAPI = (dataSource) => {
             const user = await dataSource.getByUserName(username)
             if (user) {
                 if (bcrypt.compareSync(password, user.password)) {
-                    delete user.password
-                    return user
+                    return userDto(user)
                 }
             }
+            throw Error('Invalid credentials.')
         }
     }
+}
+
+const userDto = (user) => {
+    const {id, username, name, address, phone, avatar, shoppingCartId} = user
+    return {id, username, name, address, phone, avatar, shoppingCartId}
 }
 
 const createUser = (data) => {

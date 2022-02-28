@@ -1,30 +1,48 @@
+import jwt from 'jsonwebtoken'
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
 
-export default class PassportLocalAuthentication {
+export default class PassportLocalJwtAuthentication {
     #config
     #passportInstance
+
+    constructor(config) {
+        const notificationFn = this.notifiy(process.context.emailManager, process.context.sysadm.email)    
+
+        passport.use('signup', this.signupStrategy(config.usersDB, config.logger, notificationFn))
+        passport.use('signin', this.signinStrategy(config.usersDB, config.logger))
+        passport.serializeUser(this.serializer())
+        passport.deserializeUser(this.deserializer(config.usersDB, config.logger))
+
+        this.#passportInstance = passport
+        this.#config = config
+    }
+
+    createJWT(user) {
+        return jwt.sign(user, this.#config.jwt.secret)
+    }
+
+    readJWT(token) {
+        return jwt.verify(token, this.#config.jwt.secret)
+    }
 
     signupStrategy(db, logger, notifyFn) {
         return new LocalStrategy({
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                db.getByUserName(username)
-                .then(user => {
-                    if (user) {
-                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} already exists.`);
+                const {name, address, phone } = req.body
+                const avatar = req.file.filename
+                this.signup(db, {username, password, name, address, phone, avatar})
+                    .then(user => {
+                        notifyFn('Nuevo registro', user)
+                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
+                        return done(null, user)
+                    })
+                    .catch(error => {
+                        logger.info(`PassportLocalAuthentication#signupStrategy: ${error.message}`)
                         return done(null, false)
-                    }
-                    const {name, address, phone } = req.body
-                    const avatar = req.file.filename
-                    this.signup(db, {username, password, name, address, phone, avatar})
-                        .then(user => {
-                            notifyFn('Nuevo registro', user)
-                            logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
-                            return done(null, user)
-                        })
-                })
+                    })
             })
     }
 
@@ -35,52 +53,50 @@ export default class PassportLocalAuthentication {
         return user
     }
 
-    static #signinStrategy(db, logger) {
+    signinStrategy(db, logger) {
         return new LocalStrategy({
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                db.login(username, password).then(user => {
-                    if (!user) {
-                        logger.info(`PassportLocalAuthentication#signinStrategy: Invalid cretentials.`);
-                        return done(null, false, { message: 'Invalid cretentials' })
-                    }
-                    return done(null, user, { message: 'Logged in Successfully' })
-                })
+                this.signin(db, {username, password})
+                    .then(user => {
+                        return done(null, user, { message: 'Logged in Successfully' })
+                    })
+                    .catch(error => {
+                        logger.info(`PassportLocalAuthentication#signinStrategy: ${error.message}`)
+                        return done(null, false, { message: error.message })
+                    })
             })
     }
 
-    serializer() { return (user, done) => { done(null, user.id) } }
+    async signin(db, credentials) {
+        const { username, password } = credentials
+        const user = await db.login(username, password)
+        const shoppingCart = await process.context.api.shoppingCarts.post(user.id, {})
+        user.shoppingCartId = shoppingCart.id
+        return user
+    }
+
+    serializer() { return (user, done) => { done(null, this.createJWT(user)) } }
 
     deserializer(db, logger) { 
-        return (id, done) => {
-            db.getById(id)
-            .then(user => {
-                const { username, name, address, phone, avatar } = user
-                process.context.api.shoppingCarts.getByUser(user.id)
-                .then(shoppingCart => {  
-                    done(null, { username, name, address, phone, avatar, shoppingCartId: shoppingCart.id })
-                })
-            })
-            .catch(err => {
-                logger.error('PassportLocalAuthentication.#deserializer', err)
-                done(err)
-            })
+        return (token, done) => {
+            done(null, this.readJWT(token))
         }
     }
 
-    static #notifiy(emailManager, sysadmEmail)  {
+    notifiy(emailManager, sysadmEmail)  {
         return async (event, user) => {
             const mailOptions = {
                 to: sysadmEmail,
                 subject: `${event} ${user.id}`,
-                html: PassportLocalAuthentication.#userToHtml(user)
+                html: this.userToHtml(user)
             }
             emailManager.sendMail(mailOptions)    
         }
     }
 
-    static #userToHtml(user) {
+    userToHtml(user) {
         return `<p><strong>ID: <span style="font-size:20px">${user.id}</span></strong></p>
         
         <p><strong>Username: <span style="font-size:20px">${user.username}</span></strong></p>
@@ -94,18 +110,6 @@ export default class PassportLocalAuthentication {
         <p><strong>Avatar: <span style="font-size:20px">${user.avatar}</span></strong></p>`
 
     } 
-
-    constructor(config) {
-        const notificationFn = PassportLocalAuthentication.#notifiy(process.context.emailManager, process.context.sysadm.email)    
-
-        passport.use('signup', this.signupStrategy(config.usersDB, config.logger, notificationFn))
-        passport.use('signin', PassportLocalAuthentication.#signinStrategy(config.usersDB, config.logger))
-        passport.serializeUser(this.serializer())
-        passport.deserializeUser(this.deserializer(config.usersDB, config.logger))
-
-        this.#passportInstance = passport
-        this.#config = config
-    }
 
     initApp(expressApp) {
         expressApp.use(this.#passportInstance.initialize())

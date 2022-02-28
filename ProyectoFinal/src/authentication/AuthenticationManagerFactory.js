@@ -2,7 +2,8 @@ import * as fs from 'fs'
 
 const DEFAULT_FACTORY_CONFIGURATION = { 
     type: 'PassportLocal',
-    repoConfig: { type: 'InMemory' }
+    repoConfig: { type: 'InMemory' },
+    jwt: { secret: 'secret' }
 }
 
 const isSecured = (scopes, req) => {
@@ -26,7 +27,7 @@ const securedMethod = (scope, method) => {
 }
 
 export default class AuthenticationManagerFactory {
-    static #config
+    static config
     static #repoFactory
     static #usersDaoClass
     static #usersAPI
@@ -40,25 +41,26 @@ export default class AuthenticationManagerFactory {
         AuthenticationManagerFactory.#usersAPI = usersAPI
         AuthenticationManagerFactory.#logger = logger
         try {
-            AuthenticationManagerFactory.#config = JSON.parse(fs.readFileSync(AUTHENTICATION_CONFIG_PATH, 'utf8'))
+            AuthenticationManagerFactory.config = JSON.parse(fs.readFileSync(AUTHENTICATION_CONFIG_PATH, 'utf8'))
         } catch (e) {
             AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Not found ${AUTHENTICATION_CONFIG_PATH} `)
-            AuthenticationManagerFactory.#config = DEFAULT_FACTORY_CONFIGURATION
+            AuthenticationManagerFactory.config = DEFAULT_FACTORY_CONFIGURATION
             AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Default configuration initialized`)
         }
-        AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory', AuthenticationManagerFactory.#config)
+        AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory', AuthenticationManagerFactory.config)
     }
 
     static async create() {
         if (!AuthenticationManagerFactory.#authenticationManagerInstance) {
-            switch (AuthenticationManagerFactory.#config.type) {
+            switch (AuthenticationManagerFactory.config.type) {
                 case 'PassportLocal':
                     AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory - Create PassportLocal.')
                     const repo = await AuthenticationManagerFactory.#repoFactory
-                        .createRepository(AuthenticationManagerFactory.#config.repoConfig)
+                        .createRepository(AuthenticationManagerFactory.config.repoConfig)
                     const dao = await (new AuthenticationManagerFactory.#usersDaoClass(repo))
                     const api = AuthenticationManagerFactory.#usersAPI(dao)
                     const authConfig = {
+                        ...AuthenticationManagerFactory.config,
                         usersDB: api,
                         scopes: [{
                             path:'/home', 
@@ -73,8 +75,10 @@ export default class AuthenticationManagerFactory {
                         isSecured, 
                         logger: AuthenticationManagerFactory.#logger
                     }
-                    const PassportLocalAuthentication = await import('./PassportLocalAuthentication.js')
-                    AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalAuthentication.default(authConfig)
+                    const PassportLocalJwtAuthentication = await import('./PassportLocalJwtAuthentication.js')
+                    AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalJwtAuthentication.default(authConfig)
+                    // const PassportLocalAuthentication = await import('./PassportLocalAuthentication.js')
+                    // AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalAuthentication.default(authConfig)
                     break;
                 default:
                     throw Error('Only supported AuthenticationManagerFactory.type = PassportLocal')
