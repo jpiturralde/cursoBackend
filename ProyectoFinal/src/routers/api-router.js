@@ -2,12 +2,14 @@ import { Router } from "express"
 import faker from 'faker'
 faker.locale = 'es'
 
-export const apiRouter = () => {
+export const apiRouter = (authenticationManager, imageLoaderMdw) => {
     const { api } = process.context
     const router = new Router()
 
-    router.get('/api/sessionUser', sessionUser)
-
+    router.post('/api/user/signup', imageLoaderMdw.single('avatar'), authenticationManager.authJwtMdw('signup'))
+    router.post('/api/user/signin', authenticationManager.authJwtMdw('signin'))
+    router.get('/api/user/profile', authenticationManager.jwtMdw(), userProfile)
+    
     //INFO
     router.get('/api/info', getInfo(api.info))
 
@@ -72,19 +74,14 @@ const deleteMdw = (api) => async (req, res) => {
 const postShoppingCartMdw = (api) => async (req, res) => {
     try {
         const { shoppingCartId } = req.session
-        console.log('shoppingCartId', shoppingCartId)
         let shoppingCart 
         if (!shoppingCartId) {
-            console.log('post')
             shoppingCart = await api.post(req.body)
             req.session.shoppingCartId = shoppingCart.id
         }
         else {
-            console.log('get')
             shoppingCart = await api.getById(shoppingCartId)
         }
-        console.log('shoppingCart', shoppingCart)
-        console.log(req.session)
         res.status(201).json(shoppingCart)
     } catch (error) {
         process.context.logger.error(error)
@@ -159,8 +156,7 @@ const checkout = (api) => async (req, res) => {
 //INFO
 const getInfo = (api) => async (req, res) => { res.json(await api.get()) }
 
-const sessionUser = (req, res) => { res.json(req.user) }
-
+const userProfile = (req, res) => { res.json(req.user) }
 
 //PRODUCTOS-TEST
 const getProductsTest = async (req, res) => {
@@ -179,8 +175,6 @@ function randomValue() {
         }
     }
 }
-
-
 
 // const getUserName = req => req.session.userName ? req.session.userName : ''
 

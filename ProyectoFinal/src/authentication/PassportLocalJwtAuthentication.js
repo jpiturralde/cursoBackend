@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
+import passportJWT from 'passport-jwt'
+
+const ExtractJWT = passportJWT.ExtractJwt
+const JWTStrategy = passportJWT.Strategy
 
 export default class PassportLocalJwtAuthentication {
     #config
@@ -11,6 +15,17 @@ export default class PassportLocalJwtAuthentication {
 
         passport.use('signup', this.signupStrategy(config.usersDB, config.logger, notificationFn))
         passport.use('signin', this.signinStrategy(config.usersDB, config.logger))
+        passport.use(new JWTStrategy({
+                jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+                secretOrKey   : config.jwt.secret
+            },
+            function (jwtPayload, cb) {
+                if (jwtPayload && jwtPayload.id) {
+                    return cb(null, jwtPayload)   
+                }
+                return cb('Invalid JWT')
+            }
+        ))
         passport.serializeUser(this.serializer())
         passport.deserializeUser(this.deserializer(config.usersDB, config.logger))
 
@@ -31,6 +46,7 @@ export default class PassportLocalJwtAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
+                console.log('signupStrategy', req.body)
                 const {name, address, phone } = req.body
                 const avatar = req.file.filename
                 this.signup(db, {username, password, name, address, phone, avatar})
@@ -41,7 +57,7 @@ export default class PassportLocalJwtAuthentication {
                     })
                     .catch(error => {
                         logger.info(`PassportLocalAuthentication#signupStrategy: ${error.message}`)
-                        return done(null, false)
+                        return done(null, false, error)
                     })
             })
     }
@@ -58,13 +74,14 @@ export default class PassportLocalJwtAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
+                console.log('signinStrategy', req.body)
                 this.signin(db, {username, password})
                     .then(user => {
                         return done(null, user, { message: 'Logged in Successfully' })
                     })
                     .catch(error => {
                         logger.info(`PassportLocalAuthentication#signinStrategy: ${error.message}`)
-                        return done(null, false, { message: error.message })
+                        return done(null, false, error)
                     })
             })
     }
@@ -72,7 +89,7 @@ export default class PassportLocalJwtAuthentication {
     async signin(db, credentials) {
         const { username, password } = credentials
         const user = await db.login(username, password)
-        const shoppingCart = await process.context.api.shoppingCarts.post(user.id, {})
+        const shoppingCart = await process.context.api.shoppingCarts.getByUser(user.id)
         user.shoppingCartId = shoppingCart.id
         return user
     }
@@ -137,6 +154,32 @@ export default class PassportLocalJwtAuthentication {
 
     signinMdw(failureRedirect) {
         return this.#passportInstance.authenticate('signin', { failureRedirect })
+    }
+
+    authJwtMdw(passportStrategy) {
+        return (req, res, next) => {
+            console.log('authJwtMdw', req.path, req.body)
+            this.#passportInstance.authenticate(passportStrategy, (err, user, info) => {
+                if (err || !user) {
+                    return res.status(400).json({
+                        message: info ? info.message : 'Authentication failed',
+                        user   : user
+                    });
+                }
+                req.login(user, {session: false}, (err) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    const token = this.createJWT(user)
+                    return res.json({user, token})
+                });
+            })
+            (req, res)
+        }
+    }
+    
+    jwtMdw() {
+        return this.#passportInstance.authenticate('jwt', {session: false})
     }
 
     deserializeUser(id) {

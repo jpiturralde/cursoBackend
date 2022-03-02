@@ -42,7 +42,7 @@ export const ExpressApp = (config) => {
 
     //Routes
     expressApp.use('/', webRouter(rootPath, authenticationManager, logger, imageLoaderMdw(IMAGES_PATH)))
-    expressApp.use('/', apiRouter())
+    expressApp.use('/', apiRouter(authenticationManager, imageLoaderMdw(IMAGES_PATH)))
     expressApp.use('/', processRouter(rootPath))
 
     expressApp.use(unkownRoute(logger))
