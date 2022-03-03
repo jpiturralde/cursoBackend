@@ -1,22 +1,3 @@
-// const url = window.location.origin + '/api/user'
-
-// const api = {
-//     signup: async (body) => { 
-//         const response = await fetch(url + '/signup', {
-//             method: 'POST',
-//             body
-//         })
-//         return await response.json()
-//     },
-//     signin: async (body) => { 
-//         const response = await fetch(url + '/signin', {
-//             method: 'POST',
-//             body
-//         })
-//         return await response.json()
-//     }
-// }
-
 const signupForm = document.getElementById("signupForm")
 if (signupForm) {
     signupForm.addEventListener('submit', async e => {

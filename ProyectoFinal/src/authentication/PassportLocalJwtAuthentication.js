@@ -46,7 +46,6 @@ export default class PassportLocalJwtAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                console.log('signupStrategy', req.body)
                 const {name, address, phone } = req.body
                 const avatar = req.file.filename
                 this.signup(db, {username, password, name, address, phone, avatar})
