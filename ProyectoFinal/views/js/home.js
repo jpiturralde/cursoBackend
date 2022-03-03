@@ -56,8 +56,10 @@ async function renderMessages(normalized) {
     let compressionRate = 0
     if (typeof normalized == 'object') {
         const chat = denormalizeChat(normalized) 
-        messages = chat.messages
-        compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
+        if (chat) {
+            messages = chat.messages
+            compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
+        }
     }
     const messagesTpl = await loadAndCompileTemplate('/messages.hbs')
     const html = messagesTpl({ messages, compressionRate })
@@ -74,7 +76,6 @@ function addMessage(e) {
 /* BEGIN SESSION */
 
 async function renderHome(user, messages, products, visits) {
-    console.log('renderHome')
     const homeTpl = await loadAndCompileTemplate('home.hbs')
     const html = homeTpl({ user })
     document.getElementById('content').innerHTML = html
@@ -89,7 +90,5 @@ async function onLogin() {
 
 socket.on('messages', function(messages) { renderMessages(messages); });
 socket.on('products', function(products) { renderProducts(products); });
-socket.on('home', function(user, messages, products, visits) { 
-    console.log('on home')
-    renderHome(user, messages, products, visits); });
+socket.on('home', function(user, messages, products, visits) { renderHome(user, messages, products, visits); });
 socket.on('login', () => onLogin())

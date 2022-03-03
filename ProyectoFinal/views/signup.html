@@ -8,51 +8,55 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+    integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/hbs-utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
 </head>
 
 <body>
 
   <div class="container my-5">
-    <div class="jumbotron">
+    <div id="content">
+      <div class="jumbotron">
+        <h1 style="color:blue;">Signup</h1>
+        <br>
+        <!--form class="form" action="/signup" method="post" role="form" autocomplete="off"--> 
+        <form id="signupForm" class="form" action="/signup" method="post" role="form" autocomplete="off" enctype="multipart/form-data"> 
 
-      <h1 style="color:blue;">Signup</h1>
-      <br>
-      <!--form class="form" action="/signup" method="post" role="form" autocomplete="off"--> 
-      <form class="form" action="/signup" method="post" role="form" autocomplete="off" enctype="multipart/form-data"> 
-
-        <div class="form-group">
-          <input name='username' placeholder="Usuario" class="form-control" type="email" required>
-        </div>
-        <div class="form-group">
-          <input name='password' placeholder="Password" class="form-control" type="password" required>
-        </div>
-        <div class="form-group">
-          <input name='name' placeholder="Name" class="form-control" type="text" required>
-        </div>
-        <div class="form-group">
-          <input name='address' placeholder="Address" class="form-control" type="text" required>
-        </div>
-        <div class="form-group">
-          <input name='phone' placeholder="Phone" class="form-control" type="text" required>
-        </div>
-        <div class="form-group">
-          <input name="avatar" placeholder="Avatar" class="form-control" type="file" required/>
-        </div>
-        <div class="form-group">
-          <input class="btn btn-success my-3" type="submit" value="Signup">
-        </div>
-      </form>
-      <hr>
-      <div class="text-center"></div>
-      <button class="btn btn-success my-3" onclick="goSignin()">Signin</button>
+          <div class="form-group">
+            <input id='username' name='username' placeholder="Usuario" class="form-control" type="email" required>
+          </div>
+          <div class="form-group">
+            <input id='password' name='password' placeholder="Password" class="form-control" type="password" required>
+          </div>
+          <div class="form-group">
+            <input id='name' name='name' placeholder="Name" class="form-control" type="text" required>
+          </div>
+          <div class="form-group">
+            <input id='address' name='address' placeholder="Address" class="form-control" type="text" required>
+          </div>
+          <div class="form-group">
+            <input id='phone' name='phone' placeholder="Phone" class="form-control" type="text" required>
+          </div>
+          <div class="form-group">
+            <input id="avatar" name="avatar" placeholder="Avatar" class="form-control" type="file" required/>
+          </div>
+          <div class="form-group">
+            <input class="btn btn-success my-3" type="submit" value="Signup">
+          </div>
+        </form>
+        <hr>
+        <div class="text-center"></div>
+        <button class="btn btn-success my-3" onclick="location.href = '/login'">Signin</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    function goSignin() {
-      location.href = '/login';
-    }
-  </script>
+  <script src="js/signup.js"></script>
+
 </body>
 
 </html>

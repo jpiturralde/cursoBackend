@@ -5,7 +5,6 @@ export const logger = (req, res, next) => {
 }
 
 export const loggerMdw = (logger) => (req, res, next) => {
-    const date = new Date()
     logger.info(`${req.method} ${req.path}`)
     next();
 }

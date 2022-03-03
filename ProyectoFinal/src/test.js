@@ -1,13 +1,29 @@
-import { context } from './context.js'
-
-const {logger, msgNotificationManager } = context
-logger.info(context)
-try {
-    const sms = await msgNotificationManager.sendWhatsApp(context.sysadm.phone, 'Hola soy un SMS desde Node.js!')
-    console.log(sms)
-} catch (error) {
-    console.log(error)
+async function prueba(p) {
+	if (p) {
+    	return 'RESOLVE'
+    }
+    throw Error('REJECT')
 }
+
+prueba(1)
+.then(msg => console.log(msg))
+.catch(error => console.log(error.message))
+
+prueba()
+.then(msg => console.log(msg))
+.catch(error => console.log(error.message))
+
+
+// import { context } from './context.js'
+
+// const {logger, msgNotificationManager } = context
+// logger.info(context)
+// try {
+//     const sms = await msgNotificationManager.sendWhatsApp(context.sysadm.phone, 'Hola soy un SMS desde Node.js!')
+//     console.log(sms)
+// } catch (error) {
+//     console.log(error)
+// }
 
 
 
