@@ -21,7 +21,6 @@ export const apiRouter = (authenticationManager, imageLoaderMdw) => {
     router.get('/api/messages', getMdw(api.messages))
     router.post('/api/messages', postMdw(api.messages))
 
-    router.post('/api/carrito', postShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getByIdMdw(api.shoppingCarts))
     router.delete('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id/productos', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getItems(api.shoppingCarts))
@@ -47,20 +46,18 @@ const shoppingCartIdValidatorMdw = () => async (req, res, next) => {
 }
 
 const getByIdMdw = (api) => async (req, res, next) => { 
-    console.log('getByIdMdw', req.user.shoppingCartId, req.params.id)
-        const data = await api.getById(req.params.id)
-        if (!data) {
-            res.status(404).json()
-        }
-        else {
-            res.json(data)
-        }
+    const data = await api.getById(req.params.id)
+    if (!data) {
+        res.status(404).json()
+    }
+    else {
+        res.json(data)
+    }
 }
 const getMdw = (api) => async (req, res) => { res.json(await api.get()) }
 const postMdw = (api) => async (req, res) => {
     try {
         const response = await api.post(req.body)
-        console.log('postMdw', response)
         res.status(201).json(response)
     } catch (error) {
         process.context.logger.error(error)
@@ -72,27 +69,8 @@ const deleteMdw = (api) => async (req, res) => {
     res.json()
 }
 
-
-const postShoppingCartMdw = (api) => async (req, res) => {
-    try {
-        const { shoppingCartId } = req.session
-        let shoppingCart 
-        if (!shoppingCartId) {
-            shoppingCart = await api.post(req.body)
-            req.session.shoppingCartId = shoppingCart.id
-        }
-        else {
-            shoppingCart = await api.getById(shoppingCartId)
-        }
-        res.status(201).json(shoppingCart)
-    } catch (error) {
-        process.context.logger.error(error)
-        res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
-    }
-}
 const deleteShoppingCartMdw = (api) => async (req, res) => {
     api.deleteById(req.params.id)
-    delete req.session.shoppingCartId
     res.json()
 }
 const getItems = (api) => async (req, res) => {
@@ -148,7 +126,6 @@ const checkout = (api) => async (req, res) => {
             }
         }
         res.status(201).json(await api.checkout(req.params.id, user))
-        delete req.session.shoppingCartId
     } catch (error) {
         process.context.logger.error(error.message)
         res.status(400).json(JSON.parse(error.message))
@@ -158,8 +135,7 @@ const checkout = (api) => async (req, res) => {
 //INFO
 const getInfo = (api) => async (req, res) => { res.json(await api.get()) }
 
-const userProfile = (req, res) => { console.log('userProfile', req.user.profile) 
-res.json(req.user) }
+const userProfile = (req, res) => { res.json(req.user) }
 
 //PRODUCTOS-TEST
 const getProductsTest = async (req, res) => {

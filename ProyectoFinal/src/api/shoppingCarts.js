@@ -87,14 +87,20 @@ const shoppingCartToHtml = (shooppingCart) => {
 const checkoutNotifier = (sysadm, emailManager, msgNotificationManager) => {
     return async (checkout) => {
         const body = shoppingCartToHtml(checkout.shoppingCart)
-        const mailOptions = {
-            to: sysadm.email,
-            subject: `Nuevo pedido de ${checkout.user.name} - ${checkout.user.username}`,
-            html: body
+        if (process.context.notifyCheckoutToSysadmByEmail) {
+            const mailOptions = {
+                to: sysadm.email,
+                subject: `Nuevo pedido de ${checkout.user.name} - ${checkout.user.username}`,
+                html: body
+            }
+            emailManager.sendMail(mailOptions)        
         }
-        emailManager.sendMail(mailOptions)    
-        msgNotificationManager.sendWhatsApp(sysadm.phone, body)
-        msgNotificationManager.sendSms(checkout.user.phone, `Pedido ${checkout.shoppingCart.id} se encuentra en proceso.`)
+        if (process.context.notifyCheckoutToSysadmByWhatsapp) {
+            msgNotificationManager.sendWhatsApp(sysadm.phone, body)
+        }
+        if (process.context.notifyCheckoutToUserBySMS) {
+            msgNotificationManager.sendSms(checkout.user.phone, `Pedido ${checkout.shoppingCart.id} se encuentra en proceso.`)
+        }        
     }
 }
 

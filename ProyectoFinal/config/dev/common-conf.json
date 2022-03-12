@@ -19,5 +19,9 @@
         "authToken": "[PUT_YOUR_AUTH_TOKEN]",
         "smsPhone": "[PUT_YOUR_TWILIO_SMS_PHONE]",
         "whatsappPhone": "[PUT_YOUR_TWILIO_WHASTAPP_PHONE"
-    }
+    }, 
+    "notifyUserSignupToSysadmByEmail": false,
+    "notifyCheckoutToSysadmByEmail": false,
+    "notifyCheckoutToSysadmByWhatsapp": false,
+    "notifyCheckoutToUserBySMS": false
 }

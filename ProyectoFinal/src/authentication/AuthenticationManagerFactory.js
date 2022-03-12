@@ -84,8 +84,7 @@ export default class AuthenticationManagerFactory {
                         }], 
                         isSecured, 
                         logger: AuthenticationManagerFactory.#logger, 
-                        notifySignupEnabled: typeof(AuthenticationManagerFactory.config.notifySignupEnabled) != "undefined" 
-                            ? AuthenticationManagerFactory.config.notifySignupEnabled : true
+                        notifySignupEnabled: process.context.notifyUserSignupToSysadmByEmail
                     }
                     const PassportLocalJwtAuthentication = await import('./PassportLocalJwtAuthentication.js')
                     AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalJwtAuthentication.default(authConfig)

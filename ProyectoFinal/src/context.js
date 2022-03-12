@@ -48,9 +48,7 @@ const commonConfig = await loadConfig(process.context.COMMON_CONFIG_PATH)
 
 process.context = {
     ...process.context,
-    sysadm: commonConfig.sysadm,
-    emailManagerConf: commonConfig.emailManager,
-    msgNotificationManagerConf: commonConfig.msgNotificationManager
+    ...commonConfig
 }
 process.context.emailManager = createEmailManager(process.context.emailManagerConf)
 process.context.msgNotificationManager = createMsgNotificationManager(process.context.msgNotificationManagerConf)

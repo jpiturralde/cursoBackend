@@ -1,7 +1,8 @@
 {
     "sysadm": {
         "name": "",
-        "email": ""
+        "email": "",
+        "phone": ""
     },
     "emailManager": {
         "type": "ethereal | gmail",
@@ -17,5 +18,9 @@
         "authToken": "",
         "smsPhone": "",
         "whatsappPhone": ""
-    }
+    }, 
+    "notifyUserSignupToSysadmByEmail": false,
+    "notifyCheckoutToSysadmByEmail": false,
+    "notifyCheckoutToSysadmByWhatsapp": false,
+    "notifyCheckoutToUserBySMS": false
 }

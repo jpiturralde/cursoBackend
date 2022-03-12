@@ -156,7 +156,6 @@ export default class PassportLocalJwtAuthentication {
                     res.redirect(loginURI)
                 }
             } else {
-                console.log('authenticationMdw next()')
                 next()
             }
         }
