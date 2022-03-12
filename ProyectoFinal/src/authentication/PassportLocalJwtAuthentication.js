@@ -148,14 +148,11 @@ export default class PassportLocalJwtAuthentication {
             }
             const securedScope = this.#config.isSecured(this.#config.scopes, req)
             const authenticatedUser = this.authenticationFn(req)
-            console.log('authenticationMdw authenticatedUser=', authenticatedUser)
             if (securedScope && (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope))) {
                 if (req.path.startsWith('/api')) {
-                    console.log('authenticationMdw res.status(401).json()')
                     res.status(401).json()
                 }
                 else {
-                    console.log('authenticationMdw res.redirect(loginURI)')
                     res.redirect(loginURI)
                 }
             } else {
