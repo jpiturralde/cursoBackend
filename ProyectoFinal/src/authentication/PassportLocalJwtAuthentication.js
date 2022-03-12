@@ -107,7 +107,7 @@ export default class PassportLocalJwtAuthentication {
 
     notifiy(emailManager, sysadmEmail)  {
         return async (event, user) => {
-            if (this.#config.notifiySignupEnabled) {
+            if (this.#config.notifySignupEnabled) {
                 const mailOptions = {
                     to: sysadmEmail,
                     subject: `${event} ${user.id}`,
