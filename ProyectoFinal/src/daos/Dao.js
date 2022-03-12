@@ -18,7 +18,6 @@ export default class Dao {
 
     constructor(repo) {
         this.#repo = repo
-        console.log('Dao', this.#repo)
     }
 
     schemaValidations(data) {
