@@ -22,44 +22,46 @@ export const apiRouter = (authenticationManager, imageLoaderMdw) => {
     router.post('/api/messages', postMdw(api.messages))
 
     router.post('/api/carrito', postShoppingCartMdw(api.shoppingCarts))
-    router.get('/api/carrito/current', getCurrentShoppingCartMdw(api.shoppingCarts))
-    router.get('/api/carrito/:id', getByIdMdw(api.shoppingCarts))
-    router.delete('/api/carrito/:id', deleteShoppingCartMdw(api.shoppingCarts))
-    router.get('/api/carrito/:id/productos', getItems(api.shoppingCarts))
-    router.post('/api/carrito/:id/productos', addItem(api.shoppingCarts))
-    router.delete('/api/carrito/:id/productos', deleteItems(api.shoppingCarts))
-    router.delete('/api/carrito/:id/productos/:productId', deleteItem(api.shoppingCarts))
-    router.patch('/api/carrito/:id/checkout', checkout(api.shoppingCarts))
+    router.get('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getByIdMdw(api.shoppingCarts))
+    router.delete('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteShoppingCartMdw(api.shoppingCarts))
+    router.get('/api/carrito/:id/productos', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getItems(api.shoppingCarts))
+    router.post('/api/carrito/:id/productos', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), addItem(api.shoppingCarts))
+    router.delete('/api/carrito/:id/productos', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteItems(api.shoppingCarts))
+    router.delete('/api/carrito/:id/productos/:productId', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteItem(api.shoppingCarts))
+    router.patch('/api/carrito/:id/checkout', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), checkout(api.shoppingCarts))
 
 
     //PRODUCTOS-TEST
     router.get('/api/productos-test', getProductsTest)
 
     return router
-} 
+}
+
+const shoppingCartIdValidatorMdw = () => async (req, res, next) => { 
+    if (req.user.shoppingCartId == req.params.id) {
+        next()
+    }
+    else {
+        res.status(401).json()
+    }
+}
 
 const getByIdMdw = (api) => async (req, res, next) => { 
-    const data = await api.getById(req.params.id)
-    if (!data) {
-        const error = new Error('No encontrado')
-        error.httpStatusCode = 404
-        return next(error)
-    }
-    res.json(data)
-}
-const getCurrentShoppingCartMdw = (api) => async (req, res, next) => { 
-    const data = await api.getById(req.user.shoppingCartId)
-    if (!data) {
-        const error = new Error('No encontrado')
-        error.httpStatusCode = 404
-        return next(error)
-    }
-    res.json(data)
+    console.log('getByIdMdw', req.user.shoppingCartId, req.params.id)
+        const data = await api.getById(req.params.id)
+        if (!data) {
+            res.status(404).json()
+        }
+        else {
+            res.json(data)
+        }
 }
 const getMdw = (api) => async (req, res) => { res.json(await api.get()) }
 const postMdw = (api) => async (req, res) => {
     try {
-        res.status(201).json(await api.post(req.body))
+        const response = await api.post(req.body)
+        console.log('postMdw', response)
+        res.status(201).json(response)
     } catch (error) {
         process.context.logger.error(error)
         res.status(400).json( { error: -3, description: error.name + ': ' + error.message})
@@ -156,7 +158,8 @@ const checkout = (api) => async (req, res) => {
 //INFO
 const getInfo = (api) => async (req, res) => { res.json(await api.get()) }
 
-const userProfile = (req, res) => { res.json(req.user) }
+const userProfile = (req, res) => { console.log('userProfile', req.user.profile) 
+res.json(req.user) }
 
 //PRODUCTOS-TEST
 const getProductsTest = async (req, res) => {
@@ -175,19 +178,4 @@ function randomValue() {
         }
     }
 }
-
-// const getUserName = req => req.session.userName ? req.session.userName : ''
-
-// const getLogout = async (req, res) => {
-//     const userName = getUserName(req)
-//     console.log('logout')
-//     req.session.destroy(err => {
-//         if (!err) {
-//             const result = { msg: `Hasta luego ${userName}`}
-//             console.log(result)
-//             res.json(result)
-//         }
-//         else res.send({ error: 'logout', body: err })
-//     })
-// }
 

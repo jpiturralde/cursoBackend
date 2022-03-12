@@ -1,54 +1,5 @@
-/* BEGIN PRODUCTS */
-const url = window.location.origin + '/api/carrito'
-
-const api = {
-    current: async (id) => { 
-        return JSON.parse(await fetch(`${url}/current`).then(response => response.text()))
-    },
-    // post: async () => { 
-    //     const response = await fetch(url, {
-    //         method: 'POST',
-    //         headers: {
-    //           'Accept': 'application/json',
-    //           'Content-Type': 'application/json'
-    //         }
-    //     })
-    //     return response.json()
-    // },
-    deleteItems: async (id) => { 
-        const response = await fetch(`${url}/${id}/productos`, {
-            method: 'DELETE',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-        })
-        return response.json()
-    },
-    addItem: async (id, item) => { 
-        return JSON.parse(await fetch(`${url}/${id}/productos`, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item)
-        }))
-    },
-    checkout: async (id) => {
-        return JSON.parse(await fetch(`${url}/${id}/checkout`, {
-            method: 'PATCH',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-        }))
-    }
-}
-
 async function loadData() {
-    const shoppingCart = await api.current()
-    setShoppingCartId(shoppingCart.id)
+    const shoppingCart = await api.shoppingCart.current()
     render(shoppingCart)
 }
 
@@ -60,7 +11,6 @@ async function render(shoppingCart) {
     if (document.getElementById('products') && html) {
         document.getElementById('products').innerHTML = html
     }
-    setShoppingCartId(shoppingCart.id)
 }
 
 async function addProduct(e) {
@@ -70,29 +20,19 @@ async function addProduct(e) {
     };
     document.getElementById('productId').value = ''
     document.getElementById('quantity').value = ''
-    await api.addItem(getShoppingCartId(), product)
+    await api.shoppingCart.addItem(product)
     return false;
 }
 
-function setShoppingCartId(id) {
-    document.getElementById('shoppingCartId').innerHTML = id
-}
-
-function getShoppingCartId() {
-    return document.getElementById('shoppingCartId').innerHTML
-}
-
 async function deleteShoppingCartItems() {
-    api.deleteItems(getShoppingCartId())
+    api.shoppingCart.deleteItems()
     await showInformation('Pedido Cancelado')
-    setShoppingCartId('')
     setTimeout((page) => {location.href = page}, 2000, '/')
 }
 
 async function checkout() {
-    await api.checkout(getShoppingCartId())
-    await showInformation(`Se generó el pedido número: ${getShoppingCartId()}`)
-    setShoppingCartId('')
+    await api.shoppingCart.checkout()
+    await showInformation(`Se generó el pedido número: ${shoppingCartId()}`)
     setTimeout((page) => {location.href = page}, 2000, '/')
 }
 

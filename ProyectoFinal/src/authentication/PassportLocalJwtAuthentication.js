@@ -3,8 +3,8 @@ import passport from 'passport'
 import LocalStrategy from 'passport-local'
 import passportJWT from 'passport-jwt'
 
-const ExtractJWT = passportJWT.ExtractJwt
 const JWTStrategy = passportJWT.Strategy
+const jwtFromRequest = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken()
 
 export default class PassportLocalJwtAuthentication {
     #config
@@ -16,7 +16,7 @@ export default class PassportLocalJwtAuthentication {
         passport.use('signup', this.signupStrategy(config.usersDB, config.logger, notificationFn))
         passport.use('signin', this.signinStrategy(config.usersDB, config.logger))
         passport.use(new JWTStrategy({
-                jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+                jwtFromRequest,
                 secretOrKey   : config.jwt.secret
             },
             function (jwtPayload, cb) {
@@ -47,7 +47,7 @@ export default class PassportLocalJwtAuthentication {
             },
             (req, username, password, done) => {
                 const {name, address, phone } = req.body
-                const avatar = req.file.filename
+                const avatar = req.file ? req.file.filename : 'NoAvatarProvided'
                 this.signup(db, {username, password, name, address, phone, avatar})
                     .then(user => {
                         notifyFn('Nuevo registro', user)
@@ -62,7 +62,11 @@ export default class PassportLocalJwtAuthentication {
     }
 
     async signup(db, {username, password, name, address, phone, avatar}) {
-        const user = await db.post( {username, password, name, address, phone, avatar} )
+        let role = 'default'
+        if (this.#config.adminsUsername && this.#config.adminsUsername.indexOf(username)>-1) {
+            role = 'admin'
+        }
+        const user = await db.post( {username, password, name, address, phone, avatar, role} )
         const shoppingCart = await process.context.api.shoppingCarts.post(user.id, {})
         user.shoppingCartId = shoppingCart.id
         return user
@@ -73,7 +77,6 @@ export default class PassportLocalJwtAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                console.log('signinStrategy', req.body)
                 this.signin(db, {username, password})
                     .then(user => {
                         return done(null, user, { message: 'Logged in Successfully' })
@@ -97,18 +100,21 @@ export default class PassportLocalJwtAuthentication {
 
     deserializer(db, logger) { 
         return (token, done) => {
+            console.log('deserializer', token)
             done(null, this.readJWT(token))
         }
     }
 
     notifiy(emailManager, sysadmEmail)  {
         return async (event, user) => {
-            const mailOptions = {
-                to: sysadmEmail,
-                subject: `${event} ${user.id}`,
-                html: this.userToHtml(user)
+            if (this.#config.notifiySignupEnabled) {
+                const mailOptions = {
+                    to: sysadmEmail,
+                    subject: `${event} ${user.id}`,
+                    html: this.userToHtml(user)
+                }
+                emailManager.sendMail(mailOptions)    
             }
-            emailManager.sendMail(mailOptions)    
         }
     }
 
@@ -135,16 +141,38 @@ export default class PassportLocalJwtAuthentication {
 
     authenticationMdw(loginURI = '/login') {
         return (req, res, next) => {
-            if (this.#config.isSecured(this.#config.scopes, req) && !this.authenticationFn(req)) {
-                res.redirect(loginURI)
+            const isAuthorized = (user, scope) => {
+                return !scope.roles 
+                    || scope.roles.length > 0
+                    && scope.roles.indexOf(user.role) > -1
+            }
+            const securedScope = this.#config.isSecured(this.#config.scopes, req)
+            const authenticatedUser = this.authenticationFn(req)
+            console.log('authenticationMdw authenticatedUser=', authenticatedUser)
+            if (securedScope && (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope))) {
+                if (req.path.startsWith('/api')) {
+                    console.log('authenticationMdw res.status(401).json()')
+                    res.status(401).json()
+                }
+                else {
+                    console.log('authenticationMdw res.redirect(loginURI)')
+                    res.redirect(loginURI)
+                }
             } else {
+                console.log('authenticationMdw next()')
                 next()
             }
         }
     }
 
     authenticationFn(req) {
-        return req.isAuthenticated()
+        try {
+            const authenticatedUser = this.readJWT(jwtFromRequest(req))
+            return authenticatedUser// || req.isAuthenticated() 
+        } 
+        catch(err) {
+            return false
+        }
     }
 
     signupMdw(failureRedirect) {
@@ -157,15 +185,25 @@ export default class PassportLocalJwtAuthentication {
 
     authJwtMdw(passportStrategy) {
         return (req, res, next) => {
-            console.log('authJwtMdw', req.path, req.body)
-            this.#passportInstance.authenticate(passportStrategy, (err, user, info) => {
+            this.#passportInstance.authenticate(passportStrategy, { session: false }, (err, user, info) => {
                 if (err || !user) {
-                    return res.status(400).json({
-                        message: info ? info.message : 'Authentication failed',
+                    let message
+                    let status
+                    if (err) {
+                        message = err.message
+                        status = 500
+                        this.#config.logger.error(`PassportLocalAuthentication#authJwtMdw:`, err)
+                    }
+                    else {
+                        status = 400
+                        message = info ? info.message : `${passportStrategy} failed.`
+                    }
+                    return res.status(status).json({
+                        message,
                         user   : user
                     });
                 }
-                req.login(user, (err) => {
+                req.login(user, { session: false }, (err) => {
                     if (err) {
                         res.send(err);
                     }

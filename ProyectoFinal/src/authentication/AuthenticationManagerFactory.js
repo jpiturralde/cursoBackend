@@ -8,7 +8,10 @@ const DEFAULT_FACTORY_CONFIGURATION = {
 
 const isSecured = (scopes, req) => {
     const scope = securedScope(scopes, req.path)
-    return  scope && securedMethod(scope, req.method)
+    if (scope && securedMethod(scope, req.method)) {
+      return scope
+    }
+    return false
 }
 
 const securedScope = (scopes, path) => {
@@ -63,22 +66,29 @@ export default class AuthenticationManagerFactory {
                         ...AuthenticationManagerFactory.config,
                         usersDB: api,
                         scopes: [{
-                            path:'/home', 
-                            methods: ['GET']
-                        }, {
                             path:'/products', 
                             methods: ['GET']
                         }, {
                             path:'/shoppingCart', 
                             methods: ['GET']
+                        }, {
+                            path:'/api/user', 
+                            methods: ['GET']
+                        }, {
+                            path:'/api/productos', 
+                            methods: ['POST', 'DELETE'],
+                            roles: ['admin']
+                        }, {
+                            path:'/api/carrito', 
+                            methods: ['GET', 'POST', 'DELETE']
                         }], 
                         isSecured, 
-                        logger: AuthenticationManagerFactory.#logger
+                        logger: AuthenticationManagerFactory.#logger, 
+                        notifySignupEnabled: typeof(AuthenticationManagerFactory.config.notifySignupEnabled) != "undefined" 
+                            ? AuthenticationManagerFactory.config.notifySignupEnabled : true
                     }
                     const PassportLocalJwtAuthentication = await import('./PassportLocalJwtAuthentication.js')
                     AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalJwtAuthentication.default(authConfig)
-                    // const PassportLocalAuthentication = await import('./PassportLocalAuthentication.js')
-                    // AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalAuthentication.default(authConfig)
                     break;
                 default:
                     throw Error('Only supported AuthenticationManagerFactory.type = PassportLocal')

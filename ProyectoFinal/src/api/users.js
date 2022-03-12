@@ -34,8 +34,8 @@ export const UsersAPI = (dataSource) => {
 }
 
 const userDto = (user) => {
-    const {id, username, name, address, phone, avatar, shoppingCartId} = user
-    return {id, username, name, address, phone, avatar, shoppingCartId}
+    const {id, username, name, address, phone, avatar, shoppingCartId, role} = user
+    return {id, username, name, address, phone, avatar, shoppingCartId, role}
 }
 
 const createUser = (data) => {
@@ -45,7 +45,8 @@ const createUser = (data) => {
         name: data.name,
         address: data.address,
         phone: data.phone,
-        avatar: data.avatar
+        avatar: data.avatar,
+        role: data.role
     }
 }
 

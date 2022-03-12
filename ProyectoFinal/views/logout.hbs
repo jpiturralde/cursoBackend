@@ -6,5 +6,7 @@
 
 
 <script>
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
     setTimeout((page) => {location.href = page}, 2000, '/login')
 </script>

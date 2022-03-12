@@ -7,16 +7,7 @@ if (signinForm) {
             username: document.getElementById('username').value,
             password: document.getElementById('password').value
         }
-        
-        const content = await api.user.signin(body)
-        const { token } = content;
-    
-        if (token) {
-            localStorage.setItem("access_token", token);
-            location.href = '/home'
-        } else {
-            renderFail(content.message)
-            setTimeout((page) => {location.href = page}, 3000, '/')
-        }
+
+        posAuthenticationProcess(await api.user.signin(body))
     })  
 }

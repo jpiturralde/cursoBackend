@@ -11,7 +11,7 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
         if (socket.handshake.session.username) {
             const userName = socket.handshake.session.username
             const authMgr = process.context.authenticationManager
-            const user = await authMgr.deserializeUser(socket.handshake.session.passport.user)
+            // const user = await authMgr.deserializeUser(socket.handshake.session.passport.user)
             const visits = socket.handshake.session.visits
             const messages = await api.messages.get()
             const products = await api.products.get()

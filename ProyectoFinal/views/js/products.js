@@ -1,24 +1,5 @@
-/* BEGIN PRODUCTS */
-const url = window.location.origin + '/api/productos'
-
-const api = {
-    get: async () => { 
-        return JSON.parse(await fetch(url).then(response => response.text()))
-    },
-    post: async (product) => { 
-        return JSON.parse(await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(product)
-          }))
-    }
-}
-
 async function loadData() {
-    const data = await api.get()
+    const data = await api.products.get()
     renderProducts(data)
 }
 
@@ -40,6 +21,9 @@ async function addProduct(e) {
     document.getElementById('title').value = ''
     document.getElementById('price').value = ''
     document.getElementById('thumbnail').value = ''
-    await api.post(product)
+    const response = await api.products.post(product)
+    if (response.status == 401) {
+        location.href = '/login'
+    }
     return false;
 }

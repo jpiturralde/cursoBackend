@@ -1,17 +1,75 @@
-async function prueba(p) {
-	if (p) {
-    	return 'RESOLVE'
+const isSecured = (scopes, req) => {
+    const scope = securedScope(scopes, req.path)
+    if (scope && securedMethod(scope, req.method)) {
+      return scope
     }
-    throw Error('REJECT')
+    return false
 }
 
-prueba(1)
-.then(msg => console.log(msg))
-.catch(error => console.log(error.message))
+const securedScope = (scopes, path) => {
+    if (scopes.length > 0) {
+        const scope = scopes.filter(s => path.startsWith(s.path)) 
+        if (scope.length > 0) {
+            return scope[0]
+        }
+    }
+    return false
+}
 
-prueba()
-.then(msg => console.log(msg))
-.catch(error => console.log(error.message))
+const securedMethod = (scope, method) => {
+    const secMethod = scope.methods.filter(m => method == m)
+    return secMethod.length > 0
+}
+
+const scopes = [
+    {
+      path: "/home",
+      methods: [
+        "GET"
+      ]
+    },
+    {
+      path: "/api/user",
+      methods: [
+        "GET"
+      ]
+    },
+    {
+      path: "/api/productos",
+      methods: [
+        "POST", "DELETE"
+      ]
+    },
+    {
+      path: "/api/carrito",
+      methods: [
+        "GET", "POST", "DELETE"
+      ]
+    }
+]
+
+const req = {
+    path: '/api/carrito',
+    method: 'GET'
+}
+
+console.log(isSecured(scopes, req))
+
+
+// async function prueba(p) {
+// 	if (p) {
+//     	return 'RESOLVE'
+//     }
+//     throw Error('REJECT')
+// }
+
+// prueba(1)
+// .then(msg => console.log(msg))
+// .catch(error => console.log(error.message))
+
+// prueba()
+// .then(msg => console.log(msg))
+// .catch(error => console.log(error.message))
 
 
 // import { context } from './context.js'

@@ -1,4 +1,12 @@
-const socket = io.connect();
+(async () => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (!user) {
+        return location.href = '/login'
+    }
+    await renderHome(user, [], [], 0) 
+})()
+  
+//const socket = io.connect();
 
 /* BEGIN PRODUCTS */
 async function renderProducts(products) {
@@ -88,7 +96,7 @@ async function onLogin() {
 }
 /* END MESSAGES */
 
-socket.on('messages', function(messages) { renderMessages(messages); });
-socket.on('products', function(products) { renderProducts(products); });
-socket.on('home', function(user, messages, products, visits) { renderHome(user, messages, products, visits); });
-socket.on('login', () => onLogin())
+// socket.on('messages', function(messages) { renderMessages(messages); });
+// socket.on('products', function(products) { renderProducts(products); });
+// socket.on('home', function(user, messages, products, visits) { renderHome(user, messages, products, visits); });
+// socket.on('login', () => onLogin())

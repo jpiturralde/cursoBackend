@@ -11,15 +11,6 @@ if (signupForm) {
         body.append('phone', document.getElementById('phone').value)
         body.append('avatar', document.getElementById('avatar').files[0])
         
-        const content = await api.user.signup(body)
-        const { token } = content;
-    
-        if (token) {
-            localStorage.setItem("access_token", token);
-            location.href = '/home'
-        } else {
-            renderFail(content.message)
-            setTimeout((page) => {location.href = page}, 3000, '/')
-        }
+        posAuthenticationProcess(await api.user.signup(body))
     })  
 }
