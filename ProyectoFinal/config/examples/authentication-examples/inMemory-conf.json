@@ -2,6 +2,5 @@
     "type": "PassportLocal",
     "repoConfig": {
         "type": "InMemory" 
-    },
-    "notifySignupEnabled": true
+    }
 }

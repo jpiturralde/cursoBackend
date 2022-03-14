@@ -49,15 +49,17 @@ const apiSpec = (shoppingCartsDS, shoppingCartsByUserDS) => {
                 await shoppingCartsDS.put(id, shoppingCart)
             }
         },
-        checkout: async (id, user) => {
+        checkout: async (user) => {
             if (!user) {
                 throw Error(JSON.stringify(ENTITY_NOT_FOUND_ERROR_MSG(`Usuario ${user}. No es posible hacer checkout.`)))
             }
-            const shoppingCart = await find(shoppingCartsDS, id)
-            //shoppingCart.checkout = true
+            const { shoppingCartId } = user
+            const shoppingCart = await find(shoppingCartsDS, shoppingCartId)
+            const order = await process.context.api.orders.post(user, shoppingCart)
             shoppingCart.items = []
-            await shoppingCartsDS.put(id, shoppingCart)
-            notifiyCheckout({user, shoppingCart})
+            shoppingCartsDS.put(shoppingCartId, shoppingCart)
+            // notifiyCheckout({user, shoppingCart})
+            return order
         }
     }
 }
@@ -70,6 +72,9 @@ const find = async (ds, id) => {
     return shoppingCart
 }
 
+
+//FALTA PROBAR PERO SI TODO VA BIEN DE ACA PARA ABAJO HAY QUE BORRARLO
+//PASE LA NOTIFICACION A ORDERS!!!!
 const shoppingCartToHtml = (shooppingCart) => {
     const itemsHtml = shooppingCart.items.map( (item) => {
         return `<p>Producto: ${item.productId}  -  Cantidad: ${item.quantity}</p>

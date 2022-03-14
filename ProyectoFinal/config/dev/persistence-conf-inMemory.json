@@ -10,5 +10,8 @@
     }, 
     "MessagesRepository": {
         "type": "InMemory"
+    }, 
+    "OrdersRepository": {
+        "type": "InMemory"
     }
 }

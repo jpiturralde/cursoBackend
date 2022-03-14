@@ -4,7 +4,8 @@ const DEFAULT_REPOSITORY_FACTORY_CONFIGURATION = {
     ProductsRepository: { type: 'InMemory' },
     ShoppingCartsRepository: { type: 'InMemory' },
     ShoppingCartsByUserRepository: { type: 'InMemory' },
-    MessagesRepository: { type: 'InMemory' }
+    MessagesRepository: { type: 'InMemory' },
+    OrdersRepository: { type: 'InMemory' }
 }
 
 export default class RepositoryFactory {
@@ -42,6 +43,11 @@ export default class RepositoryFactory {
             RepositoryFactory.#repoConfig.MessagesRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.MessagesRepository
             logger.warn(`RepositoryFactory - Default "MessagesRepository" initialized.`)
         }
+        if (!('OrdersRepository' in RepositoryFactory.#repoConfig)) {
+            logger.warn(`RepositoryFactory - Field "OrdersRepository" not found.`)
+            RepositoryFactory.#repoConfig.MessagesRepository = DEFAULT_REPOSITORY_FACTORY_CONFIGURATION.OrdersRepository
+            logger.warn(`RepositoryFactory - Default "OrdersRepository" initialized.`)
+        }
         logger.info('RepositoryFactory', RepositoryFactory.#repoConfig)
     }
 
@@ -75,6 +81,14 @@ export default class RepositoryFactory {
                 .createRepository(RepositoryFactory.#repoConfig.MessagesRepository)
         }
         return RepositoryFactory.#repos.messagesRepository
+    }
+
+    static async createOrdersRepository() {
+        if (!RepositoryFactory.#repos.ordersRepository) {
+            RepositoryFactory.#repos.ordersRepository = await RepositoryFactory
+                .createRepository(RepositoryFactory.#repoConfig.OrdersRepository)
+        }
+        return RepositoryFactory.#repos.ordersRepository
     }
 
     static async createRepository(config) {

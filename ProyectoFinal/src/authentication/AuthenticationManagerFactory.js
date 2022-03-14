@@ -1,5 +1,23 @@
 import * as fs from 'fs'
 
+const scopes = [{
+    path:'/products', 
+    methods: ['GET']
+}, {
+    path:'/shoppingCart', 
+    methods: ['GET']
+}, {
+    path:'/api/user', 
+    methods: ['GET']
+}, {
+    path:'/api/productos', 
+    methods: ['POST', 'DELETE'],
+    roles: ['admin']
+}, {
+    path:'/api/carrito', 
+    methods: ['GET', 'POST', 'DELETE']
+}] 
+
 const DEFAULT_FACTORY_CONFIGURATION = { 
     type: 'PassportLocal',
     repoConfig: { type: 'InMemory' },
@@ -51,41 +69,27 @@ export default class AuthenticationManagerFactory {
             AuthenticationManagerFactory.#logger.warn(`AuthenticationManagerFactory - Default configuration initialized`)
         }
         AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory', AuthenticationManagerFactory.config)
+        const repo = await AuthenticationManagerFactory.#repoFactory
+            .createRepository(AuthenticationManagerFactory.config.repoConfig)
+        const dao = await (new AuthenticationManagerFactory.#usersDaoClass(repo))
+        const api = AuthenticationManagerFactory.#usersAPI(dao)
+        process.context.api.users = api
+        const authConfig = {
+            ...AuthenticationManagerFactory.config,
+            usersDB: api,
+            scopes, 
+            isSecured, 
+            logger: AuthenticationManagerFactory.#logger, 
+            notifySignupEnabled: process.context.notifyUserSignupToSysadmByEmail
+        }
+        return AuthenticationManagerFactory.#create(authConfig)
     }
 
-    static async create() {
+    static async #create(authConfig) {
         if (!AuthenticationManagerFactory.#authenticationManagerInstance) {
             switch (AuthenticationManagerFactory.config.type) {
                 case 'PassportLocal':
                     AuthenticationManagerFactory.#logger.info('AuthenticationManagerFactory - Create PassportLocal.')
-                    const repo = await AuthenticationManagerFactory.#repoFactory
-                        .createRepository(AuthenticationManagerFactory.config.repoConfig)
-                    const dao = await (new AuthenticationManagerFactory.#usersDaoClass(repo))
-                    const api = AuthenticationManagerFactory.#usersAPI(dao)
-                    const authConfig = {
-                        ...AuthenticationManagerFactory.config,
-                        usersDB: api,
-                        scopes: [{
-                            path:'/products', 
-                            methods: ['GET']
-                        }, {
-                            path:'/shoppingCart', 
-                            methods: ['GET']
-                        }, {
-                            path:'/api/user', 
-                            methods: ['GET']
-                        }, {
-                            path:'/api/productos', 
-                            methods: ['POST', 'DELETE'],
-                            roles: ['admin']
-                        }, {
-                            path:'/api/carrito', 
-                            methods: ['GET', 'POST', 'DELETE']
-                        }], 
-                        isSecured, 
-                        logger: AuthenticationManagerFactory.#logger, 
-                        notifySignupEnabled: process.context.notifyUserSignupToSysadmByEmail
-                    }
                     const PassportLocalJwtAuthentication = await import('./PassportLocalJwtAuthentication.js')
                     AuthenticationManagerFactory.#authenticationManagerInstance = new PassportLocalJwtAuthentication.default(authConfig)
                     break;

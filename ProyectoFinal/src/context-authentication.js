@@ -4,6 +4,5 @@ import { UsersDao } from './daos/index.js'
 import { UsersAPI } from './api/index.js'
 
 export async function createAthenticationManager() {
-    await AuthenticationManagerFactory.initialize(UsersDao, UsersAPI)
-    return await AuthenticationManagerFactory.create()
+    return await AuthenticationManagerFactory.initialize(UsersDao, UsersAPI)
 }

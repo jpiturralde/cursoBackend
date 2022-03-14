@@ -54,8 +54,8 @@ process.context.emailManager = createEmailManager(process.context.emailManagerCo
 process.context.msgNotificationManager = createMsgNotificationManager(process.context.msgNotificationManagerConf)
 process.context.persistence = await loadPersistence()
 process.context.sessionMiddleware = await loadSessionManager()
-process.context.authenticationManager = await loadAuthenticationManager()
 process.context.api = await loadApiContext()
+process.context.authenticationManager = await loadAuthenticationManager()
 
 const context = process.context
 export { context }

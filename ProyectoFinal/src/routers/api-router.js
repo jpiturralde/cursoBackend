@@ -18,9 +18,11 @@ export const apiRouter = (authenticationManager, imageLoaderMdw) => {
     router.post('/api/productos', postMdw(api.products))
     router.delete('/api/productos/:id', deleteMdw(api.products))
 
+    //MESSAGES
     router.get('/api/messages', getMdw(api.messages))
     router.post('/api/messages', postMdw(api.messages))
 
+    //CARRITO
     router.get('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getByIdMdw(api.shoppingCarts))
     router.delete('/api/carrito/:id', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteShoppingCartMdw(api.shoppingCarts))
     router.get('/api/carrito/:id/productos', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), getItems(api.shoppingCarts))
@@ -29,9 +31,12 @@ export const apiRouter = (authenticationManager, imageLoaderMdw) => {
     router.delete('/api/carrito/:id/productos/:productId', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), deleteItem(api.shoppingCarts))
     router.patch('/api/carrito/:id/checkout', authenticationManager.jwtMdw(), shoppingCartIdValidatorMdw(), checkout(api.shoppingCarts))
 
-
     //PRODUCTOS-TEST
     router.get('/api/productos-test', getProductsTest)
+
+    //ORDERS
+    router.get('/api/orden/:id', authenticationManager.jwtMdw(), getByIdMdw(api.orders))
+    router.get('/api/orden/', authenticationManager.jwtMdw(), getOrderByUserMdw(api.orders))
 
     return router
 }
@@ -109,23 +114,13 @@ const deleteItem = (api) => async (req, res) => {
             res.status(201).json(result)
         }).catch(error => {
             process.context.logger.error(error.message)
-            res.status(404).json(JSON.parse(error.message))
+            res.status(400).json(JSON.parse(error.message))
         })
 }
 
 const checkout = (api) => async (req, res) => {
     try {
-        //Hardcodeo usuario para hacer pruebas hasta resolver la sesion en la API o implementar UI
-        let user = req.user
-        if (!user) {
-            const { sysadm } = process.context
-            user = {
-                username: sysadm.email,
-                name: sysadm.name,
-                phone: sysadm.phone
-            }
-        }
-        res.status(201).json(await api.checkout(req.params.id, user))
+        res.status(201).json(await api.checkout(req.user))
     } catch (error) {
         process.context.logger.error(error.message)
         res.status(400).json(JSON.parse(error.message))
@@ -155,3 +150,12 @@ function randomValue() {
     }
 }
 
+//ORDERS
+const getOrderByUserMdw = (api) => async(req, res) => {
+    try {
+        res.json(await api.getByEmail(req.user.username))
+    } catch (error) {
+        process.context.logger.error(error.message)
+        res.status(400).json(JSON.parse(error.message))
+    }
+}
