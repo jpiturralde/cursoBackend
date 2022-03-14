@@ -10,7 +10,7 @@ export default class OrdersDao extends ShoppingCartsDao {
 
     schemaValidations(data) {
         let errors = []
-        const { email, items } = data
+        const { email, items, shippingAddress } = data
         
         if (!email) {
             errors.push('Falta campo email')
@@ -29,6 +29,9 @@ export default class OrdersDao extends ShoppingCartsDao {
         } 
         else {
             errors = data.items.flatMap(x => super.validateItem(x))
+        }
+        if (!shippingAddress || shippingAddress == '') {
+            errors.push('Falta campo shippingAddress')
         }
         return errors
     }

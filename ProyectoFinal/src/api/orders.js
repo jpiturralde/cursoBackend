@@ -15,7 +15,8 @@ const apiSpec = (ordersDS) => {
             }
             const data = {
                 email: user.username,
-                items: shoppingcart.items
+                items: shoppingcart.items,
+                shippingAddress: user.address
             }
             const order = await ordersDS.post(data)
             notifiy(user, order)
@@ -33,6 +34,8 @@ const orderToHtml = (order) => {
     
     return `<p><strong>Pedido Nro: <span style="font-size:20px">${order.id}</span></strong></p> 
 
+    <p><strong>Dirección de Entrega: <span style="font-size:20px">${order.shippingAddress}</span></strong></p> 
+    
     <p><strong><span style="font-size:20px">Items</span></strong></p>
 
     ${itemsHtml}`

@@ -5,5 +5,10 @@
         "uri": "//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
         "db": "[DB]",
         "collection": "[COLLECTION]" 
-    }
+    },
+    "jwt": {
+        "secret": "[PUT_YOUR_SECRET_HERE]",
+        "expiresIn": "[JWT_TIME_TO_LIVE]"
+    },
+    "adminsUsername": []
 }

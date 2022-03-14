@@ -2,5 +2,10 @@
     "type": "PassportLocal",
     "repoConfig": {
         "type": "InMemory" 
-    }
+    },
+    "jwt": {
+        "secret": "[PUT_YOUR_SECRET_HERE]",
+        "expiresIn": "[JWT_TIME_TO_LIVE]"
+    },
+    "adminsUsername": []
 }

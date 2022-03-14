@@ -34,7 +34,8 @@ export default class PassportLocalJwtAuthentication {
     }
 
     createJWT(user) {
-        return jwt.sign(user, this.#config.jwt.secret)
+        const { expiresIn } = this.#config.jwt
+        return jwt.sign(user, this.#config.jwt.secret, { expiresIn })
     }
 
     readJWT(token) {

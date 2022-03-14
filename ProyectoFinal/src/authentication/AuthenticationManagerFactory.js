@@ -21,7 +21,10 @@ const scopes = [{
 const DEFAULT_FACTORY_CONFIGURATION = { 
     type: 'PassportLocal',
     repoConfig: { type: 'InMemory' },
-    jwt: { secret: 'secret' }
+    jwt: { 
+        secret: 'secret',
+        expiresIn: '1s'
+    }
 }
 
 const isSecured = (scopes, req) => {
