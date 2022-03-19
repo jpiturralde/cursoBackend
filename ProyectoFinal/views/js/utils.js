@@ -6,7 +6,7 @@ async function renderFail(msg) {
 
 async function posAuthenticationProcess(authenticationResponse) {
     if (authenticationResponse.status == 200) {
-        location.href = '/home'
+        location.href = '/products'
     } else {
         const content = await authenticationResponse.json()
         renderFail(content.message)

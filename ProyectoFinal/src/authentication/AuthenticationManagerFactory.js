@@ -1,9 +1,6 @@
 import * as fs from 'fs'
 
 const scopes = [{
-    path:'/products', 
-    methods: ['GET']
-}, {
     path:'/shoppingCart', 
     methods: ['GET']
 }, {

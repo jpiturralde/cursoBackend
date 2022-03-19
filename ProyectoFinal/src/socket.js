@@ -9,14 +9,16 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
         logger.info(`${socket.handshake.session.username} onConnection`)
 
         if (socket.handshake.session.username) {
-            const userName = socket.handshake.session.username
-            const authMgr = process.context.authenticationManager
+            // const userName = socket.handshake.session.username
+            // const authMgr = process.context.authenticationManager
             // const user = await authMgr.deserializeUser(socket.handshake.session.passport.user)
-            const visits = socket.handshake.session.visits
+            // const visits = socket.handshake.session.visits
             const messages = await api.messages.get()
-            const products = await api.products.get()
-            logger.info(`${socket.handshake.session.username} emit home`)
-            socket.emit('home', user, messages, products, visits)
+            //const products = await api.products.get()
+            // logger.info(`${socket.handshake.session.username} emit home`)
+            logger.info(`${socket.handshake.session.username} emit messages`)
+            // socket.emit('home', user, messages, products, visits)
+            io.sockets.emit('messages', messages);
         }
         else {
             logger.info(`emit login`)
@@ -29,11 +31,11 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
             io.sockets.emit('messages', messages);
         })
     
-        socket.on('new-product', async data => {
-            await api.products.post(data)
-            const products = await api.products.get()
-            io.sockets.emit('products', products);
-        })
+        // socket.on('new-product', async data => {
+        //     await api.products.post(data)
+        //     const products = await api.products.get()
+        //     io.sockets.emit('products', products);
+        // })
     })
 }
 

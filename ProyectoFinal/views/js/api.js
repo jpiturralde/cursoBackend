@@ -47,7 +47,9 @@ const api = {
     },
     products: {
         get: async () => { 
-            return JSON.parse(await fetch(productsUrl).then(response => response.text()))
+            return JSON.parse(await fetch(productsUrl, {
+                headers: headers(token())
+            }).then(response => response.text()))
         },
         post: async (product) => { 
             return await fetch(productsUrl, {

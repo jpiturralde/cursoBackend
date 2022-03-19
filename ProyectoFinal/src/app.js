@@ -38,7 +38,7 @@ export const ExpressApp = (config) => {
     expressApp.use(loggerMdw(logger))
 
     //Authentication
-    authenticationManager.initApp(expressApp) //Con PassportLocalAuthentication
+    authenticationManager.initApp(expressApp)
 
     //Routes
     expressApp.use('/', webRouter(rootPath, authenticationManager, logger, imageLoaderMdw(IMAGES_PATH)))

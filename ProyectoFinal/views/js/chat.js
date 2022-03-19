@@ -1,21 +1,5 @@
-(async () => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (!user) {
-        return location.href = '/login'
-    }
-    renderProfile(user)
-    loadProducts()
-})()
+const socket = io.connect();
 
-async function renderProfile(user) {
-    const homeTpl = await loadAndCompileTemplate('home.hbs')
-    const html = homeTpl({ user })
-    document.getElementById('content').innerHTML = html
-}
-
-//const socket = io.connect();
-
-/* BEGIN MESSAGES */
 function createMessage() {
     const message = {
         author: {
@@ -52,7 +36,7 @@ async function renderMessages(normalized) {
             compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
         }
     }
-    const messagesTpl = await loadAndCompileTemplate('/messages.hbs')
+    const messagesTpl = await loadAndCompileTemplate('/chat.hbs')
     const html = messagesTpl({ messages, compressionRate })
     document.getElementById('messages').innerHTML = html
 }
@@ -61,25 +45,10 @@ function addMessage(e) {
     socket.emit('new-message', createMessage());
     return false;
 }
-/* END MESSAGES */
 
+async function onLogin() {
+    location.href = '/login.html'
+}
 
-/* BEGIN SESSION */
-
-// async function renderHome(user, messages, products, visits) {
-//     const homeTpl = await loadAndCompileTemplate('home.hbs')
-//     const html = homeTpl({ user })
-//     document.getElementById('content').innerHTML = html
-//     renderProducts(products)
-//     renderMessages(messages)
-// }
-
-// async function onLogin() {
-//     location.href = '/login.html'
-// }
-/* END MESSAGES */
-
-// socket.on('messages', function(messages) { renderMessages(messages); });
-// socket.on('products', function(products) { renderProducts(products); });
-// socket.on('home', function(user, messages, products, visits) { renderHome(user, messages, products, visits); });
-// socket.on('login', () => onLogin())
+socket.on('messages', function(messages) { renderMessages(messages); });
+socket.on('login', () => onLogin())

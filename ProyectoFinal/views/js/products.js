@@ -1,4 +1,4 @@
-async function loadData() {
+async function loadProducts() {
     const data = await api.products.get()
     renderProducts(data)
 }

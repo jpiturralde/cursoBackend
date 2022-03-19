@@ -48,7 +48,7 @@ const postLogin = (logger) => (req, res) => {
     logger.info('/login', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
-    res.redirect("/home")
+    res.redirect("/products")
 }
 
 const getFailLogin = (req, res) => {
@@ -62,7 +62,7 @@ const getSignup = (rootPath, isAuthenticated) => (req, res) => {
         res.sendFile(rootPath+'/views/signup.html')
     }
     else {
-        res.redirect("/home")
+        res.redirect("/products")
     }
 }
 
@@ -70,7 +70,7 @@ const postSignup = (logger) => (req, res) => {
     logger.info('/signup', req.body.username)
     req.session.username = req.body.username
     req.session.visits = 0
-    res.redirect("/home")
+    res.redirect("/products")
 }
 
 const getFailSignup = (req, res) => {

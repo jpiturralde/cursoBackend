@@ -52,11 +52,11 @@ export default class PassportLocalJwtAuthentication {
                 this.signup(db, {username, password, name, address, phone, avatar})
                     .then(user => {
                         notifyFn('Nuevo registro', user)
-                        logger.info(`PassportLocalAuthentication#signupStrategy: ${username} registered successfuly.`)
+                        logger.info(`PassportLocalJwtAuthentication#signupStrategy: ${username} registered successfuly.`)
                         return done(null, user)
                     })
                     .catch(error => {
-                        logger.info(`PassportLocalAuthentication#signupStrategy: ${error.message}`)
+                        logger.info(`PassportLocalJwtAuthentication#signupStrategy: ${error.message}`)
                         return done(null, false, error)
                     })
             })
@@ -83,7 +83,7 @@ export default class PassportLocalJwtAuthentication {
                         return done(null, user, { message: 'Logged in Successfully' })
                     })
                     .catch(error => {
-                        logger.info(`PassportLocalAuthentication#signinStrategy: ${error.message}`)
+                        logger.info(`PassportLocalJwtAuthentication#signinStrategy: ${error.message}`)
                         return done(null, false, error)
                     })
             })
@@ -165,9 +165,10 @@ export default class PassportLocalJwtAuthentication {
     authenticationFn(req) {
         try {
             const authenticatedUser = this.readJWT(jwtFromRequest(req))
-            return authenticatedUser// || req.isAuthenticated() 
+            return authenticatedUser 
         } 
         catch(err) {
+            process.context.logger.warn(`PassportLocalJwtAuthentication#authJwtMdw:`, err)
             return false
         }
     }
@@ -189,7 +190,7 @@ export default class PassportLocalJwtAuthentication {
                     if (err) {
                         message = err.message
                         status = 500
-                        this.#config.logger.error(`PassportLocalAuthentication#authJwtMdw:`, err)
+                        this.#config.logger.error(`PassportLocalJwtAuthentication#authJwtMdw:`, err)
                     }
                     else {
                         status = 400
