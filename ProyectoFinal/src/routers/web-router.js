@@ -1,6 +1,7 @@
 import { Router } from "express"
 
 export const webRouter = (rootPath, authenticationManager, logger, imageLoaderMdw) => {
+    const { api } = process.context
     const router = new Router()
 
     //  ROOT
@@ -16,10 +17,10 @@ export const webRouter = (rootPath, authenticationManager, logger, imageLoaderMd
     router.post('/signup', imageLoaderMdw.single('avatar'), authenticationManager.signupMdw('/failsignup'), postSignup(logger))
     router.get('/failsignup', getFailSignup);
 
-    //  HOME
     router.get('/home', getHome(rootPath, logger))
     router.get('/products', getProducts(rootPath))
     router.get('/shoppingCart', getShoppingCart(rootPath))
+    router.get('/chat/:email', getMessages(api.messages))
 
     //  LOGOUT
     router.get('/logout', getLogout)
@@ -94,6 +95,14 @@ const getProducts = (rootPath) => (req, res) => {
 
 const getShoppingCart = (rootPath) => (req, res) => {
     res.sendFile(rootPath + '/views/shoppingCart.html')
+}
+
+const getMessages = (api) => async (req, res) => {
+    let messages = await api.getByEmail(req.params.email)
+    if (!messages) {
+        messages = []
+    }
+    res.json(messages)
 }
 
 // LOGOUT
