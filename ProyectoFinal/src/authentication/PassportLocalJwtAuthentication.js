@@ -148,13 +148,15 @@ export default class PassportLocalJwtAuthentication {
                     && scope.roles.indexOf(user.role) > -1
             }
             const securedScope = this.#config.isSecured(this.#config.scopes, req)
-            const authenticatedUser = this.authenticationFn(req)
-            if (securedScope && (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope))) {
-                if (req.path.startsWith('/api')) {
-                    res.status(401).json()
-                }
-                else {
-                    res.redirect(loginURI)
+            if (securedScope) {
+                const authenticatedUser = this.authenticationFn(req)
+                if (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope)) {
+                    if (req.path.startsWith('/api')) {
+                        res.status(401).json()
+                    }
+                    else {
+                        res.redirect(loginURI)
+                    }
                 }
             } else {
                 next()
