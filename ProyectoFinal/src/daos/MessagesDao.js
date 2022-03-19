@@ -19,7 +19,6 @@ export default class MessagesDao extends Dao {
 
     async getByEmail(email) {
         const result = await this.getAll()
-        console.log('getByEmail', result)
         return result.filter(x => x.value.author.id == email)
     }
     
