@@ -23,6 +23,17 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
             const messages = await api.messages.get()
             io.sockets.emit('messages', messages);
         })
+
+        socket.on('all-messages', async () => {
+            const messages = await api.messages.get()
+            io.sockets.emit('messages', messages);
+        })
+
+        socket.on('my-messages', async () => {
+            const { username } = socket.handshake.session
+            const messages = await api.messages.getByEmail(username)
+            io.sockets.emit('messages', messages);
+        })
     })
 }
 

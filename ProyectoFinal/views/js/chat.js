@@ -46,6 +46,17 @@ function addMessage(e) {
     return false;
 }
 
+function showMyMessages() {
+    socket.emit('my-messages');
+    return false;
+}
+
+function showAllMessages() {
+    socket.emit('all-messages');
+    return false;
+}
+
+
 async function onLogin() {
     location.href = '/login.html'
 }
