@@ -1,5 +1,4 @@
 import Dao from './Dao.js'
-import ChatNormalizr from './ChatNormalizr.js'
 
 export default class MessagesDao extends Dao {
     #repo
@@ -9,17 +8,9 @@ export default class MessagesDao extends Dao {
         this.#repo = repo
     }
 
-    async get(normalized = true) {
-        let messages = await this.getAll()
-        if (normalized && messages.length > 0) {
-            messages = ChatNormalizr.normalizeChat(messages) 
-        }
-        return messages
-    }
-
     async getByEmail(email) {
         const result = await this.getAll()
-        return result.filter(x => x.value.author.id == email)
+        return result.filter(x => x.value.email == email)
     }
     
     async post(data) {

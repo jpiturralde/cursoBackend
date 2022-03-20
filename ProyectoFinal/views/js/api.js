@@ -103,3 +103,7 @@ function token() {
 function shoppingCartId() {
     return localStorage.getItem('shoppingCartId')
 }
+
+function user() {
+    return JSON.parse(localStorage.getItem('user'))
+}

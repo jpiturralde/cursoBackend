@@ -1,11 +1,15 @@
-import * as os from 'os'
-const numCores = os.cpus().length
-
 const apiSpec = (ds) => {
     return {
-        get: async (normalized = true) => { return await ds.get(normalized) },
+        get: async () => { return await ds.getAll() },
         getByEmail: async (email) => { return await ds.getByEmail(email) },
-        post: async (data) => { return await ds.post(data) }
+        post: async (data) => { 
+            const msgDto = {
+                email: data.email,
+                type: data.role == 'admin' ? 'respuesta' : 'pregunta',
+                text: data.text
+            }
+            return await ds.post(msgDto) 
+        }
     }
 }
 

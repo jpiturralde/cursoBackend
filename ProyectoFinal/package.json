@@ -30,21 +30,17 @@
     "faker": "^5.5.3",
     "forever": "^4.0.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.95.12",
     "log4js": "^6.3.0",
     "minimist": "^1.2.5",
     "mongodb": "^4.2.1",
     "multer": "^1.4.4",
-    "mysql": "^2.18.1",
     "nodemailer": "^6.7.2",
-    "normalizr": "^3.6.1",
     "passport": "^0.5.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pm2": "^5.1.2",
     "session-file-store": "^1.5.0",
     "socket.io": "^4.2.0",
-    "sqlite3": "^5.0.2",
     "twilio": "^3.73.1"
   }
 }

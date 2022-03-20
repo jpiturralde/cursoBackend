@@ -2,14 +2,6 @@ const socket = io.connect();
 
 function createMessage() {
     const message = {
-        author: {
-            id: document.getElementById('id').value,
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            age: document.getElementById('age').value,
-            nickName: document.getElementById('nickName').value,
-            avatar: document.getElementById('avatar').value
-        },
         text: document.getElementById('text').value
     }
     cleanFields()
@@ -17,12 +9,6 @@ function createMessage() {
 }
 
 function cleanFields() {
-    document.getElementById('id').value = ''
-    document.getElementById('firstName').value = ''
-    document.getElementById('lastName').value = ''
-    document.getElementById('age').value = ''
-    document.getElementById('nickName').value = ''
-    document.getElementById('avatar').value = ''
     document.getElementById('text').value = ''
 }
 
@@ -47,15 +33,8 @@ function addMessage(e) {
 }
 
 function showMyMessages() {
-    socket.emit('my-messages');
-    return false;
+    location.href = '/chat/'+user().username
 }
-
-function showAllMessages() {
-    socket.emit('all-messages');
-    return false;
-}
-
 
 async function onLogin() {
     location.href = '/login.html'

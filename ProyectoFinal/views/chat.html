@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
     <script src="js/chatNormalizerClient.js"></script>
     <script src="js/hbs-utils.js"></script>
+    <script src="js/api.js"></script>
 </head>
 
 <body>
@@ -53,17 +54,10 @@
                 <h1 style="color:blue;">Centro de Mensajes</h1>
                 <div id="messages"></div>
                 <form onsubmit="return addMessage(this)">
-                    <input type="email" id="id" placeholder="Tu email" required="required"><br>
-                    <input type="text" id="firstName" placeholder="Tu nombre"><br>
-                    <input type="text" id="lastName" placeholder="Tu apellido"><br>
-                    <input type="text" id="age" placeholder="Tu edad"><br>
-                    <input type="text" id="nickName" placeholder="Tu alias"><br>
-                    <input type="text" id="avatar" placeholder="Tu avatar"><br>
                     <input type="text" id="text" placeholder="Cuéntanos algo..."><br>
                     <input type="submit" value="Enviar">
                 </form>
-                <a onclick="showMyMessages()" href="javascript:void(0);">Mis mensajes</a>
-                <a onclick="showAllMessages()" href="javascript:void(0);">Todos mensajes</a>
+                <a href="javascript:showMyMessages()">Mis mensajes</a>
             </div>
         </div>
     </div>

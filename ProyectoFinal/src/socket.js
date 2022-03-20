@@ -19,19 +19,11 @@ export const bindSocketIO = (httpServer, sessionMiddleware, api, logger) => {
         }
     
         socket.on('new-message', async data => {
+            const { username, role } = socket.handshake.session
+            data.email = username
+            data.role = role
             await api.messages.post(data)
             const messages = await api.messages.get()
-            io.sockets.emit('messages', messages);
-        })
-
-        socket.on('all-messages', async () => {
-            const messages = await api.messages.get()
-            io.sockets.emit('messages', messages);
-        })
-
-        socket.on('my-messages', async () => {
-            const { username } = socket.handshake.session
-            const messages = await api.messages.getByEmail(username)
             io.sockets.emit('messages', messages);
         })
     })
