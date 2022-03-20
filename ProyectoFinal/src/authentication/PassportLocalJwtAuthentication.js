@@ -48,7 +48,7 @@ export default class PassportLocalJwtAuthentication {
             },
             (req, username, password, done) => {
                 const {name, address, phone } = req.body
-                const avatar = req.file ? req.file.filename : 'NoAvatarProvided'
+                const avatar = req.file ? req.file.filename : 'avatar.png'
                 this.signup(db, {username, password, name, address, phone, avatar})
                     .then(user => {
                         notifyFn('Nuevo registro', user)
