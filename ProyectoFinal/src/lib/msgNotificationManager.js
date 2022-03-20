@@ -15,6 +15,9 @@ export const createMsgNotificationManager = (msgNotificationManagerConf) => {
     const client = twilio(accountSid, authToken)
 
     const send = async (to, body, type='SMS') => {
+        if (!to || to == '') {
+            throw Error(`Send message error: Invalid to = ${to}`)
+        }
         const options = { body, to }
         if (type == 'SMS') {
             options.from = smsPhone
