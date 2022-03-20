@@ -12,18 +12,9 @@ function cleanFields() {
     document.getElementById('text').value = ''
 }
 
-async function renderMessages(normalized) {
-    let messages = normalized
-    let compressionRate = 0
-    if (typeof normalized == 'object') {
-        const chat = denormalizeChat(normalized) 
-        if (chat) {
-            messages = chat.messages
-            compressionRate = Math.round((1-JSON.stringify(normalized).length/JSON.stringify(messages).length)*100)
-        }
-    }
+async function renderMessages(messages) {
     const messagesTpl = await loadAndCompileTemplate('/chat.hbs')
-    const html = messagesTpl({ messages, compressionRate })
+    const html = messagesTpl({ messages })
     document.getElementById('messages').innerHTML = html
 }
 
