@@ -148,9 +148,15 @@ export default class PassportLocalJwtAuthentication {
                     && scope.roles.indexOf(user.role) > -1
             }
             const securedScope = this.#config.isSecured(this.#config.scopes, req)
-            if (securedScope) {
+            if (!securedScope) {
+                next()
+            }
+            else {
                 const authenticatedUser = this.authenticationFn(req)
-                if (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope)) {
+                if (authenticatedUser && isAuthorized(authenticatedUser, securedScope)) {
+                    next()
+                }
+                else {
                     if (req.path.startsWith('/api')) {
                         res.status(401).json()
                     }
@@ -158,9 +164,22 @@ export default class PassportLocalJwtAuthentication {
                         res.redirect(loginURI)
                     }
                 }
-            } else {
-                next()
             }
+            // if (securedScope) {
+            //     const authenticatedUser = this.authenticationFn(req)
+            //     if (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope)) {
+            //         if (req.path.startsWith('/api')) {
+            //             res.status(401).json()
+            //         }
+            //         else {
+            //             res.redirect(loginURI)
+            //         }
+            //     } else {
+            //         next()
+            //     }
+            // } else {
+            //     next()
+            // }
         }
     }
 
