@@ -15,7 +15,8 @@ const mockRouter = new Router()
 
 mockRouter.get('/', async (req, res) => {
     const products = []
-    for (let i = 0; i < 5; i++) {
+    const count = req.query.count || 5
+    for (let i = 0; i < count; i++) {
         products.push(randomValue())
     }
     res.json(products)

@@ -17,9 +17,6 @@
       <li class="nav-item">
         <a class="nav-link" href="/process-info.html">Información del Proceso</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/productos-test.html">Productos con Faker</a>
-      </li>
       <li class="nav-item  active">
         <a class="nav-link" href="/home">Perfil</span></a>
       </li>
@@ -60,7 +57,7 @@
 
 {{#ifIsAdmin user.role}}
 <div class="jumbotron">
-    <a href="/productos-test.html">Listado faker</a>
+    <a onclick="generateFakeProducts(5)" href="javascript:void(0);">Generar productos fake</a>
     <h1 style="color:blue;">Ingrese Producto</h1>
     <br>
         <form onsubmit="return addProduct(this)">
