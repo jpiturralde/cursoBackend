@@ -17,7 +17,7 @@
         "db": "[DB]",
         "collection": "[COLLECTION]" 
     }, 
-    "MessagesCartsRepository": {
+    "MessagesRepository": {
         "type": "MongoDb",
         "uri": "//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
         "db": "[DB]",
