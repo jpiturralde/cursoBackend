@@ -9,12 +9,10 @@ export const webRouter = (rootPath, authenticationManager, logger, imageLoaderMd
 
     // LOGIN
     router.get('/login', getLogin(rootPath, authenticationManager.authenticationFn))
-    router.post('/login', authenticationManager.signinMdw('/faillogin'), postLogin(logger))
     router.get('/faillogin', getFailLogin);
 
     // SIGNUP
     router.get('/signup', getSignup(rootPath, authenticationManager.authenticationFn))
-    router.post('/signup', imageLoaderMdw.single('avatar'), authenticationManager.signupMdw('/failsignup'), postSignup(logger))
     router.get('/failsignup', getFailSignup);
 
     router.get('/home', getHome(rootPath, logger))
@@ -45,13 +43,6 @@ const getLogin = (rootPath, isAuthenticated) => (req, res) => {
     }
 }
 
-const postLogin = (logger) => (req, res) => {
-    logger.info('/login', req.body.username)
-    req.session.username = req.body.username
-    req.session.visits = 0
-    res.redirect("/products")
-}
-
 const getFailLogin = (req, res) => {
     const msg = 'User error signin'
     res.render('fail', { msg })    
@@ -65,13 +56,6 @@ const getSignup = (rootPath, isAuthenticated) => (req, res) => {
     else {
         res.redirect("/products")
     }
-}
-
-const postSignup = (logger) => (req, res) => {
-    logger.info('/signup', req.body.username)
-    req.session.username = req.body.username
-    req.session.visits = 0
-    res.redirect("/products")
 }
 
 const getFailSignup = (req, res) => {
