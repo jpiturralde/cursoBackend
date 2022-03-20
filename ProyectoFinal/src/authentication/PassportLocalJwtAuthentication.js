@@ -47,9 +47,9 @@ export default class PassportLocalJwtAuthentication {
                 passReqToCallback: true
             },
             (req, username, password, done) => {
-                const {name, address, phone } = req.body
+                const {name, address, phone, password2 } = req.body
                 const avatar = req.file ? req.file.filename : 'avatar.png'
-                this.signup(db, {username, password, name, address, phone, avatar})
+                this.signup(db, {username, password, password2, name, address, phone, avatar})
                     .then(user => {
                         notifyFn('Nuevo registro', user)
                         logger.info(`PassportLocalJwtAuthentication#signupStrategy: ${username} registered successfuly.`)
@@ -62,12 +62,12 @@ export default class PassportLocalJwtAuthentication {
             })
     }
 
-    async signup(db, {username, password, name, address, phone, avatar}) {
+    async signup(db, {username, password, password2, name, address, phone, avatar}) {
         let role = 'default'
         if (this.#config.adminsUsername && this.#config.adminsUsername.indexOf(username)>-1) {
             role = 'admin'
         }
-        const user = await db.post( {username, password, name, address, phone, avatar, role} )
+        const user = await db.post( {username, password, password2, name, address, phone, avatar, role} )
         const shoppingCart = await process.context.api.shoppingCarts.post(user.id, {})
         user.shoppingCartId = shoppingCart.id
         return user
@@ -203,15 +203,17 @@ export default class PassportLocalJwtAuthentication {
                         user   : user
                     });
                 }
-                req.login(user, { session: false }, (err) => {
-                    if (err) {
-                        res.send(err);
-                    }
-                    req.session.username = user.username
-                    req.session.role = user.role
-                    const token = this.createJWT(user)
-                    return res.json({user, token})
-                });
+                else {
+                    req.login(user, { session: false }, (err) => {
+                        if (err) {
+                            res.send(err);
+                        }
+                        req.session.username = user.username
+                        req.session.role = user.role
+                        const token = this.createJWT(user)
+                        return res.json({user, token})
+                    });
+                }
             })
             (req, res)
         }

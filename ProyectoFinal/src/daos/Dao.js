@@ -62,4 +62,10 @@ export default class Dao {
         );
     };
 
+    validatePhone(phone) {
+        return String(phone)
+            .match(
+            /^\d{10}$/
+        );
+    };
 }

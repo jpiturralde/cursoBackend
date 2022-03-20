@@ -6,6 +6,7 @@ if (signupForm) {
         let body = new FormData()
         body.append('username', document.getElementById('username').value)
         body.append('password', document.getElementById('password').value)
+        body.append('password2', document.getElementById('password2').value)
         body.append('name', document.getElementById('name').value)
         body.append('address', document.getElementById('address').value)
         body.append('phone', document.getElementById('phone').value)

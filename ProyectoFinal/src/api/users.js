@@ -13,6 +13,10 @@ export const UsersAPI = (dataSource) => {
             if (await dataSource.getByUserName(data.username)) {
                 throw Error(`${data.username} already exists.`)
             }
+            const { password, password2} = data
+            if (password != password2) {
+                throw Error(`Password fields have different values.`)
+            }
             return userDto(await dataSource.post(createUser(data)))
         },
         validateHash: (data, hash) => {

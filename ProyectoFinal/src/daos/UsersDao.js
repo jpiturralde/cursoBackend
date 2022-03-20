@@ -13,8 +13,23 @@ export default class UsersDao extends Dao {
         if (!data.username) {
             errors.push('User: Falta campo username')
         }
+        else if (!super.validateEmail(data.username)) {
+            errors.push('El formato del campo username es invalido.')
+        }
         if (!data.password) {
-            errors.push('Producto: Falta campo password')
+            errors.push('Falta campo password')
+        }
+        if (!data.phone) {
+            errors.push('Falta campo phone')
+        }
+        else if (!super.validatePhone(data.phone)) {
+            errors.push('El formato del campo phone es invalido.')
+        }
+        if (!data.name) {
+            errors.push('Campo name inválido.')
+        }
+        if (!data.address) {
+            errors.push('Campo address inválido.')
         }
         return errors
     }
