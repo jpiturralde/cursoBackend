@@ -165,21 +165,6 @@ export default class PassportLocalJwtAuthentication {
                     }
                 }
             }
-            // if (securedScope) {
-            //     const authenticatedUser = this.authenticationFn(req)
-            //     if (!authenticatedUser || !isAuthorized(authenticatedUser, securedScope)) {
-            //         if (req.path.startsWith('/api')) {
-            //             res.status(401).json()
-            //         }
-            //         else {
-            //             res.redirect(loginURI)
-            //         }
-            //     } else {
-            //         next()
-            //     }
-            // } else {
-            //     next()
-            // }
         }
     }
 
