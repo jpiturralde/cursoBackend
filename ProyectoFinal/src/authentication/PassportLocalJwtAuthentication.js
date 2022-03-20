@@ -208,6 +208,7 @@ export default class PassportLocalJwtAuthentication {
                         res.send(err);
                     }
                     req.session.username = user.username
+                    req.session.role = user.role
                     const token = this.createJWT(user)
                     return res.json({user, token})
                 });
