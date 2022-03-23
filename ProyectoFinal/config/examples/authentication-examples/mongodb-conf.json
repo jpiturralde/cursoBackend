@@ -2,7 +2,7 @@
     "type": "PassportLocal",
     "repoConfig": {
         "type": "MongoDb",
-        "uri": "//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
+        "uri": "mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
         "db": "[DB]",
         "collection": "[COLLECTION]" 
     },

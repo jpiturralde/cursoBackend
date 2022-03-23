@@ -50,8 +50,31 @@ process.context = {
     ...process.context,
     ...commonConfig
 }
-process.context.emailManager = createEmailManager(process.context.emailManagerConf)
-process.context.msgNotificationManager = createMsgNotificationManager(process.context.msgNotificationManagerConf)
+
+if (process.context.notifyUserSignupToSysadmByEmail || process.context.notifyCheckoutToSysadmByEmail) {
+    try {
+        process.context.emailManager = createEmailManager(process.context.emailManagerConf)
+    } 
+    catch (err) {
+        logger.error(err)
+        logger.warn(`Email notifications disabled. Please check emailManagerConf in file ${process.context.COMMON_CONFIG_PATH}`)
+        process.context.notifyUserSignupToSysadmByEmail = false
+        process.context.notifyCheckoutToSysadmByEmail = false
+    }
+}
+
+if (process.context.notifyCheckoutToSysadmByWhatsapp || process.context.notifyCheckoutToUserBySMS) {
+    try {
+        process.context.msgNotificationManager = createMsgNotificationManager(process.context.msgNotificationManagerConf)
+    } 
+    catch (err) {
+        logger.error(err)
+        logger.warn(`SMS and Whatsapp notifications disabled. Please check msgNotificationManagerConf in file ${process.context.COMMON_CONFIG_PATH}`)
+        process.context.notifyCheckoutToSysadmByWhatsapp = false
+        process.context.notifyCheckoutToUserBySMS = false
+    }
+}
+
 process.context.persistence = await loadPersistence()
 process.context.sessionMiddleware = await loadSessionManager()
 process.context.api = await loadApiContext()
