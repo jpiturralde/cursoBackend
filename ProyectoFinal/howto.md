@@ -13,34 +13,11 @@ Ejemplos en [common-examples](https://github.com/jpiturralde/cursoBackend/tree/m
 
 ## Autenticación
 
-### PassportLocal
+El sistema soporta autenticación de usuarios locales. El repositorio de usuarios utiliza MongoDB, pero si no se configura, por defecto se utilizar repositorio en memoria.
 
-Los usuarios son persistidos en MongoDB. A continuación se muestra ejemplo de configuración.
+Para un manejo muy básico de autorización se soportan 2 roles diferentes: admin y default. El rol admin, tiene privilegios adicionales al default para poder gestionar productos realizando altas y bajas. 
 
-````
-
-{
-
-"type": "PassportLocal",
-
-"repoConfig": {
-
-"type": "MongoDb",
-
-"uri": "//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
-
-"db": "[DB]",
-
-"collection": "[COLLECTION]"
-
-}
-
-}
-
-````
-
-Si no se especifica repositorio de usuarios, por defecto se utiliza repositorio en memoria.
-
+En el archivo de configuración se condigurar una colección de usernames para los cuales, en el momento de la registración se les asigna el rol admin. MEJORA: Usar estos usuarios para enviar notificación cuando se registran usuarios y se crean las órdenes.
   
 
 Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/authentication-examples)
