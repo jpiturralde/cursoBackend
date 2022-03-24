@@ -18,6 +18,8 @@ El sistema soporta autenticación de usuarios locales. El repositorio de usuario
 Para un manejo muy básico de autorización se soportan 2 roles diferentes: admin y default. El rol admin, tiene privilegios adicionales al default para poder gestionar productos realizando altas y bajas. 
 
 En el archivo de configuración se condigurar una colección de usernames para los cuales, en el momento de la registración se les asigna el rol admin. MEJORA: Usar estos usuarios para enviar notificación cuando se registran usuarios y se crean las órdenes.
+
+Adicionalmente, y para simplificar las pruebas, el usuario con rol admin, también tiene disponible en la página del perfil, la posibilidad de cargar productos fake en tandas de a 5.
   
 
 Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/authentication-examples)
@@ -93,6 +95,9 @@ PS C:\Users\u610166\Documents\curso\cursoBackend\ProyectoFinal> npm start
 [2022-03-24T19:39:36.147] [INFO] default - 23712-31312 Servidor express escuchando en el puerto 8080 - PID 31312
 
 ````
+
+## Deploy en Heroku
+En https://ecommerce-jpi.herokuapp.com/ se encuentra disponible una versión con persistencia en MongoDB.
 
 #
 
