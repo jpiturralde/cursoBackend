@@ -83,6 +83,7 @@ Para setear las diferentes configuraciones, se debe proveer un archiv .env con l
 **Ejemplo de archivo .env**
 ````
 AUTHENTICATION_CONFIG_PATH=./config/dev/authentication-conf.json
+COMMON_CONFIG_PATH=./config/dev/common-conf.json
 PERSISTENCE_CONFIG_PATH=./config/dev/persistence-conf.json
 SESSION_CONFIG_PATH=./config/dev/session-conf.json
 ````
