@@ -5,7 +5,7 @@
   "description": "Formato: link a un repositorio en Github con el proyecto cargado.\r Sugerencia: no incluir los node_modules.",
   "main": "src/server.js",
   "scripts": {
-    "start": "node ./src/main.js",
+    "start": "node ./src/main.js --dep ./config/prod/.env",
     "dev": "nodemon src/main.js --dep ./config/dev/.env",
     "prod": "nodemon src/main.js --dep ./config/prod/.env",
     "prof": "node --prof ./src/main.js",
