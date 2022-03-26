@@ -36,7 +36,6 @@ Adicionalmente, y para simplificar las pruebas, el usuario con rol admin, tambi�
   
 
 Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/authentication-examples)
-
   
 
 ### Persistencia
@@ -46,7 +45,6 @@ Se necesitan repositorios para las diferentes entidades de datos necesarias para
 En caso de no configurar tipo de persistencia para alguna entidad, se utilizar por defecto repositorio en memoria.
 
 En [persistence-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/persistence-examples) se pueden ver alternativas de configuración.
-
   
 
 ### Sesión
