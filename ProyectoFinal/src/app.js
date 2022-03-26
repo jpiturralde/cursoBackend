@@ -1,7 +1,6 @@
 import express from 'express'
 import exphbs from 'express-handlebars'
 import { webRouter } from './routers/web-router.js'
-import { mockRouter } from "./routers/mock-router.js"
 import { apiRouter } from './routers/api-router.js'
 import { processRouter } from './routers/process-router.js'
 import { unkownRoute, imageLoaderMdw } from './lib/index.js'
