@@ -3,7 +3,19 @@
 
 # Proyecto Final - ecommerce
 
-## Configuración general
+[Consigna](https://github.com/jpiturralde/cursoBackend/blob/jwt/ProyectoFinal/Consigna%20Proyecto%20Final%20Curso%20Backend.pdf)
+
+## Resolución
+
+### Características generales
+ - El carrito se crea como parte de la creación de un usuario.
+ - El usuario siempre tiene asociado el mismo ID de carrito.
+ - El carrito se llena durante una compra.
+ - Para confirmar la compra se implementó como PATCH /api/carrito/:id/checkout representando un cambio en el estado.
+ - El checkout genera la orden.
+ - La consulta de las ordenes se realiza por GET /api/orden.
+
+### Configuración general
 La configuración general incluye información sysadm para recibir notificaciones por email y además, configuración del cliente de emails para realizar las notificaciones.
 
 Dado que durante las pruebas se producían errores al enviar mails con ethereal, en la configuración general se permite habilitar/deshabilitar las notificaciones.
@@ -11,7 +23,7 @@ Dado que durante las pruebas se producían errores al enviar mails con ethereal,
 Ejemplos en [common-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/common-examples)
 
 
-## Autenticación
+### Autenticación
 
 El sistema soporta autenticación de usuarios locales. El repositorio de usuarios utiliza MongoDB, pero si no se configura, por defecto se utilizar repositorio en memoria.
 
@@ -26,7 +38,7 @@ Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBacken
 
   
 
-## Persistencia
+### Persistencia
 
 Se necesitan repositorios para las diferentes entidades de datos necesarias para el sistema. Es requerido condigurar cada repositorio por separado. Si bien esto implica mayor esfuerzo de configuración, brinda la flexibilidad de poder alojar las entidades en diferentes bases de datos. MEJORA: Soportar configuración de repositorio por defecto para todas las entidades y tomar configuración particular sólo en los casos que se configure explícitamente.
 
@@ -36,7 +48,7 @@ En [persistence-examples](https://github.com/jpiturralde/cursoBackend/tree/maste
 
   
 
-## Sesión
+### Sesión
 El manejo de sesiones soporta 3 mecanismos diferentes de persistencia para las mismas:
 
  1. En memoria (por defecto)
@@ -45,15 +57,15 @@ El manejo de sesiones soporta 3 mecanismos diferentes de persistencia para las m
 
 En [session-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/session-examples) se pueden ver archivos de ejemplo para cada una de estas variantes.
 
-## Argumentos
+### Argumentos
 Se soportan 3 argumentos:
 
  - ***-p*** ó ***--port***: Puerto en el cual se levanta el servidor. Valor por defecto: 8080
  -    ***-e*** ó ***--env***: Ambiente en el cual se ejecuta la aplicación. Valor por defecto: 'prod'
  -    ***--dep*** ó  ***--dotenvPath***: Path al archivo ***.env*** para tomar configuración de autenticación, persistencia y sesión. Valor por defecto ***./config/prod/.env***
 
-### Archivo .env
-Para setear las diferentes configuraciones, se debe proveer un archiv .env con las siguientes claves:
+#### Archivo .env
+Para setear las diferentes configuraciones, se debe proveer un archivo .env con las siguientes claves:
  - *AUTHENTICATION_CONFIG_PATH*: Path al archivo de configuración de autenticación.
  - *COMMON_CONFIG_PATH*: Path al archivo de configuración general.
  - *PERSISTENCE_CONFIG_PATH*: Path al archivo de configuración de persistencia.
@@ -67,13 +79,13 @@ PERSISTENCE_CONFIG_PATH=./config/dev/persistence-conf.json
 SESSION_CONFIG_PATH=./config/dev/session-conf.json
 ````
 
-## Cómo ejecutar
+### Cómo ejecutar
 Ejecutando ***npm start*** se busca el archiv ***./config/prod/.env***. A continuación se muestra la salida a modo de ejemplo:
 ````
 PS C:\Users\u610166\Documents\curso\cursoBackend\ProyectoFinal> npm start
 
 > websockets@1.0.0 start
-> node ./src/main.js --dep ./config/prod/.env
+> node ./src/main.js
 
 [2022-03-24T19:39:20.137] [INFO] default - 23712-31312 Loading ./config/prod/common-conf.json
 [2022-03-24T19:39:20.309] [INFO] default - 23712-31312 MailManager transport [object Object]
@@ -96,8 +108,10 @@ PS C:\Users\u610166\Documents\curso\cursoBackend\ProyectoFinal> npm start
 
 ````
 
-## Deploy en Heroku
+### Deploy en Heroku
 En https://ecommerce-jpi.herokuapp.com/ se encuentra disponible una versión con persistencia en MongoDB.
+
+
 
 #
 
