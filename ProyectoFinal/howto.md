@@ -14,6 +14,7 @@
  - Para confirmar la compra se implementó como PATCH /api/carrito/:id/checkout representando un cambio en el estado.
  - El checkout genera la orden.
  - La consulta de las ordenes se realiza por GET /api/orden.
+ - Se provee información del proceso por API GET /api/info que se expone desde el front end en la opción Proceso (API). Además también se provee la misma información generando una vista desde el backend en /info. 
 
 ### Configuración general
 La configuración general incluye información sysadm para recibir notificaciones por email y además, configuración del cliente de emails para realizar las notificaciones.
