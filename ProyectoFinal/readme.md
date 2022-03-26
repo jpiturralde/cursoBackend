@@ -3,7 +3,7 @@
 
 # Proyecto Final - ecommerce
 
-[Consigna](https://github.com/jpiturralde/cursoBackend/blob/jwt/ProyectoFinal/Consigna%20Proyecto%20Final%20Curso%20Backend.pdf)
+[Consigna](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/Consigna%20Proyecto%20Final%20Curso%20Backend.pdf)
 
 ## Resolución
 
