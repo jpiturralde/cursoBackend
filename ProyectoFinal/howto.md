@@ -1,53 +1,38 @@
 
   
 
-# WebSockets
+# Proyecto Final - ecommerce
+
+## Configuración general
+La configuración general incluye información sysadm para recibir notificaciones por email y además, configuración del cliente de emails para realizar las notificaciones.
+
+Dado que durante las pruebas se producían errores al enviar mails con ethereal, en la configuración general se permite habilitar/deshabilitar las notificaciones.
+
+Ejemplos en [common-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/common-examples)
+
 
 ## Autenticación
 
-### PassportLocal
+El sistema soporta autenticación de usuarios locales. El repositorio de usuarios utiliza MongoDB, pero si no se configura, por defecto se utilizar repositorio en memoria.
 
-Los usuarios son persistidos en MongoDB. A continuación se muestra ejemplo de configuración.
+Para un manejo muy básico de autorización se soportan 2 roles diferentes: admin y default. El rol admin, tiene privilegios adicionales al default para poder gestionar productos realizando altas y bajas. 
 
-````
+En el archivo de configuración se condigurar una colección de usernames para los cuales, en el momento de la registración se les asigna el rol admin. MEJORA: Usar estos usuarios para enviar notificación cuando se registran usuarios y se crean las órdenes.
 
-{
-
-"type": "PassportLocal",
-
-"repoConfig": {
-
-"type": "MongoDb",
-
-"uri": "//mongodb+srv://[USER]:[PASSWORD]@cluster0.xjgs3.mongodb.net/[DB]?retryWrites=true&w=majority",
-
-"db": "[DB]",
-
-"collection": "[COLLECTION]"
-
-}
-
-}
-
-````
-
-Si no se especifica repositorio de usuarios, por defecto se utiliza repositorio en memoria.
-
+Adicionalmente, y para simplificar las pruebas, el usuario con rol admin, también tiene disponible en la página del perfil, la posibilidad de cargar productos fake en tandas de a 5.
   
 
-Ejemplos en [./config/authentication/examples](https://github.com/jpiturralde/cursoBackend/tree/dotenv/WebSockets/config/authentication/examples)
+Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/authentication-examples)
 
   
 
 ## Persistencia
 
-Se necesitan repositorios para productos y mensajes. En ambos casos, por defecto se utiliza repositorio en memoria.
+Se necesitan repositorios para las diferentes entidades de datos necesarias para el sistema. Es requerido condigurar cada repositorio por separado. Si bien esto implica mayor esfuerzo de configuración, brinda la flexibilidad de poder alojar las entidades en diferentes bases de datos. MEJORA: Soportar configuración de repositorio por defecto para todas las entidades y tomar configuración particular sólo en los casos que se configure explícitamente.
 
-También en ambos casos es posible utilizar repositorio en file system.
+En caso de no configurar tipo de persistencia para alguna entidad, se utilizar por defecto repositorio en memoria.
 
-Sólo para productos es posible utilizar SQLite3.
-
-En [./config/persistence/examples](https://github.com/jpiturralde/cursoBackend/tree/dotenv/WebSockets/config/persistence/examples) se pueden ver alternativas de configuración.
+En [persistence-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/persistence-examples) se pueden ver alternativas de configuración.
 
   
 
@@ -58,7 +43,7 @@ El manejo de sesiones soporta 3 mecanismos diferentes de persistencia para las m
  2. En file system
  3. En MongoDB
 
-En [./config/session/examples](https://github.com/jpiturralde/cursoBackend/tree/dotenv/WebSockets/config/session/examples) se pueden ver archivos de ejemplo para cada una de estas variantes.
+En [session-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/session-examples) se pueden ver archivos de ejemplo para cada una de estas variantes.
 
 ## Argumentos
 Se soportan 3 argumentos:
@@ -70,82 +55,49 @@ Se soportan 3 argumentos:
 ### Archivo .env
 Para setear las diferentes configuraciones, se debe proveer un archiv .env con las siguientes claves:
  - *AUTHENTICATION_CONFIG_PATH*: Path al archivo de configuración de autenticación.
+ - *COMMON_CONFIG_PATH*: Path al archivo de configuración general.
  - *PERSISTENCE_CONFIG_PATH*: Path al archivo de configuración de persistencia.
  - *SESSION_CONFIG_PATH*: Path al archivo de configuración de sesión.
 
 **Ejemplo de archivo .env**
 ````
 AUTHENTICATION_CONFIG_PATH=./config/dev/authentication-conf.json
+COMMON_CONFIG_PATH=./config/dev/common-conf.json
 PERSISTENCE_CONFIG_PATH=./config/dev/persistence-conf.json
 SESSION_CONFIG_PATH=./config/dev/session-conf.json
 ````
 
 ## Cómo ejecutar
-Ejecutando ***npm run dev*** se busca el archiv ***./config/dev/.env***. A continuación se muestra la salida en la cual,
-authentica
-
- - authentication-conf.json: Almacena los usuarios en MongoDB.
- - persistence-conf.json: Persiste productos en SQLite3 y Mensajes en FileSystem.
- - session-cong.json: Mantiene sesiones en MongoDB.
+Ejecutando ***npm start*** se busca el archiv ***./config/prod/.env***. A continuación se muestra la salida a modo de ejemplo:
 ````
-PS C:\Users\u610166\Documents\curso\cursoBackend\WebSockets> npm run dev
+PS C:\Users\u610166\Documents\curso\cursoBackend\ProyectoFinal> npm start
 
-> websockets@1.0.0 dev
-> nodemon src/server.js --dep ./config/dev/.env
+> websockets@1.0.0 start
+> node ./src/main.js --dep ./config/prod/.env
 
-[nodemon] 2.0.15
-[nodemon] to restart at any time, enter `rs`
-[nodemon] watching path(s): *.*
-[nodemon] watching extensions: js,mjs,json
-[nodemon] starting `node src/server.js --dep ./config/dev/.env`
-Server context {
-  AUTHENTICATION_CONFIG_PATH: './config/dev/authentication-conf.json',        
-  PERSISTENCE_CONFIG_PATH: './config/dev/persistence-conf.json',
-  SESSION_CONFIG_PATH: './config/dev/session-conf.json',
-  ROOT_PATH: 'C:\\Users\\u610166\\Documents\\curso\\cursoBackend\\WebSockets',
-  PORT: 8080,
-  ENV: 'prod'
-}
-RepositoryFactory - Field "ShoppingCartsRepository" not found.
-RepositoryFactory - Default "ShoppingCartsRepository" initialized.
-RepositoryFactory {
-  ProductsRepository: {
-    type: 'SQLite3',
-    entity: 'products',
-    connectionString: './db/ecommerce.sqlite',
-    useNullAsDefault: true
-  },
-  MessagesRepository: { type: 'FS', connectionString: './db/messages.txt' },
-  ShoppingCartsRepository: { type: 'InMemory' }
-}
-RepositoryFactory - Create SQLite3Repository.
-Dao SQLite3Repository {}
-RepositoryFactory - Create FileSystemRepository.
-Dao FileSystemRepository {}
-SessionManagerFactory {
-  type: 'MongoStore',
-  session: { secret: '*****', resave: false, saveUninitialized: false },
-  store: {
-    uri: 'mongodb+srv://******:******@cluster0.xjgs3.mongodb.net/*****?retryWrites=true&w=majority',
-    options: { useNewUrlParser: true, useUnifiedTopology: true }
-  }
-}
-SessionManagerFactory - Create MongoStore.
-AuthenticationManagerFactory {
-  type: 'PassportLocal',
-  repoConfig: {
-    type: 'MongoDb',
-    uri: '//mongodb+srv://******:******@cluster0.xjgs3.mongodb.net/*****?retryWrites=true&w=majority',
-    db: '*****',
-    collection: 'users'
-  }
-}
-AuthenticationManagerFactory - Create PassportLocal.
-RepositoryFactory - Create MongoDbRepository.
-Dao MongoDbRepository {}
-Servidor escuchando en el puerto 8080
+[2022-03-24T19:39:20.137] [INFO] default - 23712-31312 Loading ./config/prod/common-conf.json
+[2022-03-24T19:39:20.309] [INFO] default - 23712-31312 MailManager transport [object Object]
+[2022-03-24T19:39:20.343] [INFO] default - 23712-31312 RepositoryFactory [object Object]
+[2022-03-24T19:39:20.359] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.301] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.336] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.369] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.404] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.447] [INFO] default - 23712-31312 SessionManagerFactory [object Object]
+[2022-03-24T19:39:32.467] [INFO] default - 23712-31312 SessionManagerFactory - Create MongoStore.
+[2022-03-24T19:39:33.009] [INFO] default - 23712-31312 AuthenticationManagerFactory [object Object]
+[2022-03-24T19:39:33.029] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:33.064] [INFO] default - 23712-31312 AuthenticationManagerFactory - Create PassportLocal.
+[2022-03-24T19:39:36.001] [INFO] default - 23712-31312 PID 31312
+[2022-03-24T19:39:36.019] [INFO] default - 23712-31312 Server context [object Object]
+[2022-03-24T19:39:36.041] [INFO] default - 23712-31312 Creating server ..........................
+[2022-03-24T19:39:36.120] [INFO] default - 23712-31312 Server created ..........................
+[2022-03-24T19:39:36.147] [INFO] default - 23712-31312 Servidor express escuchando en el puerto 8080 - PID 31312
 
 ````
+
+## Deploy en Heroku
+En https://ecommerce-jpi.herokuapp.com/ se encuentra disponible una versión con persistencia en MongoDB.
 
 #
 
