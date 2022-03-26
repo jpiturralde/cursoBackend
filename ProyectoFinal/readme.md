@@ -72,10 +72,10 @@ Para setear las diferentes configuraciones, se debe proveer un archivo .env con 
 
 **Ejemplo de archivo .env**
 ````
-AUTHENTICATION_CONFIG_PATH=./config/dev/authentication-conf.json
-COMMON_CONFIG_PATH=./config/dev/common-conf.json
-PERSISTENCE_CONFIG_PATH=./config/dev/persistence-conf.json
-SESSION_CONFIG_PATH=./config/dev/session-conf.json
+AUTHENTICATION_CONFIG_PATH=./config/prod/authentication-conf.json
+COMMON_CONFIG_PATH=./config/prod/common-conf.json
+PERSISTENCE_CONFIG_PATH=./config/prod/persistence-conf.json
+SESSION_CONFIG_PATH=./config/prod/session-conf.json
 ````
 
 ### Cómo ejecutar
