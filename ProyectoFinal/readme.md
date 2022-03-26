@@ -1,158 +1,119 @@
 
-# PROYECTO FINAL
-
   
 
-## PRIMERA ENTREGA
+# Proyecto Final - ecommerce
 
-Formato: link a un repositorio en Github con el proyecto cargado.
+[Consigna](https://github.com/jpiturralde/cursoBackend/blob/jwt/ProyectoFinal/Consigna%20Proyecto%20Final%20Curso%20Backend.pdf)
 
-Sugerencia: no incluir los node_modules.
+## Resolución
 
+### Características generales
+ - El carrito se crea como parte de la creación de un usuario.
+ - El usuario siempre tiene asociado el mismo ID de carrito.
+ - El carrito se llena durante una compra.
+ - Para confirmar la compra se implementó como PATCH /api/carrito/:id/checkout representando un cambio en el estado.
+ - El checkout genera la orden.
+ - La consulta de las ordenes se realiza por GET /api/orden.
+ - Se provee información del proceso por API GET /api/info que se expone desde el front end en la opción Proceso (API). Además también se provee la misma información generando una vista desde el backend en /info. 
+
+### Configuración general
+La configuración general incluye información sysadm para recibir notificaciones por email y además, configuración del cliente de emails para realizar las notificaciones.
+
+Dado que durante las pruebas se producían errores al enviar mails con ethereal, en la configuración general se permite habilitar/deshabilitar las notificaciones.
+
+Ejemplos en [common-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/common-examples)
+
+
+### Autenticación
+
+El sistema soporta autenticación de usuarios locales. El repositorio de usuarios utiliza MongoDB, pero si no se configura, por defecto se utilizar repositorio en memoria.
+
+Para un manejo muy básico de autorización se soportan 2 roles diferentes: admin y default. El rol admin, tiene privilegios adicionales al default para poder gestionar productos realizando altas y bajas. 
+
+En el archivo de configuración se condigurar una colección de usernames para los cuales, en el momento de la registración se les asigna el rol admin. MEJORA: Usar estos usuarios para enviar notificación cuando se registran usuarios y se crean las órdenes.
+
+Adicionalmente, y para simplificar las pruebas, el usuario con rol admin, también tiene disponible en la página del perfil, la posibilidad de cargar productos fake en tandas de a 5.
   
 
-### Consigna
-
-Deberás entregar el estado de avance de tu aplicación eCommerce Backend, que implemente un servidor de aplicación basado en la plataforma Node.js y el middleware express. El servidor implementará dos conjuntos de rutas agrupadas en routers, uno con la url base '**/productos**' y el otro con '**/carrito**'. El puerto de escucha será el 8080 para desarrollo y process.env.PORT para producción en glitch.com
-
+Ejemplos en [authentication-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/authentication-examples)
   
 
-#### Aspectos a incluir en el entregable
+### Persistencia
 
-1. El **router base '/api/productos'** implementará cuatro funcionalidades:
+Se necesitan repositorios para las diferentes entidades de datos necesarias para el sistema. Es requerido condigurar cada repositorio por separado. Si bien esto implica mayor esfuerzo de configuración, brinda la flexibilidad de poder alojar las entidades en diferentes bases de datos. MEJORA: Soportar configuración de repositorio por defecto para todas las entidades y tomar configuración particular sólo en los casos que se configure explícitamente.
 
-a. GET: '/:id?' - Me permite listar todos los productos disponibles ó un producto por su id (disponible para usuarios y administradores)
+En caso de no configurar tipo de persistencia para alguna entidad, se utilizar por defecto repositorio en memoria.
 
-b. POST: '/' - Para incorporar productos al listado (disponible para administradores)
-
-c. PUT: '/:id' - Actualiza un producto por su id (disponible para administradores)
-
-d. DELETE: '/:id' - Borra un producto por su id (disponible para administradores)
-
+En [persistence-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/persistence-examples) se pueden ver alternativas de configuración.
   
 
-2. El **router base '/api/carrito'** implementará tres rutas disponibles para usuarios y administradores:
+### Sesión
+El manejo de sesiones soporta 3 mecanismos diferentes de persistencia para las mismas:
 
-a. POST: '/' - Crea un carrito y devuelve su id.
+ 1. En memoria (por defecto)
+ 2. En file system
+ 3. En MongoDB
 
-b. DELETE: '/:id' - Vacía un carrito y lo elimina.
+En [session-examples](https://github.com/jpiturralde/cursoBackend/tree/master/ProyectoFinal/config/examples/session-examples) se pueden ver archivos de ejemplo para cada una de estas variantes.
 
-c. GET: '/:id/productos' - Me permite listar todos los productos guardados en el carrito
+### Argumentos
+Se soportan 3 argumentos:
 
-d. POST: '/:id/productos' - Para incorporar productos al carrito por su id de producto
+ - ***-p*** ó ***--port***: Puerto en el cual se levanta el servidor. Valor por defecto: 8080
+ -    ***-e*** ó ***--env***: Ambiente en el cual se ejecuta la aplicación. Valor por defecto: 'prod'
+ -    ***--dep*** ó  ***--dotenvPath***: Path al archivo ***.env*** para tomar configuración de autenticación, persistencia y sesión. Valor por defecto ***./config/prod/.env***
 
-e. DELETE: '/:id/productos/:id_prod' - Eliminar un producto del carrito por su id de carrito y de producto
+#### Archivo .env
+Para setear las diferentes configuraciones, se debe proveer un archivo .env con las siguientes claves:
+ - *AUTHENTICATION_CONFIG_PATH*: Path al archivo de configuración de autenticación.
+ - *COMMON_CONFIG_PATH*: Path al archivo de configuración general.
+ - *PERSISTENCE_CONFIG_PATH*: Path al archivo de configuración de persistencia.
+ - *SESSION_CONFIG_PATH*: Path al archivo de configuración de sesión.
 
-  
-
-3. Crear una variable booleana **administrador**, cuyo valor configuraremos más adelante con el sistema de login. Según su valor (true ó false) me permitirá alcanzar o no las rutas indicadas. En el caso de recibir un request a una ruta no permitida por el perfil, devolver un objeto de error. Ejemplo: { error : -1, descripcion: ruta 'x' método 'y' no autorizada}
-
-4. Un **producto** dispondrá de los siguientes campos:
-
-id, timestamp, nombre, descripcion, código, foto (url), precio, stock.
-
-5. El carrito de compras tendrá la siguiente estructura:
-
-id, timestamp(carrito), producto: { id, timestamp(producto), nombre, descripcion, código, foto (url), precio, stock }
-
-6. El timestamp puede implementarse con Date.now()
-
-7. Comenzar a trabajar con el listado de productos y el carrito de compras en memoria del servidor, luego persistirlos en el filesystem.
-
-#### A tener en cuenta
-
-  
-
-1. Para realizar la **prueba de funcionalidad** hay dos opciones:
-
-a. Probar con postman cada uno de los endpoints (productos y carrito) y su operación en conjunto.
-
-b. Realizar una aplicación frontend sencilla, utilizando HTML/CSS/JS ó algún framework de preferencia, que represente el listado de productos en forma de cards. En cada card figuran los datos del producto, que, en el caso de ser administradores, podremos editar su información. Para este último caso incorporar los botones actualizar y eliminar. También tendremos un formulario de ingreso de productos nuevos con los campos correspondientes y un botón enviar. Asimismo, construir la vista del carrito donde se podrán ver los productos agregados e incorporar productos a comprar por su id de producto. Esta aplicación de frontend debe enviar los requests get, post, put y delete al servidor utilizando fetch y debe estar ofrecida en su espacio público.
-
-2. En todos los casos, el diálogo entre el frontend y el backend debe ser en formato JSON. El servidor no debe generar ninguna vista.
-
-3. En el caso de requerir una ruta no implementada en el servidor, este debe contestar un objeto de error: ej { error : -2, descripcion: ruta 'x' método 'y' no implementada}
-
-4. La estructura de programación será ECMAScript, separada tres en módulos básicos (router, lógica de negocio/api y persistencia ). Más adelante implementaremos el desarrollo en capas. Utilizar preferentemente clases, constructores de variables let y const y arrow function.
-
-5. Realizar la prueba de funcionalidad completa en el ámbito local (puerto 8080) y en glitch.com
-
-  
-
-#
-
-## SEGUNDA ENTREGA
-Formato: link a un repositorio en Github con el proyecto cargado.
-
-Sugerencia: no incluir los node_modules.
- 
-### Consigna
-Basándose en los contenedores ya desarrollados (memoria, archivos) desarrollar dos contenedores más (que cumplan con la misma interfaz) que permitan realizar las operaciones básicas de CRUD en MongoDb (ya sea local o remoto) y en Firebase. Luego, para cada contenedor, crear dos clases derivadas, una para trabajar con Productos, y otra para trabajar con Carritos.
-
-#### Aspectos a incluir en el entregable
-
-1. A las clases derivadas de los contenedores se las conoce como **DAOs (Data Access Objects)**, y pueden ir todas incluidas en una misma carpeta de ‘daos’.
-2. En la carpeta de daos, incluir un archivo que importe todas las clases y exporte una instancia de dao de productos y una de dao de carritos, según corresponda. Esta decisión se tomará en base al valor de una variable de entorno cargada al momento de ejecutar el servidor (**opcional**: investigar el uso de imports dinámicos).
-3. Incluir un archivo de configuración (config) que contenga los datos correspondientes para conectarse a las bases de datos o medio de persistencia que corresponda.
-4. **Opcional**: Hacer lo mismo para bases de datos relacionales: MariaDB/SQLite3.
-
-## Cómo ejecutar
-
-### Configuración por default: InMemoryRepository
-Por defecto se busca en archivo **./config/persistence-config.json** para establecer qué tipo de persistencia se utiliza y cuál es la configuración correspondiente. En caso de no encontrarse ese archivo, se inicia persistencia en memoria. A continuación, ejemplo de esta situación:
-
-    npm start  
+**Ejemplo de archivo .env**
 ````
-proyectofinal@1.0.0 start
-node ./src/server.js ./config/persistence-config.json
-RepositoryFactory - Not found ./config/persistence-config.json 
-RepositoryFactory - Default configuration initialized 
-RepositoryFactory {
-  ProductsRepository: { type: 'InMemory' },
-  ShoppingCartsRepository: { type: 'InMemory' }
-}
-RepositoryFactory - Create InMemoryRepository.
-Dao InMemoryRepository {}
-RepositoryFactory - Create InMemoryRepository.
-Dao InMemoryRepository {}
-Servidor escuchando en el puerto 8080
+AUTHENTICATION_CONFIG_PATH=./config/dev/authentication-conf.json
+COMMON_CONFIG_PATH=./config/dev/common-conf.json
+PERSISTENCE_CONFIG_PATH=./config/dev/persistence-conf.json
+SESSION_CONFIG_PATH=./config/dev/session-conf.json
 ````
- 
-### ./config/[TYPE]-persistence-config.json
-En la carpeta **config** se encuentran archivos de configuración para los diferentes tipos de persistencia soportados. Para utilizarlos, se puede cambiar el script de ejecución o simplemente se puede renombrar uno de los archivos de ejemplo, y ejecutar nuevamente npm start para iniciar el server.
-A continuación, los archivos de configuración mencionados:
 
- - [firebase-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/firebase-persistence-config.json)
- - [fs-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/fs-persistence-config.json)
- - [inMemory-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/inMemory-persistence-config.json)
- - [mongodb-persistence-config.json](https://github.com/jpiturralde/cursoBackend/blob/master/ProyectoFinal/config/mongodb-persistence-config.json)
+### Cómo ejecutar
+Ejecutando ***npm start*** se busca el archiv ***./config/prod/.env***. A continuación se muestra la salida a modo de ejemplo:
+````
+PS C:\Users\u610166\Documents\curso\cursoBackend\ProyectoFinal> npm start
+
+> websockets@1.0.0 start
+> node ./src/main.js
+
+[2022-03-24T19:39:20.137] [INFO] default - 23712-31312 Loading ./config/prod/common-conf.json
+[2022-03-24T19:39:20.309] [INFO] default - 23712-31312 MailManager transport [object Object]
+[2022-03-24T19:39:20.343] [INFO] default - 23712-31312 RepositoryFactory [object Object]
+[2022-03-24T19:39:20.359] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.301] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.336] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.369] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.404] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:32.447] [INFO] default - 23712-31312 SessionManagerFactory [object Object]
+[2022-03-24T19:39:32.467] [INFO] default - 23712-31312 SessionManagerFactory - Create MongoStore.
+[2022-03-24T19:39:33.009] [INFO] default - 23712-31312 AuthenticationManagerFactory [object Object]
+[2022-03-24T19:39:33.029] [INFO] default - 23712-31312 RepositoryFactory - Create MongoDbRepository.
+[2022-03-24T19:39:33.064] [INFO] default - 23712-31312 AuthenticationManagerFactory - Create PassportLocal.
+[2022-03-24T19:39:36.001] [INFO] default - 23712-31312 PID 31312
+[2022-03-24T19:39:36.019] [INFO] default - 23712-31312 Server context [object Object]
+[2022-03-24T19:39:36.041] [INFO] default - 23712-31312 Creating server ..........................
+[2022-03-24T19:39:36.120] [INFO] default - 23712-31312 Server created ..........................
+[2022-03-24T19:39:36.147] [INFO] default - 23712-31312 Servidor express escuchando en el puerto 8080 - PID 31312
+
+````
+
+### Deploy en Heroku
+En https://ecommerce-jpi.herokuapp.com/ se encuentra disponible una versión con persistencia en MongoDB.
+
+
 
 #
 
-## TERCERA ENTREGA
-Formato: link a un repositorio en Github con el proyecto cargado.
+  
 
-Sugerencia: no incluir los node_modules.
-
-### Consigna
- - Un menú de registro y autenticación de usuarios basado en passport local, guardando en la base de datos las credenciales y el resto de los datos ingresados al momento del registro. 
-	  - El registro de usuario consiste en crear una cuenta en el servidor almacenada en la base de datos, que contenga el email y password de usuario, además de su nombre, dirección, edad, número de teléfono (debe contener todos los prefijos internacionales) y foto ó avatar. La contraseña se almacenará encriptada en la base de datos.
-	  - La imagen se podrá subir al servidor y se guardará en una carpeta pública del mismo a la cual se tenga acceso por url.
- - Un formulario post de registro y uno de login. De modo que, luego de concretarse cualquiera de estas operaciones en forma exitosa, el usuario accederá a su home.
-     - El usuario se logueará al sistema con email y password y tendrá acceso a un menú en su vista, a modo de barra de navegación. Esto le permitirá ver los productos totales con los filtros que se hayan implementado y su propio carrito de compras e información propia (datos de registro con la foto). Además, dispondrá de una opción para desloguearse del sistema.
-     - Ante la incorporación de un usuario, el servidor enviará un email al administrador con todos los datos de registro y asunto 'nuevo registro', a una dirección que se encuentre por el momento almacenada en una constante global.
- - Envío de un email y un mensaje de whatsapp al administrador desde el servidor, a un número de contacto almacenado en una constante global.
-     - El usuario iniciará la acción de pedido en la vista del carrito.
-     - Será enviado una vez finalizada la elección para la realizar la compra de productos.
-     - El email contendrá en su cuerpo la lista completa de productos a comprar y en el asunto la frase 'nuevo pedido de ' y el nombre y email del usuario que los solicitó. En el mensaje de whatsapp se debe enviar la misma información del asunto del email.
-     - El usuario recibirá un mensaje de texto al número que haya registrado, indicando que su pedido ha sido recibido y se encuentra en proceso.
-
-#### Aspectos a incluir en el entregable
- - El servidor trabajará con una base de datos DBaaS (Ej. MongoDB Atlas) y estará preparado para trabajar en forma local o en la nube a través de la plataforma PaaS Heroku.
- - Habilitar el modo cluster para el servidor, como opcional a través de una constante global.
- - Utilizar alguno de los loggers ya vistos y así reemplazar todos los mensajes a consola por logs eficientes hacia la misma consola. En el caso de errores moderados ó graves el log tendrá además como destino un archivo elegido.
- - Realizar una prueba de performance en modo local, con y sin cluster, utilizando Artillery en el endpoint del listado de productos (con el usuario vez logueado). Verificar los resultados.
-
-#
 Autor: jpiturralde@gmail.com (U610166)
-https://ecommerce-jpi.herokuapp.com/
